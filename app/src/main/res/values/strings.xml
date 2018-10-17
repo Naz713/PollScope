@@ -97,6 +97,7 @@
     <string name="action_sign_in">Registrarse o Entrar</string>
     <string name="action_sign_in_short">Entrar</string>
     <string name="error_invalid_email">Correo Electronico Invalido</string>
+    <string name="user_creation_failed">Error al crear el usuario</string>
     <string name="error_incorrect_password">Contraseña Incorrecta</string>
     <string name="error_field_required">Campo Requerido</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
