@@ -94,8 +94,8 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Correo Electronico</string>
     <string name="prompt_password">Contraseña (Simple)</string>
-    <string name="action_sign_in">Registrarse o Entrar</string>
-    <string name="action_sign_in_short">Entrar</string>
+    <string name="action_sign_up">Registrarse</string>
+    <string name="action_sign_in">Entrar</string>
     <string name="error_invalid_email">Correo Electronico Invalido</string>
     <string name="user_creation_failed">Error al crear el usuario</string>
     <string name="error_incorrect_password">Contraseña Incorrecta</string>
