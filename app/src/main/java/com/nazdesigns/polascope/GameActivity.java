@@ -1,5 +1,6 @@
 package com.nazdesigns.polascope;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -11,6 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,12 +24,24 @@ public class GameActivity extends AppCompatActivity {
     private LinearTextAdapter mAdapter;
     private List<String> mData;
     private AppBarLayout appBar;
+    private FirebaseAuth mAuth;
+    private String mUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
 
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (null == user){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            mUserId = user.getUid();
+        }
+
+        setContentView(R.layout.activity_game);
         appBar = findViewById(R.id.app_bar);
         Toolbar toolbar = appBar.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -49,20 +65,9 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.dark_theme) {
-            ActionBar actionBar = getSupportActionBar();
-            actionBar.setLogo(R.mipmap.ic_dark);
-            return true;
-        }
-        if (id == R.id.light_theme) {
-            ActionBar actionBar = getSupportActionBar();
-            actionBar.setLogo(R.mipmap.ic_light);
+        if (id == R.id.log_out) {
+            mAuth.signOut();
             return true;
         }
         return super.onOptionsItemSelected(item);
