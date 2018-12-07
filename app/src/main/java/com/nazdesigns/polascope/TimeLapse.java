@@ -3,102 +3,78 @@ package com.nazdesigns.polascope;
 import java.util.List;
 
 public class TimeLapse {
-    private String resume;
-    private boolean isLight;
-    private String extenDescription;
-    private List<TimeLapse> subEpocs;
+    protected String myId;
+    protected String resume;
+    protected boolean isLight;
+    protected String body;
+    protected List<TimeLapse> subEpochs;
 
     public class Scene extends TimeLapse{
-        String question;
         String answer;
-        String[] requiredCharacters;
-        String[] banedCharacters;
 
-        public Scene(boolean isLight, String resume, String extenDescription){
-            super(isLight,resume,extenDescription);
+        public Scene(String id, boolean isLight, String question){
+            super(id, isLight,question);
         }
 
-        public void setScene(String question, String[] requiredCharacters, String[] banedCharacters){
-            this.question = question;
-            this.requiredCharacters = requiredCharacters;
-            this.banedCharacters = banedCharacters;
-            this.answer = "";
-        }
-
-        public void setAnswer(String answer){
+        public void answerScene(String answer, String body){
             this.answer = answer;
-        }
-
-        public void setQuestion(String question) {
-            this.question = question;
-        }
-
-        public void setRequiredCharacters(String[] requiredCharacters) {
-            this.requiredCharacters = requiredCharacters;
-        }
-
-        public void setBanedCharacters(String[] banedCharacters) {
-            this.banedCharacters = banedCharacters;
+            this.body = body;
         }
 
         public String getAnswer() {
             return answer;
         }
 
-        public String getQuestion() {
-            return question;
-        }
-
-        public String[] getBanedCharacters() {
-            return banedCharacters;
-        }
-
-        public String[] getRequiredCharacters() {
-            return requiredCharacters;
+        public void setAnswer(String answer) {
+            this.answer = answer;
         }
     }
 
-    public TimeLapse(boolean isLight, String resume, String extenDescription){
+    public TimeLapse(String id, boolean isLight, String resume){
+        this.myId = id;
         this.isLight = isLight;
         this.resume = resume;
-        this.extenDescription = extenDescription;
-        subEpocs = null;
+        this.body = null;
+        this.subEpochs = null;
     }
 
-    public TimeLapse(boolean isLight, String resume, String extenDescription, List<TimeLapse> subEpocs){
-        this(isLight,resume,extenDescription);
-        this.subEpocs = subEpocs;
+    public String getMyId() {
+        return myId;
     }
 
-    public List<TimeLapse> getSubEpocs() {
-        return subEpocs;
+    public void setMyId(String myId) {
+        this.myId = myId;
     }
 
     public String getResume() {
         return resume;
     }
 
-    public boolean getIsLight() {
-        return isLight;
-    }
-
-    public String getExtenDescription() {
-        return extenDescription;
-    }
-
-    public void setSubEpocs(List<TimeLapse> subEpocs) {
-        this.subEpocs = subEpocs;
-    }
-
-    public void setExtenDescription(String extenDescription) {
-        this.extenDescription = extenDescription;
-    }
-
     public void setResume(String resume) {
         this.resume = resume;
     }
 
-    public void setIsLight(boolean light) {
+    public boolean getLight() {
+        return isLight;
+    }
+
+    public void setLight(boolean light) {
         isLight = light;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public List<TimeLapse> getSubEpochs() {
+        return subEpochs;
+    }
+
+    public void setSubEpochs(List<TimeLapse> subEpochs) {
+        this.subEpochs = subEpochs;
     }
 }
