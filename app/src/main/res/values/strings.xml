@@ -92,6 +92,7 @@
     <string name="log_out">Salir como Usuario</string>
     <string name="dark_theme">Dark Theme</string>
     <string name="light_theme">Light Theme</string>
+    <string name="icone_light">Light Icone</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Correo Electronico</string>
     <string name="prompt_password">Contraseña (Simple)</string>

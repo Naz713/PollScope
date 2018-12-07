@@ -31,6 +31,9 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /**
+         * Checamos si tenenmos un Firebase user registrado, sino llamamos a Login para registrarlo
+         */
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         if (null == user){
@@ -40,15 +43,20 @@ public class GameActivity extends AppCompatActivity {
         } else {
             mUserId = user.getUid();
         }
-
+        /**
+         * Inicalizamos el layout
+         */
         setContentView(R.layout.activity_game);
         appBar = findViewById(R.id.app_bar);
         Toolbar toolbar = appBar.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         mRecyclerView = findViewById(R.id.text_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        /*
+        TODO: Hacer Jalar la información y llenar el adapter
+         */
         String text = getResources().getString(R.string.large_text);
         mData = Arrays.asList(text.split("\n\n"));
         mAdapter = new LinearTextAdapter(mData);
@@ -59,7 +67,6 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_game, menu);
-
         return true;
     }
 

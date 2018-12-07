@@ -9,7 +9,7 @@ import android.widget.TextView;
 import java.util.List;
 
 public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.TextViewHolder> {
-    private List<String> mDataset;
+    private List<TimeLapse> mDataset;
 
     public static class TextViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextView;
