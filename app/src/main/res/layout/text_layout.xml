@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/backgroundLight">
-    
-    <ImageView
-        android:id="@+id/lightIcone"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:padding="2dp"
-        android:contentDescription="@string/icone_light"
-        android:src="@mipmap/ic_launcher"/>
+    android:paddingStart="@dimen/default_margin"
+    android:paddingEnd="@dimen/default_margin"
+    android:background="@color/backgroundDark">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/lightIcone"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="2dp"
+            android:contentDescription="@string/icone_light"
+            android:src="@mipmap/ic_launcher"/>
 
         <TextView
             android:id="@+id/resume"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:text="Un buen subtitulo por fin. Y dodemos poner muchas cosas más para que aparexcan en pantalla. Y que pasaria si sigo escribiendo más y más. Todo pararecerá."
+            />
     </LinearLayout>
+    <TextView
+        android:id="@+id/longText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="Un buen subtitulo por fin. Y dodemos poner muchas cosas más para que aparexcan en pantalla. Y que pasaria si sigo escribiendo más y más. Todo pararecerá."
+        />
 </LinearLayout>
