@@ -20,6 +20,8 @@ import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
 
+    public static int resumeMaxLenght = 86;
+
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
     private List<String> mData;

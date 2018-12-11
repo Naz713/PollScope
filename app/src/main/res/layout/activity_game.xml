@@ -41,6 +41,14 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
+    <TextView
+        android:id="@+id/longText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="Un buen subtitulo por fin. Y dodemos poner muchas cosas más para que aparexcan en pantalla. Y que pasaria si sigo escribiendo más y más. Todo pararecerá."
+        />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/text_recycler_view"
         android:layout_width="match_parent"

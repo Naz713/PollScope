@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/default_margin"
     android:paddingEnd="@dimen/default_margin"
-    android:background="@color/backgroundDark">
+    android:background="@color/backgroundLight">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -24,7 +24,6 @@
             android:id="@+id/resume"
             android:layout_width="wrap_content"
             android:layout_height="34dp"
-            android:text="Un buen subtitulo por fin. Y dodemos poner muchas cosas más para que aparexcan en pantalla. Y que pasaria si sigo escribiendo más y más. Todo pararecerá."
             />
     </LinearLayout>
     <TextView
