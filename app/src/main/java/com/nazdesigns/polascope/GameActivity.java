@@ -24,10 +24,14 @@ public class GameActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
-    private List<String> mData;
+    private List<TimeLapse> mData;
     private AppBarLayout appBar;
     private FirebaseAuth mAuth;
     private String mUserId;
+
+    /*
+    Responsable de presentar la informacion traida de TimeLapse atravez de FireBase
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +62,8 @@ public class GameActivity extends AppCompatActivity {
 
         /*
         TODO: Hacer Jalar la información y llenar el adapter
+        incializar mData
          */
-        String text = getResources().getString(R.string.large_text);
-        mData = Arrays.asList(text.split("\n\n"));
         mAdapter = new LinearTextAdapter(mData);
         mRecyclerView.setAdapter(mAdapter);
 
