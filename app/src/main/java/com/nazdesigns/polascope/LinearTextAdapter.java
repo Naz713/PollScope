@@ -5,9 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.nazdesigns.polascope.GameStructure.TimeLapse;
+
 import java.util.List;
 
 /*
@@ -44,7 +45,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
     public void onBindViewHolder(@NonNull TextViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        if(mDataset.get(position).isLight){
+        if(mDataset.get(position).getLight()){
             holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
         }
         else {

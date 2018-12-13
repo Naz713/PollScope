@@ -1,4 +1,4 @@
-package com.nazdesigns.polascope;
+package com.nazdesigns.polascope.GameStructure;
 
 import java.util.List;
 
