@@ -2,6 +2,7 @@ package com.nazdesigns.polascope;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,12 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
-
-import java.util.List;
+import com.nazdesigns.polascope.USoT.DBCaller;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -22,7 +23,7 @@ public class GameActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
-    private List<TimeLapse> mData;
+    private TimeLapse mData;
     private AppBarLayout appBar;
     private FirebaseAuth mAuth;
     private String mUserId;
@@ -58,12 +59,28 @@ public class GameActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        /*
-        TODO: Hacer Jalar la información y llenar el adapter
-        incializar mData
-         */
-        mAdapter = new LinearTextAdapter(mData);
+        mData = DBCaller.getGame();
+        mAdapter = new LinearTextAdapter(mData.getSubEpochs());
         mRecyclerView.setAdapter(mAdapter);
+        /*
+        TODO: Llenar
+         */
+        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean b) {
+
+            }
+        });
 
     }
 

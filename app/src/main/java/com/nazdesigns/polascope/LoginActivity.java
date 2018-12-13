@@ -63,6 +63,10 @@ public class LoginActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     if (mAuth.getCurrentUser() != null) {
+                        /*
+                        TODO: Inicializar al nuevo jugador
+                        Crear estructuras vacias en FB
+                         */
                         Intent intent = new Intent(context, GameActivity.class);
                         startActivity(intent);
                         finish();
@@ -121,11 +125,6 @@ public class LoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin(int type) {
-        /*
-        Intent intent = new Intent(this,GameActivity.class);
-        startActivity(intent);
-        return;
-        */
 
         if (mAuth.getCurrentUser() != null) {
             return;
