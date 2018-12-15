@@ -28,6 +28,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.nazdesigns.polascope.GameStructure.TimeLapse;
+import com.nazdesigns.polascope.USoT.DBCaller;
 
 /**
  * A login screen that offers login via email/password.
@@ -63,10 +65,8 @@ public class LoginActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     if (mAuth.getCurrentUser() != null) {
-                        /*
-                        TODO: Inicializar al nuevo jugador
-                        Crear estructuras vacias en FB
-                         */
+                        DBCaller db = (DBCaller) new FBCaller(mAuth.getCurrentUser().getUid());
+                        db.setPlayer();
                         Intent intent = new Intent(context, GameActivity.class);
                         startActivity(intent);
                         finish();

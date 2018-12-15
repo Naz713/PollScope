@@ -17,13 +17,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.DBCaller;
 
+import java.util.List;
+
 public class GameActivity extends AppCompatActivity {
 
     public static int resumeMaxLenght = 86;
 
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
-    private TimeLapse mData;
+    private List<TimeLapse> mData;
     private AppBarLayout appBar;
     private FirebaseAuth mAuth;
     private String mUserId;
@@ -58,9 +60,9 @@ public class GameActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.text_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        mData = DBCaller.getGame();
-        mAdapter = new LinearTextAdapter(mData.getSubEpochs());
+        DBCaller db = (DBCaller) new FBCaller(mAuth.getCurrentUser().getUid());
+        mData = db.getAllGames();
+        mAdapter = new LinearTextAdapter(mData);
         mRecyclerView.setAdapter(mAdapter);
         /*
         TODO: Llenar
