@@ -21,6 +21,7 @@ public interface DBCaller {
     public TimeLapse getGame(String gameId);
 
     /*
+    Pregunta si el jugador con Id dado ya tiene las estructuras minimas necesarias
     Inicializa al nuevo jugador
     Crear estructuras necesarias dentro de la Base de Datos
      */
