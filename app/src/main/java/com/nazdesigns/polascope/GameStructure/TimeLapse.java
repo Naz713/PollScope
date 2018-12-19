@@ -4,6 +4,7 @@ import java.util.List;
 
 public class TimeLapse {
     protected String myId;
+    protected int timeType;
     protected String resume;
     protected boolean isLight;
     protected String body;
@@ -12,8 +13,8 @@ public class TimeLapse {
     public class Scene extends TimeLapse{
         String answer;
 
-        public Scene(String id, boolean isLight, String question){
-            super(id, isLight,question);
+        public Scene(String id, int timeType, boolean isLight, String question){
+            super(id, timeType, isLight,question);
         }
 
         public void answerScene(String answer, String body){
@@ -30,8 +31,9 @@ public class TimeLapse {
         }
     }
 
-    public TimeLapse(String id, boolean isLight, String resume){
+    public TimeLapse(String id, int timeType, boolean isLight, String resume){
         this.myId = id;
+        this.timeType = timeType;
         this.isLight = isLight;
         this.resume = resume;
         this.body = null;
@@ -44,6 +46,14 @@ public class TimeLapse {
 
     public void setMyId(String myId) {
         this.myId = myId;
+    }
+
+    public int getTimeType() {
+        return timeType;
+    }
+
+    public void setTimeType(int timeType) {
+        this.timeType = timeType;
     }
 
     public String getResume() {

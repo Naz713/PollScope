@@ -23,6 +23,9 @@ import java.util.List;
 public class GameActivity extends AppCompatActivity {
 
     public static int resumeMaxLenght = 86;
+    public static int PERIOD_TYPE = 7;
+    public static int EVENT_TYPE = 13;
+    public static int SCENE_TYPE = 21;
 
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
@@ -61,7 +64,8 @@ public class GameActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.text_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        DBCaller db = new FBCaller(mAuth.getCurrentUser().getUid());
+        mUserId = mAuth.getCurrentUser().getUid();
+        DBCaller db = new FBCaller(mUserId);
         mData = db.getAllGames();
         mAdapter = new LinearTextAdapter(mData);
         mRecyclerView.setAdapter(mAdapter);
