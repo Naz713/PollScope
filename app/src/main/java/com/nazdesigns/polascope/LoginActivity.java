@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.DBCaller;
+import com.nazdesigns.polascope.USoT.FBCaller;
 
 /**
  * A login screen that offers login via email/password.
@@ -65,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     if (mAuth.getCurrentUser() != null) {
-                        DBCaller db = (DBCaller) new FBCaller(mAuth.getCurrentUser().getUid());
+                        DBCaller db = new FBCaller(mAuth.getCurrentUser().getUid());
                         db.setPlayer();
                         Intent intent = new Intent(context, GameActivity.class);
                         startActivity(intent);

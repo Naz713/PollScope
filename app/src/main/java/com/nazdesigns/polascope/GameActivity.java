@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.DBCaller;
+import com.nazdesigns.polascope.USoT.FBCaller;
 
 import java.util.List;
 
@@ -60,30 +61,10 @@ public class GameActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.text_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        DBCaller db = (DBCaller) new FBCaller(mAuth.getCurrentUser().getUid());
+        DBCaller db = new FBCaller(mAuth.getCurrentUser().getUid());
         mData = db.getAllGames();
         mAdapter = new LinearTextAdapter(mData);
         mRecyclerView.setAdapter(mAdapter);
-        /*
-        TODO: Llenar
-         */
-        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean b) {
-
-            }
-        });
-
     }
 
     @Override

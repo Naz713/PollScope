@@ -18,13 +18,37 @@ Responsable de llenar el recler view dado una lista de TimeLapse
 public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.TextViewHolder> {
     private List<TimeLapse> mDataset;
 
-    public static class TextViewHolder extends RecyclerView.ViewHolder {
+    public static class TextViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public TextView mResume;
         public TextView mLongText;
         public TextViewHolder(View v) {
             super(v);
             mResume = v.findViewById(R.id.resume);
             mLongText = v.findViewById(R.id.longText);
+        }
+
+        @Override
+        public void onClick(View v) {
+            View longText = v.findViewById(R.id.longText);
+            if (longText.getVisibility() == View.GONE) {
+                longText.setVisibility(View.VISIBLE);
+            } else {
+                longText.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (v.getId() == R.id.longText) {
+                /*
+                TODO: Edit All Text
+                 */
+            } else {
+                /*
+                TODO:Renderiza de nuevo con los datos del TimeLapse si es not null
+                 */
+            }
+            return false;
         }
     }
 
@@ -43,8 +67,6 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
     @Override
     public void onBindViewHolder(@NonNull TextViewHolder holder, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
         if(mDataset.get(position).getLight()){
             holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
         }
