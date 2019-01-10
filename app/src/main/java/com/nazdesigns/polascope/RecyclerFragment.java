@@ -31,13 +31,18 @@ public class RecyclerFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        AppCompatActivity activity = ((AppCompatActivity) getActivity());
-        appBar = activity.findViewById(R.id.app_bar);
+        return inflater.inflate(R.layout.fragment_recycler, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        appBar = getView().findViewById(R.id.app_bar);
         Toolbar toolbar = appBar.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        mRecyclerView = activity.findViewById(R.id.text_recycler_view);
+        mRecyclerView = getView().findViewById(R.id.text_recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext()));
-        return inflater.inflate(R.layout.fragment_recycler, container, false);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+        super.onActivityCreated(savedInstanceState);
+
     }
 }
