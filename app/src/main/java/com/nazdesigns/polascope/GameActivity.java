@@ -58,13 +58,8 @@ public class GameActivity extends AppCompatActivity {
          * Inicalizamos el layout
          */
         setContentView(R.layout.activity_game);
-        appBar = findViewById(R.id.app_bar);
-        Toolbar toolbar = appBar.findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        mRecyclerView = findViewById(R.id.text_recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mUserId = mAuth.getCurrentUser().getUid();
+
+
         DBCaller db = new FBCaller(mUserId);
         mData = db.getAllGames();
         mAdapter = new LinearTextAdapter(mData);
