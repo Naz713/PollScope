@@ -58,12 +58,6 @@ public class GameActivity extends AppCompatActivity {
          * Inicalizamos el layout
          */
         setContentView(R.layout.activity_game);
-
-
-        DBCaller db = new FBCaller(mUserId);
-        mData = db.getAllGames();
-        mAdapter = new LinearTextAdapter(mData);
-        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override

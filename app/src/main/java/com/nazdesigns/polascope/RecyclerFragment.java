@@ -14,10 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
+import com.nazdesigns.polascope.USoT.DBCaller;
+import com.nazdesigns.polascope.USoT.FBCaller;
 
 import java.util.List;
 
 public class RecyclerFragment extends Fragment {
+    private String mUserId;
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
     private List<TimeLapse> mData;
@@ -36,13 +39,16 @@ public class RecyclerFragment extends Fragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         appBar = getView().findViewById(R.id.app_bar);
         Toolbar toolbar = appBar.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         mRecyclerView = getView().findViewById(R.id.text_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-        super.onActivityCreated(savedInstanceState);
-
+        DBCaller db = new FBCaller(mUserId);
+        mData = db.getAllGames();
+        mAdapter = new LinearTextAdapter(mData);
+        mRecyclerView.setAdapter(mAdapter);
     }
 }
