@@ -16,7 +16,7 @@ public interface DBCaller {
     public List<TimeLapse> getAllGames();
 
     /*
-    Regresa el jueoa apropiado al id pasado
+    Regresa el juego apropiado al id pasado
      */
     public TimeLapse getGame(String gameId);
 

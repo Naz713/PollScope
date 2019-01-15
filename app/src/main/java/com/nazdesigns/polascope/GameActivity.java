@@ -22,17 +22,7 @@ import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
 
-    public static int resumeMaxLenght = 86;
-    public static int PERIOD_TYPE = 7;
-    public static int EVENT_TYPE = 13;
-    public static int SCENE_TYPE = 21;
-
-    private RecyclerView mRecyclerView;
-    private LinearTextAdapter mAdapter;
-    private List<TimeLapse> mData;
-    private AppBarLayout appBar;
     private FirebaseAuth mAuth;
-    private String mUserId;
 
     /*
     Responsable de presentar la informacion traida de TimeLapse atravez de FireBase
@@ -51,13 +41,13 @@ public class GameActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
-        } else {
-            mUserId = user.getUid();
         }
         /**
          * Inicalizamos el layout
          */
         setContentView(R.layout.activity_game);
+
+        // TODO: Inicalizar Recyclerview Desde Fragmento
     }
 
     @Override
