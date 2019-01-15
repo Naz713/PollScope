@@ -1,6 +1,7 @@
 package com.nazdesigns.polascope;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -20,26 +21,26 @@ import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.DBCaller;
 import com.nazdesigns.polascope.USoT.FBCaller;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class RecyclerFragment extends Fragment {
-    private String mUserId;
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
     private List<TimeLapse> mData;
-    private AppBarLayout appBar;
-    private FirebaseAuth mAuth;
+    private String mText;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if ( user != null){
-            mUserId = user.getUid();
+        Bundle args = getArguments();
+        mText = args.getString("text", getString(R.string.warning_msg));
+        Parcelable[] argsArray = args.getParcelableArray("list");
+        if (argsArray != null) {
+            mData = Arrays.asList( (TimeLapse[]) argsArray);
         }
-
     }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,25 +50,21 @@ public class RecyclerFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        View activityView = getView();
-        if (activityView == null){
+        RecyclerView activityView = (RecyclerView) getView();
+        GameActivity gameActivity = (GameActivity) getActivity();
+        if( (activityView == null) || (gameActivity == null) ){
+            // TODO: Hacer algo.
             return;
         }
-        appBar = activityView.findViewById(R.id.app_bar);
-        Toolbar toolbar = appBar.findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        AppCompatTextView upTitleTextView = toolbar.findViewById(R.id.toolbar_text);
 
-        mRecyclerView = activityView.findViewById(R.id.text_recycler_view);
+        mRecyclerView = activityView;
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-        DBCaller db = new FBCaller(mUserId);
-        mData = db.getAllGames();
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(gameActivity));
+
         mAdapter = new LinearTextAdapter(mData);
         mRecyclerView.setAdapter(mAdapter);
 
-        // TODO: Traer el texto de BD
-        // upTitleTextView.setText("AAAAAAAAAAAAAAAHHHHHHHHHHHHHH");
-        // upTitleTextView.setText();
+        AppCompatTextView upTitleTextView = gameActivity.findViewById(R.id.toolbar_text);
+        upTitleTextView.setText(mText);
     }
 }

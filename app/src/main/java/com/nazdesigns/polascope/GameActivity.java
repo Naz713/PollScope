@@ -2,6 +2,7 @@ package com.nazdesigns.polascope;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,9 @@ import java.util.List;
 public class GameActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private List<TimeLapse> mData;
+    private String mUserId;
+    private AppBarLayout appBar;
 
     /*
     Responsable de presentar la informacion traida de TimeLapse atravez de FireBase
@@ -41,13 +45,32 @@ public class GameActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
+        } else {
+            mUserId = user.getUid();
         }
         /**
          * Inicalizamos el layout
          */
         setContentView(R.layout.activity_game);
+        appBar = findViewById(R.id.app_bar);
+        Toolbar toolbar = appBar.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        /**
+        Llamamos a la base de datos
+         */
+        DBCaller db = new FBCaller(mUserId);
+        mData = db.getAllGames();
 
-        // TODO: Inicalizar Recyclerview Desde Fragmento
+        RecyclerFragment recyclerFragment = new RecyclerFragment();
+        Bundle args = new Bundle();
+        args.putString("text",getString(R.string.games_list_msg));
+        args.putParcelableArray("list", (Parcelable[]) mData.toArray());
+        recyclerFragment.setArguments(args);
+
+        // Add the fragment to the 'fragment_container' FrameLayout
+        //TODO: set transaction
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.text_recycler_view, recyclerFragment).commit();
     }
 
     @Override
