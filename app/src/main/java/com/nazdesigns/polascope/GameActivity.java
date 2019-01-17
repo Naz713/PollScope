@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +22,7 @@ import com.nazdesigns.polascope.USoT.FBCaller;
 
 import java.util.List;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements LinearTextAdapter.onListListener {
 
     private List<TimeLapse> mData;
     private FirebaseAuth mAuth;
@@ -70,8 +71,10 @@ public class GameActivity extends AppCompatActivity {
 
         // Add the fragment to the 'fragment_container' FrameLayout
         //TODO: set transaction
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.text_recycler_view, recyclerFragment).commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.text_recycler_view, recyclerFragment)
+                .commit();
     }
 
     @Override
@@ -88,5 +91,26 @@ public class GameActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        if (fragment instanceof RecyclerFragment) {
+            RecyclerFragment listFragment = (RecyclerFragment) fragment;
+            listFragment.setListener(this);
+        }
+    }
+
+    @Override
+    public void onClickListElement(int[] index) {
+        RecyclerFragment recyclerFragment = new RecyclerFragment();
+        Bundle args = new Bundle();
+        args.putIntArray("index", index);
+        recyclerFragment.setArguments(args);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.text_recycler_view, recyclerFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

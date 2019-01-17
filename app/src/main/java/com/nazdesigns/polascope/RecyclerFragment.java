@@ -65,4 +65,8 @@ public class RecyclerFragment extends Fragment {
         AppCompatTextView upTitleTextView = gameActivity.findViewById(R.id.toolbar_text);
         upTitleTextView.setText(mText);
     }
+
+    public void setListener(LinearTextAdapter.onListListener listener){
+        mAdapter.setListener(listener);
+    }
 }

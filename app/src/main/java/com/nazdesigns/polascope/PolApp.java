@@ -31,3 +31,7 @@ public class PolApp extends Application {
         return mGames;
     }
 }
+
+
+
+// TODO: Crear toda la logica para crear TimeLapse Nuevos
