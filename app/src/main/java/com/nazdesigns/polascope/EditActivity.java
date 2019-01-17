@@ -11,6 +11,9 @@ public class EditActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mIndex = getIntent().getIntArrayExtra("index");
+        setContentView(R.layout.activity_edit);
+        findViewById(R.id.resume);
+        findViewById(R.id.longText);
     }
 
  }

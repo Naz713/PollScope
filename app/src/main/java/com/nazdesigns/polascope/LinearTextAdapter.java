@@ -55,7 +55,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                 v.getContext().startActivity(intent);
             } else {
                 /*
-                TODO: llama a otro fragmento con la información del sub timelapse
+                TODO: llama a GameActivity para renderizar fragmento con la información del sub timelapse
                 */
             }
             return false;
