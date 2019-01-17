@@ -8,6 +8,7 @@
 
     <EditText
         android:id="@+id/resume"
+        android:hint="@string/resume_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -21,6 +22,7 @@
 
     <EditText
         android:id="@+id/long_text"
+        android:hint="@string/long_text_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

@@ -2,6 +2,9 @@
     <string name="app_name">PollScope</string>
     <string name="games_list_msg">Selecciona uno de tus juegos o crea uno nuevo</string>
     <string name="warning_msg">Mensaje no encontrado</string>
+    <string name="resume_hint">Breve resumen del Periodo o Evento</string>
+    <string name="scene_hint">Pregunta y respuesta de la Escena</string>
+    <string name="long_text_hint">Texto detallado del acontecimiento</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
