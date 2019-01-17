@@ -1,5 +1,6 @@
 package com.nazdesigns.polascope;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +18,11 @@ Responsable de llenar el recler view dado una lista de TimeLapse
 
 public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.TextViewHolder> {
     private List<TimeLapse> mDataset;
+
+    public interface EditListener{
+        void onResumeEdited(String resume);
+        void onLongTextEdited(String longResume);
+    }
 
     public static class TextViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public TextView mResume;
@@ -40,13 +46,15 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         @Override
         public boolean onLongClick(View v) {
             if (v.getId() == R.id.longText) {
+                Intent intent = new Intent();
+                v.getContext().startActivity(intent);
                 /*
                 TODO: Edit All Text
-                 */
+                */
             } else {
                 /*
                 TODO:Renderiza de nuevo con los datos del TimeLapse si es not null
-                 */
+                */
             }
             return false;
         }
