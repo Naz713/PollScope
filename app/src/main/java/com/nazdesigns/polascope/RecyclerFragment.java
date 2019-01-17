@@ -59,7 +59,7 @@ public class RecyclerFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(gameActivity));
 
-        mAdapter = new LinearTextAdapter(mData);
+        mAdapter = new LinearTextAdapter(mData, mIndex);
         mRecyclerView.setAdapter(mAdapter);
 
         AppCompatTextView upTitleTextView = gameActivity.findViewById(R.id.toolbar_text);

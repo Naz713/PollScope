@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -18,14 +20,21 @@ Responsable de llenar el recler view dado una lista de TimeLapse
 
 public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.TextViewHolder> {
     private List<TimeLapse> mDataset;
+    private int[] mIndex;
 
     public static class TextViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public TextView mResume;
         public TextView mLongText;
+        public int[] mIndex;
+
         public TextViewHolder(View v) {
             super(v);
             mResume = v.findViewById(R.id.resume);
             mLongText = v.findViewById(R.id.longText);
+        }
+
+        public void setIndex(int[] index){
+            mIndex = index;
         }
 
         @Override
@@ -41,22 +50,21 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         @Override
         public boolean onLongClick(View v) {
             if (v.getId() == R.id.longText) {
-                Intent intent = new Intent();
+                Intent intent = new Intent(v.getContext(), EditActivity.class);
+                intent.putExtra("index", mIndex);
                 v.getContext().startActivity(intent);
-                /*
-                TODO: Edit All Text
-                */
             } else {
                 /*
-                TODO:Renderiza de nuevo con los datos del TimeLapse si es not null
+                TODO: llama a otro fragmento con la información del sub timelapse
                 */
             }
             return false;
         }
     }
 
-    public LinearTextAdapter(List<TimeLapse> myDataset) {
+    public LinearTextAdapter(List<TimeLapse> myDataset, int[] index) {
         mDataset = myDataset;
+        mIndex = index;
     }
 
     @NonNull
@@ -70,6 +78,14 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
     @Override
     public void onBindViewHolder(@NonNull TextViewHolder holder, int position) {
+        int[] subIndex = mIndex.clone();
+        for (int i : mIndex){
+            if(i == -1){
+                mIndex[i] = position;
+                break;
+            }
+        }
+        holder.setIndex(subIndex);
         if(mDataset.get(position).getLight()){
             holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
         }

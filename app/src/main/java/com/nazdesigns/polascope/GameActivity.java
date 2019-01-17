@@ -64,7 +64,8 @@ public class GameActivity extends AppCompatActivity {
 
         RecyclerFragment recyclerFragment = new RecyclerFragment();
         Bundle args = new Bundle();
-        args.putIntArray("index", new int[0]);
+        int[] index = {-1,-1,-1,-1};
+        args.putIntArray("index", index);
         recyclerFragment.setArguments(args);
 
         // Add the fragment to the 'fragment_container' FrameLayout
