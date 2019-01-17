@@ -29,16 +29,14 @@ public class RecyclerFragment extends Fragment {
     private LinearTextAdapter mAdapter;
     private List<TimeLapse> mData;
     private String mText;
+    private int[] mIndex;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        mText = args.getString("text", getString(R.string.warning_msg));
-        Parcelable[] argsArray = args.getParcelableArray("list");
-        if (argsArray != null) {
-            mData = Arrays.asList( (TimeLapse[]) argsArray);
-        }
+        mIndex = args.getIntArray("index");
+        // TODO incializar texto y lista
     }
 
     @Override

@@ -19,11 +19,6 @@ Responsable de llenar el recler view dado una lista de TimeLapse
 public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.TextViewHolder> {
     private List<TimeLapse> mDataset;
 
-    public interface EditListener{
-        void onResumeEdited(String resume);
-        void onLongTextEdited(String longResume);
-    }
-
     public static class TextViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public TextView mResume;
         public TextView mLongText;

@@ -23,8 +23,8 @@ import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
     private List<TimeLapse> mData;
+    private FirebaseAuth mAuth;
     private String mUserId;
     private AppBarLayout appBar;
 
@@ -60,11 +60,11 @@ public class GameActivity extends AppCompatActivity {
          */
         DBCaller db = new FBCaller(mUserId);
         mData = db.getAllGames();
+        ((PolApp) getApplication()).setGames(mData);
 
         RecyclerFragment recyclerFragment = new RecyclerFragment();
         Bundle args = new Bundle();
-        args.putString("text",getString(R.string.games_list_msg));
-        args.putParcelableArray("list", (Parcelable[]) mData.toArray());
+        args.putIntArray("index", new int[0]);
         recyclerFragment.setArguments(args);
 
         // Add the fragment to the 'fragment_container' FrameLayout
