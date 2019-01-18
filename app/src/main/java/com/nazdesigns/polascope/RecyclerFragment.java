@@ -51,7 +51,6 @@ public class RecyclerFragment extends Fragment {
         RecyclerView activityView = (RecyclerView) getView();
         GameActivity gameActivity = (GameActivity) getActivity();
         if( (activityView == null) || (gameActivity == null) ){
-            // TODO: Hacer algo.
             return;
         }
 

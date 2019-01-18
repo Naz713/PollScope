@@ -107,6 +107,7 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
         Bundle args = new Bundle();
         args.putIntArray("index", index);
         recyclerFragment.setArguments(args);
+        //TODO: set transaction
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.text_recycler_view, recyclerFragment)

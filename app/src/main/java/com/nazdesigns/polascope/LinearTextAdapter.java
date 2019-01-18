@@ -90,8 +90,8 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
     @Override
     public void onBindViewHolder(@NonNull TextViewHolder holder, int position) {
         int[] subIndex = mIndex.clone();
-        for (int i : mIndex){
-            if(i == -1){
+        for (int i = 0; i<4 ;i++){
+            if(mIndex[i] == -1){
                 mIndex[i] = position;
                 break;
             }
