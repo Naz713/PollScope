@@ -20,11 +20,12 @@ import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.DBCaller;
 import com.nazdesigns.polascope.USoT.FBCaller;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class GameActivity extends AppCompatActivity implements LinearTextAdapter.onListListener {
 
-    private List<TimeLapse> mData;
+    private WeakReference<TimeLapse> mReference;
     private FirebaseAuth mAuth;
     private String mUserId;
     private AppBarLayout appBar;
@@ -60,8 +61,7 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
         Llamamos a la base de datos
          */
         DBCaller db = new FBCaller(mUserId);
-        mData = db.getAllGames();
-        ((PolApp) getApplication()).setGames(mData);
+        mReference = new WeakReference<TimeLapse>( ((PolApp) getApplication()).getBranch(null) );
 
         RecyclerFragment recyclerFragment = new RecyclerFragment();
         Bundle args = new Bundle();

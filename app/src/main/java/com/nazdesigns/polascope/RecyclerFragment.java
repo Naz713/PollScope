@@ -1,34 +1,24 @@
 package com.nazdesigns.polascope;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
-import com.nazdesigns.polascope.USoT.DBCaller;
-import com.nazdesigns.polascope.USoT.FBCaller;
 
-import java.util.Arrays;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class RecyclerFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
-    private List<TimeLapse> mData;
-    private String mText;
+    private WeakReference<TimeLapse> mReference;
     private int[] mIndex;
 
     @Override
@@ -36,6 +26,7 @@ public class RecyclerFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         mIndex = args.getIntArray("index");
+        mReference = new WeakReference<TimeLapse> ( ((PolApp) getActivity().getApplication()).getBranch(mIndex) );
         // TODO incializar texto y lista
     }
 
@@ -58,11 +49,11 @@ public class RecyclerFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(gameActivity));
 
-        mAdapter = new LinearTextAdapter(mData, mIndex);
+        mAdapter = new LinearTextAdapter(mReference.get().getSubEpochs(), mIndex);
         mRecyclerView.setAdapter(mAdapter);
 
         AppCompatTextView upTitleTextView = gameActivity.findViewById(R.id.toolbar_text);
-        upTitleTextView.setText(mText);
+        upTitleTextView.setText(mReference.get().getResume());
     }
 
     public void setListener(LinearTextAdapter.onListListener listener){
