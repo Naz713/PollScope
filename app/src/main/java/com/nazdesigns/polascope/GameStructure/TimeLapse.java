@@ -27,6 +27,12 @@ public class TimeLapse {
         this.subEpochs = null;
     }
 
+    public TimeLapse(String resume, List<TimeLapse> subEpochs){
+        this.resume = resume;
+        this.body = null;
+        this.subEpochs = subEpochs;
+    }
+
     public String getMyId() {
         return myId;
     }

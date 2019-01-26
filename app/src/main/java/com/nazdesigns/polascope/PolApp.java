@@ -31,9 +31,13 @@ public class PolApp extends Application {
 
     public TimeLapse getBranch(@Nullable int[] place){
         // Si es null regresamos todos los juegos
+        if( (place == null) || (place[0] == -1) ){
+            return new TimeLapse( getString(R.string.games_list_msg) ,mGames);
+        }
 
         // update from data base first
         // TODO: regresar el TimeLapse correspondiente
+
         return new TimeLapse(null,0, FALSE, null);
     }
 

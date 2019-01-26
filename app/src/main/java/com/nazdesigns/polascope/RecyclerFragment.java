@@ -27,7 +27,6 @@ public class RecyclerFragment extends Fragment {
         Bundle args = getArguments();
         mIndex = args.getIntArray("index");
         mReference = new WeakReference<TimeLapse> ( ((PolApp) getActivity().getApplication()).getBranch(mIndex) );
-        // TODO incializar texto y lista
     }
 
     @Override
