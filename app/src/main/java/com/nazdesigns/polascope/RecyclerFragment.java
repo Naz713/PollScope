@@ -7,15 +7,15 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
-
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 public class RecyclerFragment extends Fragment {
+    private String TAG = "RecyclerFragment";
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
     private WeakReference<TimeLapse> mReference;
@@ -26,7 +26,7 @@ public class RecyclerFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         mIndex = args.getIntArray("index");
-        mReference = new WeakReference<TimeLapse> ( ((PolApp) getActivity().getApplication()).getBranch(mIndex) );
+        mReference = new WeakReference<> ( ((PolApp) getActivity().getApplication()).getBranch(mIndex) );
     }
 
     @Override
@@ -41,6 +41,7 @@ public class RecyclerFragment extends Fragment {
         RecyclerView activityView = (RecyclerView) getView();
         GameActivity gameActivity = (GameActivity) getActivity();
         if( (activityView == null) || (gameActivity == null) ){
+            Log.e(TAG,"onActivityCreated: activity or view null");
             return;
         }
 
