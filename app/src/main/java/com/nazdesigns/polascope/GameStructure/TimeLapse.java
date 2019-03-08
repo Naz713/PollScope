@@ -8,35 +8,31 @@ public class TimeLapse {
     public static int EVENT_TYPE = 13;
     public static int SCENE_TYPE = 21;
 
-    protected String myId;
-    protected int timeType;
-    protected String resume;
-    protected boolean isLight;
-    protected String body;
-    protected List<Integer> subEpochsIds;
+    public int timeType;
+    public boolean isLight;
+    public String resume;
+    public String body;
+    public double orderIndex;
+    public List<Integer> subEpochsIds;
 
-    public TimeLapse(String id, int timeType, boolean isLight, String resume){
-        this.myId = id;
-        this.timeType = timeType;
-        this.resume = resume;
-        this.isLight = isLight;
-        this.body = null;
-        this.subEpochsIds = null;
+    public TimeLapse(){
+        timeType = 0;
+        isLight = true;
+        resume = null;
+        body = null;
+        orderIndex = 0.0;
+        subEpochsIds = null;
     }
 
-    public TimeLapse(String resume, List<Integer> subEpochsIds){
+    public TimeLapse(int timeType, boolean isLight, String resume, String body, double orderIndex, List<Integer> subEpochsIds){
+        this.timeType = timeType;
+        this.isLight = isLight;
         this.resume = resume;
-        this.body = null;
+        this.body = body;
+        this.orderIndex = orderIndex;
         this.subEpochsIds = subEpochsIds;
     }
 
-    public String getMyId() {
-        return myId;
-    }
-
-    public void setMyId(String myId) {
-        this.myId = myId;
-    }
 
     public int getTimeType() {
         return timeType;
@@ -44,6 +40,14 @@ public class TimeLapse {
 
     public void setTimeType(int timeType) {
         this.timeType = timeType;
+    }
+
+    public boolean isLight() {
+        return isLight;
+    }
+
+    public void setLight(boolean light) {
+        isLight = light;
     }
 
     public String getResume() {
@@ -54,20 +58,20 @@ public class TimeLapse {
         this.resume = resume;
     }
 
-    public boolean getLight() {
-        return isLight;
-    }
-
-    public void setLight(boolean light) {
-        isLight = light;
-    }
-
     public String getBody() {
         return body;
     }
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public double getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(double orderIndex) {
+        this.orderIndex = orderIndex;
     }
 
     public List<Integer> getSubEpochsIds() {
