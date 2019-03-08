@@ -18,16 +18,14 @@ public class RecyclerFragment extends Fragment {
     private String TAG = "RecyclerFragment";
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
-    private WeakReference<TimeLapse> mReference;
-    private int[] mIndex;
+    private int mFBId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        // TODO: obtener de base de datos mediante id
-        mIndex = args.getIntArray("index");
-        mReference = new WeakReference<> ( ((PolApp) getActivity().getApplication()).getBranch(mIndex) );
+
+        mFBId = args.getInt("fbId");
     }
 
     @Override
@@ -50,12 +48,12 @@ public class RecyclerFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(gameActivity));
 
-        // TODO: obtener de base de datos mediante id y sus hijos
-        mAdapter = new LinearTextAdapter(mReference.get().getSubEpochs(), mIndex);
+        mAdapter = new LinearTextAdapter(mFBId);
         mRecyclerView.setAdapter(mAdapter);
 
         AppCompatTextView upTitleTextView = gameActivity.findViewById(R.id.toolbar_text);
-        upTitleTextView.setText(mReference.get().getResume());
+        // TODO: obtener el texto desde FireBase
+        //upTitleTextView.setText();
     }
 
     public void setListener(LinearTextAdapter.onListListener listener){

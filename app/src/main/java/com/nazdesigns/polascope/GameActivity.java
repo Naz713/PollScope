@@ -25,7 +25,6 @@ import java.util.List;
 
 public class GameActivity extends AppCompatActivity implements LinearTextAdapter.onListListener {
 
-    private WeakReference<TimeLapse> mReference;
     private FirebaseAuth mAuth;
     private String mUserId;
     private AppBarLayout appBar;
@@ -57,17 +56,8 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
         appBar = findViewById(R.id.app_bar);
         Toolbar toolbar = appBar.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        /**
-        Llamamos a la base de datos
-         */
-        DBCaller db = new FBCaller(mUserId);
-        mReference = new WeakReference<TimeLapse>( ((PolApp) getApplication()).getBranch(null) );
 
         RecyclerFragment recyclerFragment = new RecyclerFragment();
-        Bundle args = new Bundle();
-        int[] index = {-1,-1,-1,-1};
-        args.putIntArray("index", index);
-        recyclerFragment.setArguments(args);
 
         // Add the fragment to the 'fragment_container' FrameLayout
         //TODO: set transaction
@@ -102,10 +92,10 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
     }
 
     @Override
-    public void onClickListElement(int[] index) {
+    public void onClickListElement(int childfbId) {
         RecyclerFragment recyclerFragment = new RecyclerFragment();
         Bundle args = new Bundle();
-        args.putIntArray("index", index);
+        args.putInt("fbId", childfbId);
         recyclerFragment.setArguments(args);
         //TODO: set transaction
         getSupportFragmentManager()

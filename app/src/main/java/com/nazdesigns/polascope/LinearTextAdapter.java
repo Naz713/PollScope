@@ -20,18 +20,18 @@ Responsable de llenar el recler view dado una lista de TimeLapse
  */
 
 public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.TextViewHolder> {
-    private List<TimeLapse> mDataset;
-    private int[] mIndex;
+    private List<Integer> mDataset;
+    private int mFBId;
     private onListListener listener;
 
     public interface onListListener{
-        void onClickListElement(int[] index);
+        void onClickListElement(int id);
     }
 
     public static class TextViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public TextView mResume;
         public TextView mLongText;
-        public int[] mIndex;
+        public int mId;
         public WeakReference<onListListener> listListener;
 
         public TextViewHolder(View v, onListListener listener) {
@@ -41,8 +41,8 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             mLongText = v.findViewById(R.id.longText);
         }
 
-        public void setIndex(int[] index){
-            mIndex = index;
+        public void setId(int id){
+            mId = id;
         }
 
         @Override
@@ -59,18 +59,20 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public boolean onLongClick(View v) {
             if (v.getId() == R.id.longText) {
                 Intent intent = new Intent(v.getContext(), EditActivity.class);
-                intent.putExtra("index", mIndex);
+                intent.putExtra("fbId", mId);
                 v.getContext().startActivity(intent);
             } else {
-                listListener.get().onClickListElement(mIndex);
+                listListener.get().onClickListElement(mId);
             }
             return false;
         }
     }
 
-    public LinearTextAdapter(List<TimeLapse> myDataset, int[] index) {
-        mDataset = myDataset;
-        mIndex = index;
+    public LinearTextAdapter(int id) {
+        mFBId = id;
+        //TODO: Inicializar el dataset desde fire base con los ids de los hijos ordenados
+        // checar si es null, en ese caso traer los juegos del jugador
+        mDataset = null;
         this.listener = null;
     }
 
@@ -89,22 +91,18 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
     @Override
     public void onBindViewHolder(@NonNull TextViewHolder holder, int position) {
-        int[] subIndex = mIndex.clone();
-        for (int i = 0; i<4 ;i++){
-            if(mIndex[i] == -1){
-                mIndex[i] = position;
-                break;
-            }
-        }
-        holder.setIndex(subIndex);
-        if(mDataset.get(position).getLight()){
+        int childFBId = mDataset.get(position);
+        holder.setId(childFBId);
+        //TODO: obtener el hijo correspondiente a la posicion desde fb
+        TimeLapse childTimeLapse = null;
+        if(childTimeLapse.isLight()){
             holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
         }
         else {
             holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_dark,0,0, 0);
         }
-        holder.mResume.setText(mDataset.get(position).getResume());
-        holder.mLongText.setText(mDataset.get(position).getBody());
+        holder.mResume.setText(childTimeLapse.getResume());
+        holder.mLongText.setText(childTimeLapse.getBody());
     }
 
     @Override

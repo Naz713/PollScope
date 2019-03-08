@@ -10,7 +10,7 @@ import android.widget.EditText;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 
 public class EditActivity extends Activity {
-    private int[] mIndex;
+    private int mfbId;
     private TimeLapse mTL;
     private EditText mResume;
     private EditText mLongText;
@@ -20,7 +20,7 @@ public class EditActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mIndex = getIntent().getIntArrayExtra("index");
+        mfbId = getIntent().getIntExtra("fbId", -1);
 
         setContentView(R.layout.activity_edit);
 
@@ -42,11 +42,12 @@ public class EditActivity extends Activity {
             public void onClick(View v) {
                 mTL.setResume(mResume.getText().toString());
                 mTL.setBody(mLongText.getText().toString());
-                ( (PolApp) getApplication()).setBranch(mIndex, mTL);
+                //TODO: guardar en firebase con el Id
             }
         });
 
-        mTL = ((PolApp) getApplication()).getBranch(mIndex);
+        // TODO: traer el TimeLapse desde firebase con el id
+        mTL = null;
 
         mResume.setText(mTL.getResume());
         mLongText.setText(mTL.getBody());
