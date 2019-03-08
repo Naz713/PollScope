@@ -1,8 +1,5 @@
 package com.nazdesigns.polascope.GameStructure;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.List;
 
 public class TimeLapse {
@@ -16,7 +13,7 @@ public class TimeLapse {
     protected String resume;
     protected boolean isLight;
     protected String body;
-    protected List<TimeLapse> subEpochs;
+    protected List<Integer> subEpochsIds;
 
     public TimeLapse(String id, int timeType, boolean isLight, String resume){
         this.myId = id;
@@ -24,13 +21,13 @@ public class TimeLapse {
         this.resume = resume;
         this.isLight = isLight;
         this.body = null;
-        this.subEpochs = null;
+        this.subEpochsIds = null;
     }
 
-    public TimeLapse(String resume, List<TimeLapse> subEpochs){
+    public TimeLapse(String resume, List<Integer> subEpochsIds){
         this.resume = resume;
         this.body = null;
-        this.subEpochs = subEpochs;
+        this.subEpochsIds = subEpochsIds;
     }
 
     public String getMyId() {
@@ -73,11 +70,11 @@ public class TimeLapse {
         this.body = body;
     }
 
-    public List<TimeLapse> getSubEpochs() {
-        return subEpochs;
+    public List<Integer> getSubEpochsIds() {
+        return subEpochsIds;
     }
 
-    public void setSubEpochs(List<TimeLapse> subEpochs) {
-        this.subEpochs = subEpochs;
+    public void setSubEpochsIds(List<Integer> subEpochsIds) {
+        this.subEpochsIds = subEpochsIds;
     }
 }
