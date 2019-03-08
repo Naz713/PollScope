@@ -25,6 +25,7 @@ public class RecyclerFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
+        // TODO: obtener de base de datos mediante id
         mIndex = args.getIntArray("index");
         mReference = new WeakReference<> ( ((PolApp) getActivity().getApplication()).getBranch(mIndex) );
     }
@@ -49,6 +50,7 @@ public class RecyclerFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(gameActivity));
 
+        // TODO: obtener de base de datos mediante id y sus hijos
         mAdapter = new LinearTextAdapter(mReference.get().getSubEpochs(), mIndex);
         mRecyclerView.setAdapter(mAdapter);
 
