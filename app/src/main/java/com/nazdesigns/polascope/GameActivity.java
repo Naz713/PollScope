@@ -81,10 +81,10 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
     }
 
     @Override
-    public void onClickListElement(int childfbId) {
+    public void onClickListElement(String childfbId) {
         RecyclerFragment recyclerFragment = new RecyclerFragment();
         Bundle args = new Bundle();
-        args.putInt("fbId", childfbId);
+        args.putString("fbId", childfbId);
         recyclerFragment.setArguments(args);
         //TODO: set transaction
         getSupportFragmentManager()

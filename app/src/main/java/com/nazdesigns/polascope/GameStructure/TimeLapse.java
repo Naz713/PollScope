@@ -13,7 +13,7 @@ public class TimeLapse {
     public String resume;
     public String body;
     public double orderIndex;
-    public List<Integer> subEpochsIds;
+    public List<String> subEpochsIds;
 
     public TimeLapse(){
         timeType = 0;
@@ -24,7 +24,7 @@ public class TimeLapse {
         subEpochsIds = null;
     }
 
-    public TimeLapse(int timeType, boolean isLight, String resume, String body, double orderIndex, List<Integer> subEpochsIds){
+    public TimeLapse(int timeType, boolean isLight, String resume, String body, double orderIndex, List<String> subEpochsIds){
         this.timeType = timeType;
         this.isLight = isLight;
         this.resume = resume;
@@ -74,11 +74,11 @@ public class TimeLapse {
         this.orderIndex = orderIndex;
     }
 
-    public List<Integer> getSubEpochsIds() {
+    public List<String> getSubEpochsIds() {
         return subEpochsIds;
     }
 
-    public void setSubEpochsIds(List<Integer> subEpochsIds) {
+    public void setSubEpochsIds(List<String> subEpochsIds) {
         this.subEpochsIds = subEpochsIds;
     }
 }

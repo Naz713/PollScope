@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
+import com.nazdesigns.polascope.USoT.FBCaller;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -20,18 +23,18 @@ Responsable de llenar el recler view dado una lista de TimeLapse
  */
 
 public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.TextViewHolder> {
-    private List<Integer> mDataset;
-    private int mFBId;
+    private List<String> mDataset;
+    private String mFBId;
     private onListListener listener;
 
     public interface onListListener{
-        void onClickListElement(int id);
+        void onClickListElement(String id);
     }
 
     public static class TextViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public TextView mResume;
         public TextView mLongText;
-        public int mId;
+        public String mId;
         public WeakReference<onListListener> listListener;
 
         public TextViewHolder(View v, onListListener listener) {
@@ -41,7 +44,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             mLongText = v.findViewById(R.id.longText);
         }
 
-        public void setId(int id){
+        public void setId(String id){
             mId = id;
         }
 
@@ -68,11 +71,13 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         }
     }
 
-    public LinearTextAdapter(int id) {
+    public LinearTextAdapter(String id) {
         mFBId = id;
-        //TODO: Inicializar el dataset desde fire base con los ids de los hijos ordenados
-        // checar si es null, en ese caso traer los juegos del jugador
-        mDataset = null;
+        if (mFBId == null){
+            mDataset = FBCaller.getPlayerGames();
+        } else {
+            mDataset = FBCaller.getSubEpochs(mFBId);
+        }
         this.listener = null;
     }
 
@@ -91,10 +96,9 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
     @Override
     public void onBindViewHolder(@NonNull TextViewHolder holder, int position) {
-        int childFBId = mDataset.get(position);
+        String childFBId = mDataset.get(position);
         holder.setId(childFBId);
-        //TODO: obtener el hijo correspondiente a la posicion desde fb
-        TimeLapse childTimeLapse = null;
+        TimeLapse childTimeLapse = FBCaller.getGame(mFBId);
         if(childTimeLapse.isLight()){
             holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
         }

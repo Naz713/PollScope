@@ -1,6 +1,7 @@
 package com.nazdesigns.polascope;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,20 +13,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
+import com.nazdesigns.polascope.USoT.FBCaller;
+
 import java.lang.ref.WeakReference;
 
 public class RecyclerFragment extends Fragment {
     private String TAG = "RecyclerFragment";
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
-    private int mFBId;
+    private String mFBId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
 
-        mFBId = args.getInt("fbId");
+        mFBId = args.getString("fbId",null);
     }
 
     @Override
@@ -52,8 +55,13 @@ public class RecyclerFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         AppCompatTextView upTitleTextView = gameActivity.findViewById(R.id.toolbar_text);
-        // TODO: obtener el texto desde FireBase
-        //upTitleTextView.setText();
+        String text;
+        if (mFBId == null) {
+            text = getString(R.string.app_name);
+        } else {
+            text = FBCaller.getResume(mFBId);
+        }
+        upTitleTextView.setText(text);
     }
 
     public void setListener(LinearTextAdapter.onListListener listener){

@@ -5,20 +5,28 @@ import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import java.lang.ref.SoftReference;
 import java.util.List;
 
-
+// TODO: Llenar
 public abstract class FBCaller {
 
     /*
     Regresa una lista que contiene todos los juegos del jugador
+    Desde aquí se consulta su ID
      */
-    public List<TimeLapse> getAllGames(){
+    public static List<String> getPlayerGames(){
+        return null;
+    }
+
+    /*
+    Regresa una lista de los ids de los TimeLapse subordinados al TimeLapse en cuestion
+     */
+    public static List<String> getSubEpochs(String gameId){
         return null;
     }
 
     /*
     Regresa el jueoa apropiado al id pasado
      */
-    public TimeLapse getGame(String gameId){
+    public static TimeLapse getGame(String gameId){
         return null;
     }
 
@@ -30,4 +38,12 @@ public abstract class FBCaller {
     public static void setPlayer(String PlayerId){
 
     }
+
+    /*
+    *
+    */
+    public static String getResume(String gameId){
+        return "";
+    }
+
 }
