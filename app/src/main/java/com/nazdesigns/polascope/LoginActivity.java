@@ -2,25 +2,18 @@ package com.nazdesigns.polascope;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.os.ConditionVariable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,8 +21,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.nazdesigns.polascope.GameStructure.TimeLapse;
-import com.nazdesigns.polascope.USoT.DBCaller;
 import com.nazdesigns.polascope.USoT.FBCaller;
 
 /**
@@ -66,8 +57,7 @@ public class LoginActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     if (mAuth.getCurrentUser() != null) {
-                        DBCaller db = new FBCaller(mAuth.getCurrentUser().getUid());
-                        db.setPlayer();
+                        FBCaller.setPlayer(mAuth.getCurrentUser().getUid());
                         Intent intent = new Intent(context, GameActivity.class);
                         startActivity(intent);
                         finish();

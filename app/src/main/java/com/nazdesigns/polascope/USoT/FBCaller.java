@@ -1,17 +1,12 @@
 package com.nazdesigns.polascope.USoT;
 
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
+
+import java.lang.ref.SoftReference;
 import java.util.List;
 
 
-/*
-TODO: Llenar
- */
-public class FBCaller implements DBCaller {
-
-    public FBCaller(String Id){
-
-    }
+public abstract class FBCaller {
 
     /*
     Regresa una lista que contiene todos los juegos del jugador
@@ -32,7 +27,7 @@ public class FBCaller implements DBCaller {
     Inicializa al nuevo jugador
     Crear estructuras necesarias dentro de la Base de Datos
      */
-    public void setPlayer(){
+    public static void setPlayer(String PlayerId){
 
     }
 }
