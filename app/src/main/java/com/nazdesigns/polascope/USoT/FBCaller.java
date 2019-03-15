@@ -3,6 +3,7 @@ package com.nazdesigns.polascope.USoT;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 
 import java.lang.ref.SoftReference;
+import java.sql.Time;
 import java.util.List;
 
 // TODO: Llenar
@@ -35,8 +36,12 @@ public abstract class FBCaller {
     Inicializa al nuevo jugador
     Crear estructuras necesarias dentro de la Base de Datos
      */
-    public static void setPlayer(String PlayerId){
+    public static boolean setPlayer(String PlayerId){
+        return true;
+    }
 
+    public static boolean saveTimeLapse(String fbId, TimeLapse timeLapse){
+        return true;
     }
 
     /*

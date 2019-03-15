@@ -8,9 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
+import com.nazdesigns.polascope.USoT.FBCaller;
 
 public class EditActivity extends Activity {
-    private int mfbId;
+    private String mfbId;
     private TimeLapse mTL;
     private EditText mResume;
     private EditText mLongText;
@@ -20,7 +21,7 @@ public class EditActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mfbId = getIntent().getIntExtra("fbId", -1);
+        mfbId = getIntent().getStringExtra("fbId");
 
         setContentView(R.layout.activity_edit);
 
@@ -42,12 +43,10 @@ public class EditActivity extends Activity {
             public void onClick(View v) {
                 mTL.setResume(mResume.getText().toString());
                 mTL.setBody(mLongText.getText().toString());
-                //TODO: guardar en firebase con el Id
+                FBCaller.saveTimeLapse(mfbId, mTL);
             }
         });
-
-        // TODO: traer el TimeLapse desde firebase con el id
-        mTL = null;
+        mTL = FBCaller.getGame(mfbId);
 
         mResume.setText(mTL.getResume());
         mLongText.setText(mTL.getBody());

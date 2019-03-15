@@ -31,7 +31,8 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         void onClickListElement(String id);
     }
 
-    public static class TextViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public static class TextViewHolder extends RecyclerView.ViewHolder
+                                        implements View.OnClickListener, View.OnLongClickListener {
         public TextView mResume;
         public TextView mLongText;
         public String mId;
@@ -42,6 +43,8 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             listListener = new WeakReference<>(listener);
             mResume = v.findViewById(R.id.resume);
             mLongText = v.findViewById(R.id.longText);
+            v.setOnClickListener(this);
+            v.setOnLongClickListener(this);
         }
 
         public void setId(String id){
@@ -50,6 +53,9 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
         @Override
         public void onClick(View v) {
+            /*
+            * (un)Display long text View
+            */
             View longText = v.findViewById(R.id.longText);
             if (longText.getVisibility() == View.GONE) {
                 longText.setVisibility(View.VISIBLE);
@@ -61,10 +67,16 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         @Override
         public boolean onLongClick(View v) {
             if (v.getId() == R.id.longText) {
+                /*
+                * Start Edit Activity
+                */
                 Intent intent = new Intent(v.getContext(), EditActivity.class);
                 intent.putExtra("fbId", mId);
                 v.getContext().startActivity(intent);
             } else {
+                /*
+                 * Change Fragment to show nested TimeLapses
+                 */
                 listListener.get().onClickListElement(mId);
             }
             return false;
