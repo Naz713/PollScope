@@ -31,6 +31,8 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         void onClickListElement(String id);
     }
 
+    // TODO: agregar receptor a ItemTouchHelper.SimpleCallback para añadir botones
+
     public static class TextViewHolder extends RecyclerView.ViewHolder
                                         implements View.OnClickListener, View.OnLongClickListener {
         public TextView mResume;
