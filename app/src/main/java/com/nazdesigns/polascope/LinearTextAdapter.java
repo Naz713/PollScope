@@ -1,11 +1,14 @@
 package com.nazdesigns.polascope;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.FirebaseApp;
@@ -33,8 +36,68 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
     // TODO: agregar receptor a ItemTouchHelper.SimpleCallback para añadir botones
 
+    static class SwipeHandler extends ItemTouchHelper.Callback {
+
+        private LinearTextAdapter adapter;
+        private TextViewHolder swipedViewHolder;
+
+        SwipeHandler(LinearTextAdapter adapter) {
+            this.adapter = adapter;
+        }
+
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder) {
+            TextViewHolder myViewHolder = (TextViewHolder) viewHolder;
+            if (swipedViewHolder != myViewHolder) {
+                return makeMovementFlags(0,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+            } else {
+                return 0;
+            }
+        }
+
+        @Override public boolean onMove(@NonNull RecyclerView recyclerView,
+                                        @NonNull RecyclerView.ViewHolder viewHolder,
+                                        @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            swipedViewHolder = (TextViewHolder) viewHolder;
+            adapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                @NonNull RecyclerView.ViewHolder viewHolder,
+                                float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            if (dX < 0) {
+                TextViewHolder myViewHolder = (TextViewHolder) viewHolder;
+                getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.foregroundView, dX/4, dY, actionState, isCurrentlyActive);
+            }
+        }
+
+        @Override public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                              RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState,
+                                              boolean isCurrentlyActive) {
+            if (dX < 0) {
+                TextViewHolder myViewHolder = (TextViewHolder) viewHolder;
+                getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.foregroundView, dX/4, dY, actionState, isCurrentlyActive);
+            }
+        }
+
+        @Override public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+            if (viewHolder != null) {
+                TextViewHolder myViewHolder = (TextViewHolder) viewHolder;
+                getDefaultUIUtil().onSelected(myViewHolder.foregroundView);
+            }
+        }
+    }
+
     public static class TextViewHolder extends RecyclerView.ViewHolder
                                         implements View.OnClickListener, View.OnLongClickListener {
+        public LinearLayout foregroundView;
         public TextView mResume;
         public TextView mLongText;
         public String mId;
@@ -43,8 +106,9 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public TextViewHolder(View v, onListListener listener) {
             super(v);
             listListener = new WeakReference<>(listener);
-            mResume = v.findViewById(R.id.resume);
-            mLongText = v.findViewById(R.id.longText);
+            foregroundView = v.findViewById(R.id.foreground);
+            mResume = foregroundView.findViewById(R.id.resume);
+            mLongText = foregroundView.findViewById(R.id.longText);
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
         }
