@@ -11,23 +11,26 @@
         android:orientation="horizontal"
         android:layoutDirection="rtl"
         android:layout_width="match_parent"
-        android:layout_height="34dp"
-        android:drawablePadding="2dp"
+        android:layout_height="40dp"
+        android:padding="5dp"
         android:background="@color/backgroundRed">
 
-        <Button
+        <ImageButton
             style="@style/Base.TextAppearance.AppCompat.Button"
             android:background="@color/backgroundRed"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
-        <Button
-            style="@style/Base.TextAppearance.AppCompat.Button"
-            android:background="@color/backgroundRed"
+            android:cropToPadding="true"
             android:layout_width="32dp"
             android:layout_height="32dp" />
-        <Button
+        <ImageButton
             style="@style/Base.TextAppearance.AppCompat.Button"
             android:background="@color/backgroundRed"
+            android:cropToPadding="true"
+            android:layout_width="32dp"
+            android:layout_height="32dp" />
+        <ImageButton
+            style="@style/Base.TextAppearance.AppCompat.Button"
+            android:background="@color/backgroundRed"
+            android:cropToPadding="true"
             android:layout_width="32dp"
             android:layout_height="32dp" />
 
