@@ -176,7 +176,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
     public void onBindViewHolder(@NonNull TextViewHolder holder, int position) {
         String childFBId = mDataset.get(position);
         holder.setId(childFBId);
-        TimeLapse childTimeLapse = FBCaller.getGame(mFBId);
+        TimeLapse childTimeLapse = FBCaller.getGame(holder.itemView.getContext(), mFBId);
         if(childTimeLapse.isLight()){
             holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
         }

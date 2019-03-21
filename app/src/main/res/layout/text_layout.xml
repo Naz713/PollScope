@@ -18,21 +18,21 @@
         <ImageButton
             android:id="@+id/button_plus_down"
             style="@style/Base.TextAppearance.AppCompat.Button"
-            android:background=""
+            android:background="@color/backgroundRed"
             android:src="@mipmap/down_arrow"
             android:layout_width="32dp"
             android:layout_height="32dp" />
         <ImageButton
             android:id="@+id/button_edit"
             style="@style/Base.TextAppearance.AppCompat.Button"
-            android:background=""
+            android:background="@color/backgroundRed"
             android:src="@mipmap/edit"
             android:layout_width="32dp"
             android:layout_height="32dp" />
         <ImageButton
             android:id="@+id/button_plus_up"
             style="@style/Base.TextAppearance.AppCompat.Button"
-            android:background=""
+            android:background="@color/backgroundRed"
             android:src="@mipmap/up_arrow"
             android:layout_width="32dp"
             android:layout_height="32dp" />

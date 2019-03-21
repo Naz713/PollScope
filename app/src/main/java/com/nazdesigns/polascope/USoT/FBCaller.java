@@ -1,12 +1,15 @@
 package com.nazdesigns.polascope.USoT;
 
+import android.content.Context;
+
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
+import com.nazdesigns.polascope.R;
 
-import java.lang.ref.SoftReference;
-import java.sql.Time;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
-// TODO: Llenar
+// TODO: Llenar con llamadas verdaderas a Firebase
 public abstract class FBCaller {
 
     /*
@@ -14,20 +17,26 @@ public abstract class FBCaller {
     Desde aquí se consulta su ID
      */
     public static List<String> getPlayerGames(){
-        return null;
+        String [] l = {"AA","BB","CC","DD"};
+        return Arrays.asList(l);
     }
 
     /*
     Regresa una lista de los ids de los TimeLapse subordinados al TimeLapse en cuestion
      */
     public static List<String> getSubEpochs(String gameId){
-        return null;
+        String [] l = {"AA","BB","CC","DD"};
+        return Arrays.asList(l);
     }
 
     /*
     Regresa el jueoa apropiado al id pasado
      */
-    public static TimeLapse getGame(String gameId){
+    public static TimeLapse getGame(Context context, String gameId){
+        boolean is = new Random().nextBoolean();
+        TimeLapse timeLapse = new TimeLapse(13,is,
+                "Este es un resumen generico. De una aventura Épica y maravillosa. Que algún día escribiremos",
+                context.getResources().getString(R.string.large_text),0.0,getPlayerGames());
         return null;
     }
 
@@ -48,7 +57,7 @@ public abstract class FBCaller {
     *
     */
     public static String getResume(String gameId){
-        return "";
+        return "Este es un resumen generico. De una aventura Épica y maravillosa. Que algún día escribiremos";
     }
 
 }

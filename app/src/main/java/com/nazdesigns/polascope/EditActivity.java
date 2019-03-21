@@ -46,7 +46,7 @@ public class EditActivity extends Activity {
                 FBCaller.saveTimeLapse(mfbId, mTL);
             }
         });
-        mTL = FBCaller.getGame(mfbId);
+        mTL = FBCaller.getGame(this, mfbId);
 
         mResume.setText(mTL.getResume());
         mLongText.setText(mTL.getBody());
