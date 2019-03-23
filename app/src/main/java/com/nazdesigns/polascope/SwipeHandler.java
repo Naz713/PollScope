@@ -36,8 +36,6 @@ class SwipeHandler extends ItemTouchHelper.Callback {
         swipedViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
         if (direction == ItemTouchHelper.RIGHT) {
             swipedViewHolder.showNestedTimeLapses();
-        } else {
-            adapter.notifyDataSetChanged();
         }
     }
 
