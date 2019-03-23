@@ -17,7 +17,7 @@ public abstract class FBCaller {
     Desde aquí se consulta su ID
      */
     public static List<String> getPlayerGames(){
-        String [] l = {"AA","BB","CC","DD"};
+        String [] l = {"AA","BB","CC","DD","EE","FF","GG","HH","II","JJ","KK","LL","MM","NN","OO","PP","QQ","RR","SS","TT","UU","VV","WW","XX","YY","ZZ"};
         return Arrays.asList(l);
     }
 
@@ -25,19 +25,18 @@ public abstract class FBCaller {
     Regresa una lista de los ids de los TimeLapse subordinados al TimeLapse en cuestion
      */
     public static List<String> getSubEpochs(String gameId){
-        String [] l = {"AA","BB","CC","DD"};
-        return Arrays.asList(l);
+        return getPlayerGames();
     }
 
     /*
     Regresa el jueoa apropiado al id pasado
      */
     public static TimeLapse getGame(Context context, String gameId){
-        boolean is = new Random().nextBoolean();
+        boolean is = getLight(gameId);
         TimeLapse timeLapse = new TimeLapse(13,is,
-                "Este es un resumen generico. De una aventura Épica y maravillosa. Que algún día escribiremos",
+                getResume(gameId),
                 context.getResources().getString(R.string.large_text),0.0,getPlayerGames());
-        return null;
+        return timeLapse;
     }
 
     /*
@@ -57,7 +56,11 @@ public abstract class FBCaller {
     *
     */
     public static String getResume(String gameId){
-        return "Este es un resumen generico. De una aventura Épica y maravillosa. Que algún día escribiremos";
+        return "Una aventura Épica y maravillosa. Que algún día escribiremos";
+    }
+
+    public static boolean getLight(String gameId){
+        return new Random().nextBoolean();
     }
 
 }

@@ -25,8 +25,8 @@ public class EditActivity extends Activity {
 
         setContentView(R.layout.activity_edit);
 
-        mResume = findViewById(R.id.resume);
-        mLongText = findViewById(R.id.long_text);
+        mResume = findViewById(R.id.edit_resume);
+        mLongText = findViewById(R.id.edit_long_text);
 
         mDescarta = findViewById(R.id.buton_descarta);
         mDescarta.setOnClickListener(new View.OnClickListener() {

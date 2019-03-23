@@ -20,22 +20,22 @@
             style="@style/Base.TextAppearance.AppCompat.Button"
             android:background="@color/backgroundRed"
             android:src="@mipmap/down_arrow"
-            android:layout_width="32dp"
-            android:layout_height="32dp" />
+            android:layout_width="@dimen/icones_size"
+            android:layout_height="@dimen/icones_size" />
         <ImageButton
             android:id="@+id/button_edit"
             style="@style/Base.TextAppearance.AppCompat.Button"
             android:background="@color/backgroundRed"
             android:src="@mipmap/edit"
-            android:layout_width="32dp"
-            android:layout_height="32dp" />
+            android:layout_width="@dimen/icones_size"
+            android:layout_height="@dimen/icones_size" />
         <ImageButton
             android:id="@+id/button_plus_up"
             style="@style/Base.TextAppearance.AppCompat.Button"
             android:background="@color/backgroundRed"
             android:src="@mipmap/up_arrow"
-            android:layout_width="32dp"
-            android:layout_height="32dp" />
+            android:layout_width="@dimen/icones_size"
+            android:layout_height="@dimen/icones_size" />
 
     </LinearLayout>
     <LinearLayout
@@ -50,16 +50,14 @@
             android:id="@+id/resume"
             android:layout_width="match_parent"
             android:layout_height="@dimen/holder_height"
-            android:paddingStart="@dimen/text_padding"
-            android:paddingEnd="@dimen/text_padding"
+            android:drawablePadding="@dimen/text_padding"
             android:drawableEnd="@mipmap/empty"
             />
         <TextView
-            android:id="@+id/longText"
+            android:id="@+id/long_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/text_padding"
-            android:paddingEnd="@dimen/text_padding"
+            android:drawablePadding="@dimen/text_padding"
             android:visibility="gone"
             />
     </LinearLayout>

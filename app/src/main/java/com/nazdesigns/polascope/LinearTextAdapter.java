@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,7 +109,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             listListener = new WeakReference<>(listener);
             foregroundView = v.findViewById(R.id.foreground);
             mResume = foregroundView.findViewById(R.id.resume);
-            mLongText = foregroundView.findViewById(R.id.longText);
+            mLongText = foregroundView.findViewById(R.id.long_text);
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
         }
@@ -122,7 +123,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             /*
             * (un)Display long text View
             */
-            View longText = v.findViewById(R.id.longText);
+            View longText = v.findViewById(R.id.long_text);
             if (longText.getVisibility() == View.GONE) {
                 longText.setVisibility(View.VISIBLE);
             } else {
@@ -132,7 +133,8 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
         @Override
         public boolean onLongClick(View v) {
-            if (v.getId() == R.id.longText) {
+            int long_visible = v.findViewById(R.id.long_text).getVisibility();
+            if (long_visible == View.VISIBLE) {
                 /*
                 * Start Edit Activity
                 */
@@ -163,6 +165,10 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         this.listener = listener;
     }
 
+    public void detacchListener(){
+        this.listener = null;
+    }
+
     @NonNull
     @Override
     public LinearTextAdapter.TextViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
@@ -176,12 +182,15 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
     public void onBindViewHolder(@NonNull TextViewHolder holder, int position) {
         String childFBId = mDataset.get(position);
         holder.setId(childFBId);
-        TimeLapse childTimeLapse = FBCaller.getGame(holder.itemView.getContext(), mFBId);
+        TimeLapse childTimeLapse = FBCaller.getGame(holder.itemView.getContext(), childFBId);
         if(childTimeLapse.isLight()){
-            holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
+            //holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
+            holder.foregroundView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundLight));
         }
         else {
-            holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_dark,0,0, 0);
+            //holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_dark,0,0, 0);
+            holder.foregroundView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundDark));
+
         }
         holder.mResume.setText(childTimeLapse.getResume());
         holder.mLongText.setText(childTimeLapse.getBody());

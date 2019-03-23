@@ -52,9 +52,9 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
         //TODO: set transaction
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.text_recycler_view, recyclerFragment)
+                .add(R.id.fragment_container, recyclerFragment)
                 .commit();
-    }
+  }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -72,13 +72,15 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        if (fragment instanceof RecyclerFragment) {
-            RecyclerFragment listFragment = (RecyclerFragment) fragment;
-            listFragment.setListener(this);
-        }
-    }
+//    @Override
+//    public void onAttachFragment(Fragment fragment) {
+//        if (fragment instanceof RecyclerFragment) {
+//            RecyclerFragment listFragment = (RecyclerFragment) fragment;
+//            listFragment.setListener(this);
+//        }
+//    }
+
+
 
     @Override
     public void onClickListElement(String childfbId) {
@@ -89,7 +91,7 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
         //TODO: set transaction
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.text_recycler_view, recyclerFragment)
+                .replace(R.id.fragment_container, recyclerFragment)
                 .addToBackStack(null)
                 .commit();
     }

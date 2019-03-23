@@ -1,21 +1,22 @@
 package com.nazdesigns.polascope;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.nazdesigns.polascope.GameStructure.TimeLapse;
-import com.nazdesigns.polascope.USoT.FBCaller;
 
-import java.lang.ref.WeakReference;
+import com.nazdesigns.polascope.USoT.FBCaller;
 
 public class RecyclerFragment extends Fragment {
     private String TAG = "RecyclerFragment";
@@ -24,11 +25,28 @@ public class RecyclerFragment extends Fragment {
     private String mFBId;
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        Bundle args = getArguments();
+        if (args != null){
+            mFBId = args.getString("fbId",null);
+        }
+
+        mAdapter = new LinearTextAdapter(mFBId);
+        GameActivity gameActivity = (GameActivity) context;
+        mAdapter.setListener(gameActivity);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mAdapter.detacchListener();
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-
-        mFBId = args.getString("fbId",null);
     }
 
     @Override
@@ -48,24 +66,37 @@ public class RecyclerFragment extends Fragment {
             return;
         }
 
+
         mRecyclerView = activityView;
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(gameActivity));
-
-        mAdapter = new LinearTextAdapter(mFBId);
+        LinearLayoutManager linearLayout = new LinearLayoutManager(gameActivity);
+        mRecyclerView.setLayoutManager(linearLayout);
         mRecyclerView.setAdapter(mAdapter);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+                linearLayout.getOrientation());
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
 
         AppCompatTextView upTitleTextView = gameActivity.findViewById(R.id.toolbar_text);
         String text;
         if (mFBId == null) {
-            text = getString(R.string.app_name);
+            text = getString(R.string.games_list_msg);
         } else {
             text = FBCaller.getResume(mFBId);
+            boolean isLight = FBCaller.getLight(mFBId);
+
+            AppBarLayout appBarLayout = gameActivity.findViewById(R.id.app_bar);
+            Toolbar toolbar = appBarLayout.findViewById(R.id.toolbar);
+            if (isLight){
+                toolbar.setLogo(R.mipmap.ic_light);
+            } else {
+                toolbar.setLogo(R.mipmap.ic_dark);
+            }
         }
         upTitleTextView.setText(text);
     }
 
-    public void setListener(LinearTextAdapter.onListListener listener){
-        mAdapter.setListener(listener);
-    }
+//    public void setListener(LinearTextAdapter.onListListener listener){
+//        mAdapter.setListener(listener);
+//    }
 }

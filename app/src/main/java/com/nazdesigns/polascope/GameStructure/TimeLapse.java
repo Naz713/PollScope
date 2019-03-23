@@ -55,7 +55,11 @@ public class TimeLapse {
     }
 
     public void setResume(String resume) {
-        this.resume = resume;
+        if (resume.length() <= resumeMaxLenght){
+            this.resume = resume;
+        } else {
+            this.resume = resume.substring(0, resumeMaxLenght);
+        }
     }
 
     public String getBody() {
