@@ -60,6 +60,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
         @Override
         public void onClick(View v) {
+            //TODO: hacer algo para deshacer el swipe si es necesario
             /*
             * (un)Display long text View
             */

@@ -73,6 +73,7 @@ public class RecyclerFragment extends Fragment {
         LinearLayoutManager linearLayout = new LinearLayoutManager(gameActivity);
         mRecyclerView.setLayoutManager(linearLayout);
         mRecyclerView.setAdapter(mAdapter);
+
         SwipeHandler swipeHandler = new SwipeHandler(mAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHandler);
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
