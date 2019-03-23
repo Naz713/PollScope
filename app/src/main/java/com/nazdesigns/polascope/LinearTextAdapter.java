@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,67 +34,6 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
     public interface onListListener{
         void onClickListElement(String id);
-    }
-
-    // TODO: agregar receptor a ItemTouchHelper.SimpleCallback para añadir botones
-
-    static class SwipeHandler extends ItemTouchHelper.Callback {
-
-        private LinearTextAdapter adapter;
-        private TextViewHolder swipedViewHolder;
-
-        SwipeHandler(LinearTextAdapter adapter) {
-            this.adapter = adapter;
-        }
-
-        @Override
-        public int getMovementFlags(@NonNull RecyclerView recyclerView,
-                                    @NonNull RecyclerView.ViewHolder viewHolder) {
-            TextViewHolder myViewHolder = (TextViewHolder) viewHolder;
-            if (swipedViewHolder != myViewHolder) {
-                return makeMovementFlags(0,
-                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
-            } else {
-                return 0;
-            }
-        }
-
-        @Override public boolean onMove(@NonNull RecyclerView recyclerView,
-                                        @NonNull RecyclerView.ViewHolder viewHolder,
-                                        @NonNull RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            swipedViewHolder = (TextViewHolder) viewHolder;
-            adapter.notifyDataSetChanged();
-        }
-
-        @Override
-        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
-                                @NonNull RecyclerView.ViewHolder viewHolder,
-                                float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            if (dX < 0) {
-                TextViewHolder myViewHolder = (TextViewHolder) viewHolder;
-                getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.foregroundView, dX/4, dY, actionState, isCurrentlyActive);
-            }
-        }
-
-        @Override public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
-                                              RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState,
-                                              boolean isCurrentlyActive) {
-            if (dX < 0) {
-                TextViewHolder myViewHolder = (TextViewHolder) viewHolder;
-                getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.foregroundView, dX/4, dY, actionState, isCurrentlyActive);
-            }
-        }
-
-        @Override public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-            if (viewHolder != null) {
-                TextViewHolder myViewHolder = (TextViewHolder) viewHolder;
-                getDefaultUIUtil().onSelected(myViewHolder.foregroundView);
-            }
-        }
     }
 
     public static class TextViewHolder extends RecyclerView.ViewHolder
@@ -135,19 +75,25 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public boolean onLongClick(View v) {
             int long_visible = v.findViewById(R.id.long_text).getVisibility();
             if (long_visible == View.VISIBLE) {
-                /*
-                * Start Edit Activity
-                */
-                Intent intent = new Intent(v.getContext(), EditActivity.class);
-                intent.putExtra("fbId", mId);
-                v.getContext().startActivity(intent);
-            } else {
-                /*
-                 * Change Fragment to show nested TimeLapses
-                 */
-                listListener.get().onClickListElement(mId);
+                startEditActivity(v);
+                return true;
             }
             return false;
+        }
+
+        public void showNestedTimeLapses(){
+            /*
+             * Change Fragment to show nested TimeLapses
+             */
+            listListener.get().onClickListElement(mId);
+        }
+        public void startEditActivity(View v){
+            /*
+             * Start Edit Activity
+             */
+            Intent intent = new Intent(v.getContext(), EditActivity.class);
+            intent.putExtra("fbId", mId);
+            v.getContext().startActivity(intent);
         }
     }
 

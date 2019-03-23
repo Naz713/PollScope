@@ -11,6 +11,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +73,9 @@ public class RecyclerFragment extends Fragment {
         LinearLayoutManager linearLayout = new LinearLayoutManager(gameActivity);
         mRecyclerView.setLayoutManager(linearLayout);
         mRecyclerView.setAdapter(mAdapter);
+        SwipeHandler swipeHandler = new SwipeHandler(mAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHandler);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 linearLayout.getOrientation());
