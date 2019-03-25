@@ -12,14 +12,14 @@
         android:layoutDirection="rtl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/holder_height"
-        android:padding="5dp"
+        android:padding="10dp"
         android:background="@color/backgroundRed">
 
         <ImageButton
             android:id="@+id/button_plus_down"
             style="@style/Base.TextAppearance.AppCompat.Button"
             android:background="@color/backgroundRed"
-            android:src="@mipmap/down_arrow"
+            android:src="@mipmap/add_extra"
             android:layout_width="@dimen/icones_size"
             android:layout_height="@dimen/icones_size" />
         <ImageButton
@@ -33,7 +33,7 @@
             android:id="@+id/button_plus_up"
             style="@style/Base.TextAppearance.AppCompat.Button"
             android:background="@color/backgroundRed"
-            android:src="@mipmap/up_arrow"
+            android:src="@mipmap/right_arrow"
             android:layout_width="@dimen/icones_size"
             android:layout_height="@dimen/icones_size" />
 

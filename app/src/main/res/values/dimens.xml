@@ -9,6 +9,6 @@
     <dimen name="button_width">160dp</dimen>
     <dimen name="button_height">48dp</dimen>
     <dimen name="holder_height">66dp</dimen>
-    <dimen name="icones_size">42dp</dimen>
+    <dimen name="icones_size">46dp</dimen>
     <dimen name="text_padding">10dp</dimen>
 </resources>
