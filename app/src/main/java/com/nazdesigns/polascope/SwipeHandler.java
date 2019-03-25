@@ -45,10 +45,10 @@ class SwipeHandler extends ItemTouchHelper.Callback {
                             float dX, float dY, int actionState, boolean isCurrentlyActive) {
         if (dX < 0) {
             LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
-            getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.foregroundView, (dX*2/5), dY, actionState, isCurrentlyActive);
+            getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mResume, (dX*2/5), dY, actionState, isCurrentlyActive);
         } else if (dX > 0) {
             LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
-            getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.foregroundView, (dX*3/5), dY, actionState, isCurrentlyActive);
+            getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mResume, (dX*3/5), dY, actionState, isCurrentlyActive);
         }
     }
 
@@ -57,17 +57,17 @@ class SwipeHandler extends ItemTouchHelper.Callback {
                                           boolean isCurrentlyActive) {
         if (dX < 0) {
             LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
-            getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.foregroundView, (dX*2/5), dY, actionState, isCurrentlyActive);
+            getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mResume, (dX*2/5), dY, actionState, isCurrentlyActive);
         } else if (dX > 0) {
             LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
-            getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.foregroundView, (dX*3/5), dY, actionState, isCurrentlyActive);
+            getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mResume, (dX*3/5), dY, actionState, isCurrentlyActive);
         }
     }
 
     @Override public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
         if (viewHolder != null) {
             LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
-            getDefaultUIUtil().onSelected(myViewHolder.foregroundView);
+            getDefaultUIUtil().onSelected(myViewHolder.itemView);
         }
     }
 }

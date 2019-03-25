@@ -43,7 +43,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/backgroundLight"
         >
 
         <TextView
@@ -52,12 +51,14 @@
             android:layout_height="@dimen/holder_height"
             android:drawablePadding="@dimen/text_padding"
             android:drawableEnd="@mipmap/empty"
+            android:background="@color/backgroundLight"
             />
         <TextView
             android:id="@+id/long_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/text_padding"
+            android:background="@color/backgroundLight"
             android:visibility="gone"
             />
     </LinearLayout>

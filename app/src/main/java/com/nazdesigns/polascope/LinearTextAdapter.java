@@ -38,7 +38,6 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
     public static class TextViewHolder extends RecyclerView.ViewHolder
                                         implements View.OnClickListener, View.OnLongClickListener {
-        public LinearLayout foregroundView;
         public TextView mResume;
         public TextView mLongText;
         public String mId;
@@ -47,9 +46,8 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public TextViewHolder(View v, onListListener listener) {
             super(v);
             listListener = new WeakReference<>(listener);
-            foregroundView = v.findViewById(R.id.foreground);
-            mResume = foregroundView.findViewById(R.id.resume);
-            mLongText = foregroundView.findViewById(R.id.long_text);
+            mResume = v.findViewById(R.id.resume);
+            mLongText = v.findViewById(R.id.long_text);
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
         }
@@ -132,11 +130,13 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         TimeLapse childTimeLapse = FBCaller.getGame(holder.itemView.getContext(), childFBId);
         if(childTimeLapse.isLight()){
             //holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
-            holder.foregroundView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundLight));
+            holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundLight));
+            holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundLight));
         }
         else {
             //holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_dark,0,0, 0);
-            holder.foregroundView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundDark));
+            holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundDark));
+            holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundDark));
 
         }
         holder.mResume.setText(childTimeLapse.getResume());
