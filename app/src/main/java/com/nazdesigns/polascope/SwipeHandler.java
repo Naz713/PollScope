@@ -7,12 +7,9 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 
 class SwipeHandler extends ItemTouchHelper.Callback {
 
-    private LinearTextAdapter adapter;
     private LinearTextAdapter.TextViewHolder swipedViewHolder;
 
-    SwipeHandler(LinearTextAdapter adapter) {
-        this.adapter = adapter;
-    }
+    SwipeHandler() {}
 
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView,
@@ -43,24 +40,22 @@ class SwipeHandler extends ItemTouchHelper.Callback {
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
                             @NonNull RecyclerView.ViewHolder viewHolder,
                             float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
         if (dX < 0) {
-            LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
             getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mResume, (dX*2/5), dY, actionState, isCurrentlyActive);
         } else if (dX > 0) {
-            LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
-            getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mResume, (dX*3/5), dY, actionState, isCurrentlyActive);
+            getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mResume, (dX * 3 / 5), dY, actionState, isCurrentlyActive);
         }
     }
 
     @Override public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
                                           RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState,
                                           boolean isCurrentlyActive) {
+        LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
         if (dX < 0) {
-            LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
             getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mResume, (dX*2/5), dY, actionState, isCurrentlyActive);
         } else if (dX > 0) {
-            LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
-            getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mResume, (dX*3/5), dY, actionState, isCurrentlyActive);
+            getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mResume, (dX * 3 / 5), dY, actionState, isCurrentlyActive);
         }
     }
 
