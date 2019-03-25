@@ -60,7 +60,6 @@ public class RecyclerFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         RecyclerView activityView = (RecyclerView) getView();
-        // TODO: agregar ItemTouchHelper.SimpleCallback
         GameActivity gameActivity = (GameActivity) getActivity();
         if( (activityView == null) || (gameActivity == null) ){
             Log.e(TAG,"onActivityCreated: activity or view null");

@@ -60,7 +60,7 @@ class SwipeHandler extends ItemTouchHelper.Callback {
             getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.foregroundView, (dX*2/5), dY, actionState, isCurrentlyActive);
         } else if (dX > 0) {
             LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
-            getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.foregroundView, (dX*3/5), dY, actionState, isCurrentlyActive);
+            getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.foregroundView, (dX*3/5), dY, actionState, isCurrentlyActive);
         }
     }
 
