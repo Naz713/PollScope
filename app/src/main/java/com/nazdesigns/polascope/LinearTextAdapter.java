@@ -195,12 +195,13 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
              */
             listListener.get().onClickListElement(mId);
         }
-        public void startEditActivity(Context context, boolean putExtra){
+        public void startEditActivity(Context context, boolean putAsMine){
             /*
              * Start Edit Activity
              */
             Intent intent = new Intent(context, EditActivity.class);
-            if (putExtra) { intent.putExtra("fbId", mId); }
+            if (putAsMine) { intent.putExtra(EditActivity.extraId, mId); }
+            else { intent.putExtra(EditActivity.parentExtraId, mId); }
             context.startActivity(intent);
         }
     }

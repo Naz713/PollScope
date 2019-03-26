@@ -12,16 +12,21 @@ import com.nazdesigns.polascope.USoT.FBCaller;
 
 public class EditActivity extends Activity {
     private String mfbId;
+    private String mParentfbId;
     private TimeLapse mTL;
     private EditText mResume;
     private EditText mLongText;
     private Button mDescarta;
     private Button mGuarda;
 
+    public static String extraId = "fbId";
+    public static String parentExtraId = "parentfbId";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mfbId = getIntent().getStringExtra("fbId");
+        mfbId = getIntent().getStringExtra(extraId);
+        mParentfbId = getIntent().getStringExtra(parentExtraId);
 
         setContentView(R.layout.activity_edit);
 
@@ -41,12 +46,21 @@ public class EditActivity extends Activity {
         mGuarda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mfbId != null){
+                if (mfbId != null && mTL != null){
                     mTL.setResume(mResume.getText().toString());
                     mTL.setBody(mLongText.getText().toString());
                     FBCaller.saveTimeLapse(mfbId, mTL);
                 } else {
-                    // TODO: hacer la logica para crear nueva TimeLapse
+                    mTL = new TimeLapse();
+                    mTL.setResume(mResume.getText().toString());
+                    mTL.setBody(mLongText.getText().toString());
+
+                    // TODO: Lanzar Dialog para preguntar al usuario siguientes
+                    boolean isAfter = true;
+                    boolean isLight = true;
+
+                    mTL.setLight(isLight);
+                    FBCaller.createNewTimeLapse(mTL, mParentfbId, isAfter);
                 }
             }
         });
