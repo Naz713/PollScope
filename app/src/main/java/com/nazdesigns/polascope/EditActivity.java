@@ -41,14 +41,19 @@ public class EditActivity extends Activity {
         mGuarda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTL.setResume(mResume.getText().toString());
-                mTL.setBody(mLongText.getText().toString());
-                FBCaller.saveTimeLapse(mfbId, mTL);
+                if (mfbId != null){
+                    mTL.setResume(mResume.getText().toString());
+                    mTL.setBody(mLongText.getText().toString());
+                    FBCaller.saveTimeLapse(mfbId, mTL);
+                } else {
+                    // TODO: hacer la logica para crear nueva TimeLapse
+                }
             }
         });
-        mTL = FBCaller.getGame(this, mfbId);
-
-        mResume.setText(mTL.getResume());
-        mLongText.setText(mTL.getBody());
+        if (mfbId != null){
+            mTL = FBCaller.getGame(this, mfbId);
+            mResume.setText(mTL.getResume());
+            mLongText.setText(mTL.getBody());
+        }
     }
  }

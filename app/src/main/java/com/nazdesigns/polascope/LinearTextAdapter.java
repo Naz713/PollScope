@@ -1,5 +1,6 @@
 package com.nazdesigns.polascope;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.support.annotation.NonNull;
@@ -147,7 +148,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             switch (viewId) {
                 case R.id.button_edit:
                     Log.i(TAG,"Boton Edit presionado");
-                    startEditActivity(v);
+                    startEditActivity(v.getContext(), true);
                     break;
 
                 case R.id.button_undo:
@@ -157,7 +158,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
                 case R.id.button_add:
                     Log.i(TAG,"Boton Add presionado");
-                    // TODO: Hacer logica para agragar nuevo time lapse
+                    startEditActivity(v.getContext(),false);
                     break;
 
                 case R.id.long_text:
@@ -182,7 +183,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public boolean onLongClick(View v) {
             int long_visible = v.findViewById(R.id.long_text).getVisibility();
             if (long_visible == View.VISIBLE) {
-                startEditActivity(v);
+                startEditActivity(v.getContext(),true);
                 return true;
             }
             return false;
@@ -194,13 +195,13 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
              */
             listListener.get().onClickListElement(mId);
         }
-        public void startEditActivity(View v){
+        public void startEditActivity(Context context, boolean putExtra){
             /*
              * Start Edit Activity
              */
-            Intent intent = new Intent(v.getContext(), EditActivity.class);
-            intent.putExtra("fbId", mId);
-            v.getContext().startActivity(intent);
+            Intent intent = new Intent(context, EditActivity.class);
+            if (putExtra) { intent.putExtra("fbId", mId); }
+            context.startActivity(intent);
         }
     }
 

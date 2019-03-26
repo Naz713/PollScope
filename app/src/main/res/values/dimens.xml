@@ -8,6 +8,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="button_width">160dp</dimen>
     <dimen name="button_height">48dp</dimen>
+    <dimen name="text_edit_height">69dp</dimen>
     <dimen name="holder_height">63dp</dimen>
     <dimen name="icones_size">63dp</dimen>
     <dimen name="text_padding">10dp</dimen>
