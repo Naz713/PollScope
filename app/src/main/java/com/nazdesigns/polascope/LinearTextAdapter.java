@@ -5,22 +5,15 @@ import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewManager;
-import android.widget.LinearLayout;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
-
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.FBCaller;
-
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -31,25 +24,109 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
     private List<String> mDataset;
     private String mFBId;
     private onListListener listener;
+    private LinearTextAdapter.SwipeHandler mSwipeHandler;
 
     public interface onListListener{
         void onClickListElement(String id);
+    }
+
+    static class SwipeHandler extends ItemTouchHelper.Callback {
+
+        private LinearTextAdapter.TextViewHolder swipedViewHolder;
+
+        SwipeHandler() {}
+
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder) {
+            LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
+            if (swipedViewHolder != myViewHolder) {
+                return makeMovementFlags(0,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+            } else {
+                return 0;
+            }
+        }
+
+        @Override public boolean onMove(@NonNull RecyclerView recyclerView,
+                                        @NonNull RecyclerView.ViewHolder viewHolder,
+                                        @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            undo();
+            swipedViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
+            if (direction == ItemTouchHelper.RIGHT) {
+                swipedViewHolder.showNestedTimeLapses();
+            }
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                @NonNull RecyclerView.ViewHolder viewHolder,
+                                float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
+            if (dX < 0) {
+                getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mResume, (dX*2/5), dY, actionState, isCurrentlyActive);
+            } else if (dX > 0) {
+                getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mResume, (dX * 3 / 5), dY, actionState, isCurrentlyActive);
+            }
+        }
+
+        @Override public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                              RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState,
+                                              boolean isCurrentlyActive) {
+            LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
+            if (dX < 0) {
+                getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mResume, (dX*2/5), dY, actionState, isCurrentlyActive);
+            } else if (dX > 0) {
+                getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mResume, (dX * 3 / 5), dY, actionState, isCurrentlyActive);
+            }
+        }
+
+        @Override public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+            if (viewHolder != null) {
+                LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
+                getDefaultUIUtil().onSelected(myViewHolder.itemView);
+            }
+        }
+
+        void undo() {
+            if (swipedViewHolder != null) {
+                getDefaultUIUtil().clearView(swipedViewHolder.mResume);
+                swipedViewHolder = null;
+            }
+        }
+
     }
 
     public static class TextViewHolder extends RecyclerView.ViewHolder
                                         implements View.OnClickListener, View.OnLongClickListener {
         public TextView mResume;
         public TextView mLongText;
+        public ImageButton mEdit;
+        public ImageButton mAdd;
+        public ImageButton mUndo;
         public String mId;
         public WeakReference<onListListener> listListener;
+        public WeakReference<LinearTextAdapter.SwipeHandler> mSwipeHandler;
 
-        public TextViewHolder(View v, onListListener listener) {
+        public TextViewHolder(View v, onListListener listener, LinearTextAdapter.SwipeHandler swipeHandler) {
             super(v);
             listListener = new WeakReference<>(listener);
+            mSwipeHandler = new WeakReference<>(swipeHandler);
             mResume = v.findViewById(R.id.resume);
             mLongText = v.findViewById(R.id.long_text);
+            mEdit = v.findViewById(R.id.button_edit);
+            mAdd = v.findViewById(R.id.button_add);
+            mUndo = v.findViewById(R.id.button_undo);
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
+            mEdit.setOnClickListener(this);
+            mAdd.setOnClickListener(this);
+            mUndo.setOnClickListener(this);
+
         }
 
         public void setId(String id){
@@ -58,7 +135,21 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
         @Override
         public void onClick(View v) {
-            //TODO: hacer algo para deshacer el swipe si es necesario
+            int viewId = v.getId();
+
+            switch (viewId){
+                case R.id.button_edit:
+                    startEditActivity(v);
+                    return;
+
+                case R.id.button_undo:
+                    mSwipeHandler.get().undo();
+                    return;
+
+                case R.id.button_add:
+                    // TODO: Hacer logica para agragar nuevo time lapse
+                    return;
+            }
             /*
             * (un)Display long text View
             */
@@ -96,21 +187,18 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         }
     }
 
-    public LinearTextAdapter(String id) {
+    public LinearTextAdapter(String id, onListListener listener, LinearTextAdapter.SwipeHandler swipeHandler) {
         mFBId = id;
         if (mFBId == null){
             mDataset = FBCaller.getPlayerGames();
         } else {
             mDataset = FBCaller.getSubEpochs(mFBId);
         }
-        this.listener = null;
-    }
-
-    public void setListener(onListListener listener){
         this.listener = listener;
+        this.mSwipeHandler = swipeHandler;
     }
 
-    public void detacchListener(){
+    public void detachListener(){
         this.listener = null;
     }
 
@@ -120,7 +208,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                                                      int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.text_layout, parent, false);
-        return new TextViewHolder(v, listener);
+        return new TextViewHolder(v, listener, mSwipeHandler);
     }
 
     @Override

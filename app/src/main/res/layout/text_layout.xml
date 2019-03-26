@@ -16,7 +16,7 @@
         android:background="@color/backgroundRed">
 
         <ImageButton
-            android:id="@+id/button_plus_down"
+            android:id="@+id/button_add"
             style="@style/Base.TextAppearance.AppCompat.Button"
             android:background="@color/backgroundRed"
             android:src="@mipmap/add_extra"
@@ -30,7 +30,7 @@
             android:layout_width="@dimen/icones_size"
             android:layout_height="@dimen/icones_size" />
         <ImageButton
-            android:id="@+id/button_plus_up"
+            android:id="@+id/button_undo"
             style="@style/Base.TextAppearance.AppCompat.Button"
             android:background="@color/backgroundRed"
             android:src="@mipmap/right_arrow"

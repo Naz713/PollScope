@@ -1,5 +1,6 @@
 package com.nazdesigns.polascope;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,6 +24,8 @@ public class RecyclerFragment extends Fragment {
     private String TAG = "RecyclerFragment";
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
+    private LinearTextAdapter.SwipeHandler mSwipeHandler;
+    private ItemTouchHelper mItemTouchHelper;
     private String mFBId;
 
     @Override
@@ -34,15 +37,17 @@ public class RecyclerFragment extends Fragment {
             mFBId = args.getString("fbId",null);
         }
 
-        mAdapter = new LinearTextAdapter(mFBId);
+        mSwipeHandler = new LinearTextAdapter.SwipeHandler();
+        mItemTouchHelper = new ItemTouchHelper(mSwipeHandler);
+
         GameActivity gameActivity = (GameActivity) context;
-        mAdapter.setListener(gameActivity);
+        mAdapter = new LinearTextAdapter(mFBId, gameActivity, mSwipeHandler);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mAdapter.detacchListener();
+        mAdapter.detachListener();
     }
 
     @Override
@@ -73,9 +78,7 @@ public class RecyclerFragment extends Fragment {
         mRecyclerView.setLayoutManager(linearLayout);
         mRecyclerView.setAdapter(mAdapter);
 
-        SwipeHandler swipeHandler = new SwipeHandler();
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHandler);
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 linearLayout.getOrientation());
@@ -99,8 +102,4 @@ public class RecyclerFragment extends Fragment {
         }
         upTitleTextView.setText(text);
     }
-
-//    public void setListener(LinearTextAdapter.onListListener listener){
-//        mAdapter.setListener(listener);
-//    }
 }
