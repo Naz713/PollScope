@@ -12,7 +12,6 @@
         android:layoutDirection="rtl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/holder_height"
-        android:padding="10dp"
         android:background="@color/backgroundRed">
 
         <ImageButton
@@ -38,6 +37,7 @@
             android:layout_height="@dimen/icones_size" />
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/foreground"
         android:layout_width="match_parent"

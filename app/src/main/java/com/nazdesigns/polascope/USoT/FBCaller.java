@@ -56,7 +56,7 @@ public abstract class FBCaller {
     *
     */
     public static String getResume(String gameId){
-        return "Una aventura Épica y maravillosa. Que algún día escribiremos";
+        return "Una aventura Épica y maravillosa. Que algún día escribiremos, nos sorprenderemos leyendola y felices.";
     }
 
     public static boolean getLight(String gameId){

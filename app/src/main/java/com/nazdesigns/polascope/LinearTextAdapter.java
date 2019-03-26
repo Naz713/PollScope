@@ -3,13 +3,16 @@ package com.nazdesigns.polascope;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.FBCaller;
@@ -39,13 +42,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         @Override
         public int getMovementFlags(@NonNull RecyclerView recyclerView,
                                     @NonNull RecyclerView.ViewHolder viewHolder) {
-            LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
-            if (swipedViewHolder != myViewHolder) {
-                return makeMovementFlags(0,
-                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
-            } else {
-                return 0;
-            }
+            return makeMovementFlags(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         }
 
         @Override public boolean onMove(@NonNull RecyclerView recyclerView,
@@ -55,7 +52,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         }
 
         @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            undo();
+            //undo(swipedViewHolder);
             swipedViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
             if (direction == ItemTouchHelper.RIGHT) {
                 swipedViewHolder.showNestedTimeLapses();
@@ -67,10 +64,11 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                                 @NonNull RecyclerView.ViewHolder viewHolder,
                                 float dX, float dY, int actionState, boolean isCurrentlyActive) {
             LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
+            myViewHolder.mLongText.setVisibility(View.GONE);
             if (dX < 0) {
-                getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mResume, (dX*2/5), dY, actionState, isCurrentlyActive);
+                getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mForeground, (dX/2), dY, actionState, isCurrentlyActive);
             } else if (dX > 0) {
-                getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mResume, (dX * 3 / 5), dY, actionState, isCurrentlyActive);
+                getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mForeground, (dX/2), dY, actionState, isCurrentlyActive);
             }
         }
 
@@ -78,10 +76,11 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                                               RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState,
                                               boolean isCurrentlyActive) {
             LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
+            myViewHolder.mLongText.setVisibility(View.GONE);
             if (dX < 0) {
-                getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mResume, (dX*2/5), dY, actionState, isCurrentlyActive);
+                getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mForeground, (dX/2), dY, actionState, isCurrentlyActive);
             } else if (dX > 0) {
-                getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mResume, (dX * 3 / 5), dY, actionState, isCurrentlyActive);
+                getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mForeground, (dX/2), dY, actionState, isCurrentlyActive);
             }
         }
 
@@ -92,10 +91,9 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             }
         }
 
-        void undo() {
-            if (swipedViewHolder != null) {
-                getDefaultUIUtil().clearView(swipedViewHolder.mResume);
-                swipedViewHolder = null;
+        void undo(@Nullable TextViewHolder textViewHolder) {
+            if (textViewHolder != null) {
+                getDefaultUIUtil().clearView(textViewHolder.mForeground);
             }
         }
 
@@ -103,6 +101,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
     public static class TextViewHolder extends RecyclerView.ViewHolder
                                         implements View.OnClickListener, View.OnLongClickListener {
+        public LinearLayout mForeground;
         public TextView mResume;
         public TextView mLongText;
         public ImageButton mEdit;
@@ -112,17 +111,25 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public WeakReference<onListListener> listListener;
         public WeakReference<LinearTextAdapter.SwipeHandler> mSwipeHandler;
 
-        public TextViewHolder(View v, onListListener listener, LinearTextAdapter.SwipeHandler swipeHandler) {
+        public static String TAG = "TextViewHolder";
+
+        public TextViewHolder(View v, onListListener listener,
+                              LinearTextAdapter.SwipeHandler swipeHandler) {
             super(v);
             listListener = new WeakReference<>(listener);
             mSwipeHandler = new WeakReference<>(swipeHandler);
-            mResume = v.findViewById(R.id.resume);
-            mLongText = v.findViewById(R.id.long_text);
+
+            mForeground = v.findViewById(R.id.foreground);
+            mResume = mForeground.findViewById(R.id.resume);
+            mLongText = mForeground.findViewById(R.id.long_text);
+
             mEdit = v.findViewById(R.id.button_edit);
             mAdd = v.findViewById(R.id.button_add);
             mUndo = v.findViewById(R.id.button_undo);
-            v.setOnClickListener(this);
-            v.setOnLongClickListener(this);
+
+            mResume.setOnClickListener(this);
+            mLongText.setOnClickListener(this);
+            mForeground.setOnLongClickListener(this);
             mEdit.setOnClickListener(this);
             mAdd.setOnClickListener(this);
             mUndo.setOnClickListener(this);
@@ -137,27 +144,37 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public void onClick(View v) {
             int viewId = v.getId();
 
-            switch (viewId){
+            switch (viewId) {
                 case R.id.button_edit:
+                    Log.i(TAG,"Boton Edit presionado");
                     startEditActivity(v);
-                    return;
+                    break;
 
                 case R.id.button_undo:
-                    mSwipeHandler.get().undo();
-                    return;
+                    Log.i(TAG,"Boton Undo presionado");
+                    mSwipeHandler.get().undo(this);
+                    break;
 
                 case R.id.button_add:
+                    Log.i(TAG,"Boton Add presionado");
                     // TODO: Hacer logica para agragar nuevo time lapse
-                    return;
-            }
-            /*
-            * (un)Display long text View
-            */
-            View longText = v.findViewById(R.id.long_text);
-            if (longText.getVisibility() == View.GONE) {
-                longText.setVisibility(View.VISIBLE);
-            } else {
-                longText.setVisibility(View.GONE);
+                    break;
+
+                case R.id.long_text:
+                case R.id.resume:
+                    /*
+                     * (un)Display long text View
+                     */
+                    Log.i(TAG,"Boton Resume presionado");
+                    //View longText = v.findViewById(R.id.long_text);
+                    View longText = mLongText;
+                    if (longText.getVisibility() == View.GONE) {
+                        longText.setVisibility(View.VISIBLE);
+                        mSwipeHandler.get().undo(this);
+                    } else {
+                        longText.setVisibility(View.GONE);
+                    }
+                    break;
             }
         }
 
