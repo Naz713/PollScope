@@ -1,11 +1,17 @@
 package com.nazdesigns.polascope;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.ConditionVariable;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.FBCaller;
@@ -18,6 +24,7 @@ public class EditActivity extends Activity {
     private TimeLapse mTL;
     private EditText mResume;
     private EditText mLongText;
+    private ToggleButton mLight;
     private Button mDescarta;
     private Button mGuarda;
 
@@ -36,13 +43,17 @@ public class EditActivity extends Activity {
 
         mResume = findViewById(R.id.edit_resume);
         mLongText = findViewById(R.id.edit_long_text);
+        mLight = findViewById(R.id.isLightButton);
 
         mDescarta = findViewById(R.id.buton_descarta);
         mDescarta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mResume.setText(mTL.getResume());
-                mLongText.setText(mTL.getBody());
+                if (mTL != null){
+                    mResume.setText(mTL.getResume());
+                    mLongText.setText(mTL.getBody());
+                    mLight.setChecked(mTL.isLight());
+                }
             }
         });
 
@@ -53,16 +64,15 @@ public class EditActivity extends Activity {
                 if (mfbId != null && mTL != null){
                     mTL.setResume(mResume.getText().toString());
                     mTL.setBody(mLongText.getText().toString());
+                    mTL.setLight(mLight.isChecked());
+
                     FBCaller.saveTimeLapse(mfbId, mTL);
                 } else {
                     mTL = new TimeLapse();
                     mTL.setResume(mResume.getText().toString());
                     mTL.setBody(mLongText.getText().toString());
+                    mTL.setLight(mLight.isChecked());
 
-                    // TODO: Lanzar Dialog para preguntar al usuario siguientes
-                    boolean isLight = true;
-
-                    mTL.setLight(isLight);
                     FBCaller.createNewTimeLapse(mTL, mParentfbId, mInsertAbove);
                 }
             }
@@ -71,6 +81,7 @@ public class EditActivity extends Activity {
             mTL = FBCaller.getGame(this, mfbId);
             mResume.setText(mTL.getResume());
             mLongText.setText(mTL.getBody());
+            mLight.setChecked(mTL.isLight());
         }
     }
  }

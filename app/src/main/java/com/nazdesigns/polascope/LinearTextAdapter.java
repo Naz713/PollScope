@@ -67,9 +67,9 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
             myViewHolder.mLongText.setVisibility(View.GONE);
             if (dX < 0) {
-                getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mForeground, (dX/2), dY, actionState, isCurrentlyActive);
+                getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mForeground, (dX/3), dY, actionState, isCurrentlyActive);
             } else if (dX > 0) {
-                getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mForeground, (dX/2), dY, actionState, isCurrentlyActive);
+                getDefaultUIUtil().onDraw(c, recyclerView, myViewHolder.mForeground, (dX*2/3), dY, actionState, isCurrentlyActive);
             }
         }
 
@@ -79,9 +79,9 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             LinearTextAdapter.TextViewHolder myViewHolder = (LinearTextAdapter.TextViewHolder) viewHolder;
             myViewHolder.mLongText.setVisibility(View.GONE);
             if (dX < 0) {
-                getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mForeground, (dX/2), dY, actionState, isCurrentlyActive);
+                getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mForeground, (dX/3), dY, actionState, isCurrentlyActive);
             } else if (dX > 0) {
-                getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mForeground, (dX/2), dY, actionState, isCurrentlyActive);
+                getDefaultUIUtil().onDrawOver(c, recyclerView, myViewHolder.mForeground, (dX*2/3), dY, actionState, isCurrentlyActive);
             }
         }
 
@@ -128,7 +128,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
             mResume.setOnClickListener(this);
             mLongText.setOnClickListener(this);
-            mForeground.setOnLongClickListener(this);
+            mLongText.setOnLongClickListener(this);
             mAdd_up.setOnClickListener(this);
             mAdd_down.setOnClickListener(this);
 
@@ -173,7 +173,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
         @Override
         public boolean onLongClick(View v) {
-            int long_visible = v.findViewById(R.id.long_text).getVisibility();
+            int long_visible = v.getVisibility();
             if (long_visible == View.VISIBLE) {
                 startEditActivity(v.getContext());
                 return true;
