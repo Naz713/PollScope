@@ -67,7 +67,7 @@ public class EditActivity extends Activity {
                     mTL.setLight(mLight.isChecked());
 
                     FBCaller.saveTimeLapse(mfbId, mTL);
-                } else {
+                } else if (mParentfbId != null) {
                     mTL = new TimeLapse();
                     mTL.setResume(mResume.getText().toString());
                     mTL.setBody(mLongText.getText().toString());
