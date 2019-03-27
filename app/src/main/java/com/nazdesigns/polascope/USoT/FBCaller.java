@@ -52,7 +52,7 @@ public abstract class FBCaller {
         return true;
     }
 
-    public static boolean createNewTimeLapse(TimeLapse timeLapse, String parentfbId, boolean isAfter){
+    public static boolean createNewTimeLapse(TimeLapse timeLapse, String parentfbId, boolean isBefore){
         return true;
     }
 

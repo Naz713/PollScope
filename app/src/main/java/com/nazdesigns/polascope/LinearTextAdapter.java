@@ -105,9 +105,8 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public LinearLayout mForeground;
         public TextView mResume;
         public TextView mLongText;
-        public ImageButton mEdit;
-        public ImageButton mAdd;
-        public ImageButton mUndo;
+        public ImageButton mAdd_up;
+        public ImageButton mAdd_down;
         public String mId;
         public WeakReference<onListListener> listListener;
         public WeakReference<LinearTextAdapter.SwipeHandler> mSwipeHandler;
@@ -124,16 +123,14 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             mResume = mForeground.findViewById(R.id.resume);
             mLongText = mForeground.findViewById(R.id.long_text);
 
-            mEdit = v.findViewById(R.id.button_edit);
-            mAdd = v.findViewById(R.id.button_add);
-            mUndo = v.findViewById(R.id.button_undo);
+            mAdd_up = v.findViewById(R.id.button_add_up);
+            mAdd_down = v.findViewById(R.id.button_add_down);
 
             mResume.setOnClickListener(this);
             mLongText.setOnClickListener(this);
             mForeground.setOnLongClickListener(this);
-            mEdit.setOnClickListener(this);
-            mAdd.setOnClickListener(this);
-            mUndo.setOnClickListener(this);
+            mAdd_up.setOnClickListener(this);
+            mAdd_down.setOnClickListener(this);
 
         }
 
@@ -146,18 +143,13 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             int viewId = v.getId();
 
             switch (viewId) {
-                case R.id.button_edit:
-                    Log.i(TAG,"Boton Edit presionado");
-                    startEditActivity(v.getContext(), true);
+                case R.id.button_add_up:
+                    Log.i(TAG,"Boton Add Up presionado");
+                    startEditActivity(v.getContext(),true);
                     break;
 
-                case R.id.button_undo:
-                    Log.i(TAG,"Boton Undo presionado");
-                    mSwipeHandler.get().undo(this);
-                    break;
-
-                case R.id.button_add:
-                    Log.i(TAG,"Boton Add presionado");
+                case R.id.button_add_down:
+                    Log.i(TAG,"Boton Add Down presionado");
                     startEditActivity(v.getContext(),false);
                     break;
 
@@ -166,7 +158,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                     /*
                      * (un)Display long text View
                      */
-                    Log.i(TAG,"Boton Resume presionado");
+                    Log.i(TAG,"LongText Visibility change");
                     //View longText = v.findViewById(R.id.long_text);
                     View longText = mLongText;
                     if (longText.getVisibility() == View.GONE) {
@@ -183,7 +175,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public boolean onLongClick(View v) {
             int long_visible = v.findViewById(R.id.long_text).getVisibility();
             if (long_visible == View.VISIBLE) {
-                startEditActivity(v.getContext(),true);
+                startEditActivity(v.getContext());
                 return true;
             }
             return false;
@@ -195,13 +187,23 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
              */
             listListener.get().onClickListElement(mId);
         }
-        public void startEditActivity(Context context, boolean putAsMine){
+
+        public void startEditActivity(Context context){
             /*
              * Start Edit Activity
              */
             Intent intent = new Intent(context, EditActivity.class);
-            if (putAsMine) { intent.putExtra(EditActivity.extraId, mId); }
-            else { intent.putExtra(EditActivity.parentExtraId, mId); }
+            intent.putExtra(EditActivity.extraId, mId);
+            context.startActivity(intent);
+        }
+
+        public void startEditActivity(Context context, boolean insertAbove){
+            /*
+             * Start Edit Activity to create a new TimeLapse
+             */
+            Intent intent = new Intent(context, EditActivity.class);
+            intent.putExtra(EditActivity.parentExtraId, mId);
+            intent.putExtra(EditActivity.insertAbove, insertAbove);
             context.startActivity(intent);
         }
     }

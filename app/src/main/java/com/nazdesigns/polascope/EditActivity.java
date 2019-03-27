@@ -13,6 +13,8 @@ import com.nazdesigns.polascope.USoT.FBCaller;
 public class EditActivity extends Activity {
     private String mfbId;
     private String mParentfbId;
+    private boolean mInsertAbove;
+
     private TimeLapse mTL;
     private EditText mResume;
     private EditText mLongText;
@@ -21,12 +23,14 @@ public class EditActivity extends Activity {
 
     public static String extraId = "fbId";
     public static String parentExtraId = "parentfbId";
+    public static String insertAbove = "insertAbove";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mfbId = getIntent().getStringExtra(extraId);
         mParentfbId = getIntent().getStringExtra(parentExtraId);
+        mInsertAbove = getIntent().getBooleanExtra(EditActivity.insertAbove,true);
 
         setContentView(R.layout.activity_edit);
 
@@ -56,11 +60,10 @@ public class EditActivity extends Activity {
                     mTL.setBody(mLongText.getText().toString());
 
                     // TODO: Lanzar Dialog para preguntar al usuario siguientes
-                    boolean isAfter = true;
                     boolean isLight = true;
 
                     mTL.setLight(isLight);
-                    FBCaller.createNewTimeLapse(mTL, mParentfbId, isAfter);
+                    FBCaller.createNewTimeLapse(mTL, mParentfbId, mInsertAbove);
                 }
             }
         });

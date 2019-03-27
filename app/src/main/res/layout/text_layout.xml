@@ -12,27 +12,21 @@
         android:layoutDirection="rtl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/holder_height"
+        android:dividerPadding="5dp"
         android:background="@color/backgroundRed">
 
         <ImageButton
-            android:id="@+id/button_add"
+            android:id="@+id/button_add_up"
             style="@style/Base.TextAppearance.AppCompat.Button"
             android:background="@color/backgroundRed"
-            android:src="@mipmap/add_extra"
+            android:src="@mipmap/add_up"
             android:layout_width="@dimen/icones_size"
             android:layout_height="@dimen/icones_size" />
         <ImageButton
-            android:id="@+id/button_edit"
+            android:id="@+id/button_add_down"
             style="@style/Base.TextAppearance.AppCompat.Button"
             android:background="@color/backgroundRed"
-            android:src="@mipmap/edit"
-            android:layout_width="@dimen/icones_size"
-            android:layout_height="@dimen/icones_size" />
-        <ImageButton
-            android:id="@+id/button_undo"
-            style="@style/Base.TextAppearance.AppCompat.Button"
-            android:background="@color/backgroundRed"
-            android:src="@mipmap/right_arrow"
+            android:src="@mipmap/add_down"
             android:layout_width="@dimen/icones_size"
             android:layout_height="@dimen/icones_size" />
 
