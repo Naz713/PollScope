@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.nazdesigns.polascope.USoT.FBCaller;
 
 public class GameActivity extends AppCompatActivity implements LinearTextAdapter.onListListener {
 
@@ -54,33 +55,8 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
                 .beginTransaction()
                 .add(R.id.fragment_container, recyclerFragment)
                 .commit();
+
   }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_game, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.log_out) {
-            mAuth.signOut();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-//    @Override
-//    public void onAttachFragment(Fragment fragment) {
-//        if (fragment instanceof RecyclerFragment) {
-//            RecyclerFragment listFragment = (RecyclerFragment) fragment;
-//            listFragment.setListener(this);
-//        }
-//    }
-
-
 
     @Override
     public void onClickListElement(String childfbId) {

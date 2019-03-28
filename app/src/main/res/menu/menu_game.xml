@@ -8,4 +8,12 @@
         android:title="@string/log_out"
         app:showAsAction="never"
         tools:context="com.nazdesigns.polascope.GameActivity"/>
+    <item
+        android:id="@+id/add_to_empty"
+        android:orderInCategory="10"
+        android:title="Crear Nuevo"
+        app:showAsAction="never"
+        tools:context="com.nazdesigns.polascope.GameActivity"
+        android:visible="false"
+        />
 </menu>
