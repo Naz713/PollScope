@@ -230,7 +230,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         }
 
         if  (FBCaller.getSubEpochs(childFBId).isEmpty()) {
-            holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,R.mipmap.empty, 0);
+            holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0, R.mipmap.empty, 0);
         }
 
         holder.mResume.setText(childTimeLapse.getResume());
