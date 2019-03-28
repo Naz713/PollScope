@@ -25,6 +25,10 @@ public abstract class FBCaller {
     Regresa una lista de los ids de los TimeLapse subordinados al TimeLapse en cuestion
      */
     public static List<String> getSubEpochs(String gameId){
+        if (gameId == "AA"){
+            String [] l = {};
+            return Arrays.asList(l);
+        }
         return getPlayerGames();
     }
 

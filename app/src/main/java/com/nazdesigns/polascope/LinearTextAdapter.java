@@ -1,7 +1,5 @@
 package com.nazdesigns.polascope;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +16,7 @@ import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.FBCaller;
 import java.lang.ref.WeakReference;
 import java.util.List;
+import static com.nazdesigns.polascope.Utilities.Common.*;
 
 /*
 Responsable de llenar el recler view dado una lista de TimeLapse
@@ -145,12 +143,12 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             switch (viewId) {
                 case R.id.button_add_up:
                     Log.i(TAG,"Boton Add Up presionado");
-                    startEditActivity(v.getContext(),true);
+                    startEditActivity(v.getContext(), mId, true);
                     break;
 
                 case R.id.button_add_down:
                     Log.i(TAG,"Boton Add Down presionado");
-                    startEditActivity(v.getContext(),false);
+                    startEditActivity(v.getContext(), mId, false);
                     break;
 
                 case R.id.long_text:
@@ -175,7 +173,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public boolean onLongClick(View v) {
             int long_visible = v.getVisibility();
             if (long_visible == View.VISIBLE) {
-                startEditActivity(v.getContext());
+                startEditActivity(v.getContext(), mId);
                 return true;
             }
             return false;
@@ -186,25 +184,6 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
              * Change Fragment to show nested TimeLapses
              */
             listListener.get().onClickListElement(mId);
-        }
-
-        public void startEditActivity(Context context){
-            /*
-             * Start Edit Activity
-             */
-            Intent intent = new Intent(context, EditActivity.class);
-            intent.putExtra(EditActivity.extraId, mId);
-            context.startActivity(intent);
-        }
-
-        public void startEditActivity(Context context, boolean insertAbove){
-            /*
-             * Start Edit Activity to create a new TimeLapse
-             */
-            Intent intent = new Intent(context, EditActivity.class);
-            intent.putExtra(EditActivity.parentExtraId, mId);
-            intent.putExtra(EditActivity.insertAbove, insertAbove);
-            context.startActivity(intent);
         }
     }
 
@@ -237,6 +216,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         String childFBId = mDataset.get(position);
         holder.setId(childFBId);
         TimeLapse childTimeLapse = FBCaller.getGame(holder.itemView.getContext(), childFBId);
+
         if(childTimeLapse.isLight()){
             //holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
             holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundLight));
@@ -248,6 +228,11 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundDark));
 
         }
+
+        if  (FBCaller.getSubEpochs(childFBId).isEmpty()) {
+            holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,R.mipmap.empty, 0);
+        }
+
         holder.mResume.setText(childTimeLapse.getResume());
         holder.mLongText.setText(childTimeLapse.getBody());
     }

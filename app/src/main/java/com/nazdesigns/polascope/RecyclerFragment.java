@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.nazdesigns.polascope.USoT.FBCaller;
+import com.nazdesigns.polascope.Utilities.Common;
 
 public class RecyclerFragment extends Fragment {
     private String TAG = "RecyclerFragment";
@@ -114,8 +115,6 @@ public class RecyclerFragment extends Fragment {
         if(FBCaller.getSubEpochs(mFBId).isEmpty()){
             menu.findItem(R.id.add_to_empty).setVisible(true);
         }
-        menuInflater.inflate(R.menu.menu_game, menu);
-        return;
     }
 
     @Override
@@ -125,9 +124,7 @@ public class RecyclerFragment extends Fragment {
             FirebaseAuth.getInstance().signOut();
             return true;
         } else if (id == R.id.add_to_empty) {
-            Intent intent = new Intent(this.getContext(), EditActivity.class);
-            intent.putExtra(EditActivity.parentExtraId, mFBId);
-            this.startActivity(intent);
+            Common.startEditActivity(this.getContext(), mFBId, true);
             return true;
         }
         return super.onOptionsItemSelected(item);

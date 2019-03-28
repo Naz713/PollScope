@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -70,5 +71,11 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
                 .replace(R.id.fragment_container, recyclerFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_game, menu);
+        return true;
     }
 }

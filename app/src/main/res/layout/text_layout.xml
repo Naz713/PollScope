@@ -43,15 +43,18 @@
             android:id="@+id/resume"
             android:layout_width="match_parent"
             android:layout_height="@dimen/holder_height"
-            android:drawablePadding="@dimen/text_padding"
-            android:drawableEnd="@mipmap/empty"
+            android:paddingStart="@dimen/default_margin"
+            android:drawablePadding="0dp"
+            android:ems="20"
             android:background="@color/backgroundLight"
             />
         <TextView
             android:id="@+id/long_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/text_padding"
+            android:paddingStart="@dimen/default_margin"
+            android:paddingEnd="@dimen/default_margin"
+            android:ems="20"
             android:background="@color/backgroundLight"
             android:visibility="gone"
             />

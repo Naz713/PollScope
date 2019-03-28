@@ -38,6 +38,7 @@
                 android:paddingStart="75dp"
                 android:paddingEnd="30dp"
                 android:textSize="16sp"
+                android:ems="16"
                 android:text="@string/warning_msg"
                 app:layout_collapseMode="none" />
 
