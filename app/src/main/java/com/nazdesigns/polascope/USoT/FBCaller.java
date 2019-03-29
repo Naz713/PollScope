@@ -1,16 +1,26 @@
 package com.nazdesigns.polascope.USoT;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.R;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 // TODO: Llenar con llamadas verdaderas a Firebase
 public abstract class FBCaller {
+    private static final String TAG = "FireBaseCaller";
 
     /*
     Regresa una lista que contiene todos los juegos del jugador
@@ -49,7 +59,22 @@ public abstract class FBCaller {
     Inicializa al nuevo jugador
     Crear estructuras necesarias dentro de la Base de Datos
      */
-    public static boolean setPlayer(String PlayerId){
+    public static boolean setPlayer(String playerId, String name){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("players").child(playerId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if ( dataSnapshot.getValue() == null) {
+                    //TODO: incializar las estructuras del jugador
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG,"Cancelada petición a FB para Crear Usuario");
+            }
+        });
+
         return true;
     }
 
