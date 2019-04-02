@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.TreeMap;
 
 // TODO: Llenar con llamadas verdaderas a Firebase
 public abstract class FBCaller {
@@ -84,6 +85,10 @@ public abstract class FBCaller {
     }
 
     public static boolean saveTimeLapse(String fbId, TimeLapse timeLapse){
+        return true;
+    }
+
+    public static boolean isUserNameInUse(String userName){
         return true;
     }
 

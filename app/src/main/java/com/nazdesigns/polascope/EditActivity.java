@@ -65,6 +65,7 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (mfbId == null && mParentfbId == null) {
+                // CASO CREAR JUEGO
                     mTL = new TimeLapse();
                     mTL.setResume(mResume.getText().toString());
                     mTL.setBody(mLongText.getText().toString());
@@ -101,6 +102,9 @@ public class EditActivity extends Activity {
             mResume.setText(mTL.getResume());
             mLongText.setText(mTL.getBody());
             mLight.setChecked(mTL.isLight());
+        }
+        if (mfbId == null && mParentfbId == null) {
+            mLight.setVisibility(View.GONE);
         }
     }
  }

@@ -35,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getName();
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private EditText mUserName;
     private View mProgressView;
     private View mLoginFormView;
     private FirebaseAuth mAuth;
@@ -57,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     if (mAuth.getCurrentUser() != null) {
-                        FBCaller.setPlayer(mAuth.getCurrentUser().getUid());
+                        FBCaller.setPlayer(mAuth.getCurrentUser().getUid(), mUserName.getText().toString());
                         Intent intent = new Intent(context, GameActivity.class);
                         startActivity(intent);
                         finish();
@@ -128,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String userName = mUserName.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -176,6 +178,14 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
             } else if (type == SIGN_UP) {
+                // Check for a valid UserName
+                if (TextUtils.isEmpty(userName)) {
+                    mUserName.setError(getString(R.string.error_field_required));
+                    mUserName.requestFocus();
+                } else if (!isUserNamelValid(userName)) {
+                    mUserName.setError(getString(R.string.error_user_name));
+                    mUserName.requestFocus();
+                }
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -186,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.makeText(LoginActivity.this, "Creation failed.",
                                             Toast.LENGTH_SHORT).show();
                                 }
                                 showProgress(false);
@@ -196,6 +206,10 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e(TAG,"Bad Call to attemptLogin");
             }
         }
+    }
+
+    private boolean isUserNamelValid(String userName){
+        return FBCaller.isUserNameInUse(userName);
     }
 
     private boolean isEmailValid(String email) {
