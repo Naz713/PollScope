@@ -33,13 +33,15 @@ public class RecyclerFragment extends Fragment {
     private ItemTouchHelper mItemTouchHelper;
     private String mFBId;
 
+    public static final String fbId = "fbId";
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
         Bundle args = getArguments();
         if (args != null){
-            mFBId = args.getString("fbId",null);
+            mFBId = args.getString(fbId,null);
         }
 
         mSwipeHandler = new LinearTextAdapter.SwipeHandler();
@@ -124,7 +126,11 @@ public class RecyclerFragment extends Fragment {
             FirebaseAuth.getInstance().signOut();
             return true;
         } else if (id == R.id.add_to_empty) {
-            Common.startEditActivity(this.getContext(), mFBId, true);
+            if (mFBId == null){
+                Common.startCreateGameActivity(this.getContext());
+            } else {
+                Common.startCreateActivity(this.getContext(), mFBId);
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);

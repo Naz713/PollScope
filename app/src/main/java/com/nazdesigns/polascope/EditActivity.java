@@ -20,6 +20,7 @@ public class EditActivity extends Activity {
     private String mfbId;
     private String mParentfbId;
     private boolean mInsertAbove;
+    private boolean mIsNew;
 
     private TimeLapse mTL;
     private EditText mResume;
@@ -31,13 +32,15 @@ public class EditActivity extends Activity {
     public static String extraId = "fbId";
     public static String parentExtraId = "parentfbId";
     public static String insertAbove = "insertAbove";
+    public static String isNew = "isNew";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mfbId = getIntent().getStringExtra(extraId);
         mParentfbId = getIntent().getStringExtra(parentExtraId);
-        mInsertAbove = getIntent().getBooleanExtra(EditActivity.insertAbove,true);
+        mInsertAbove = getIntent().getBooleanExtra(insertAbove,true);
+        mIsNew = getIntent().getBooleanExtra(isNew,false);
 
         setContentView(R.layout.activity_edit);
 
@@ -61,22 +64,38 @@ public class EditActivity extends Activity {
         mGuarda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mfbId != null && mTL != null){
+                if (mfbId == null && mParentfbId == null) {
+                    mTL = new TimeLapse();
+                    mTL.setResume(mResume.getText().toString());
+                    mTL.setBody(mLongText.getText().toString());
+
+                    // TODO: obtner los players
+                    String[] players = {};
+
+                    FBCaller.createNewGame(mTL, players);
+                } else if (mfbId != null && mTL != null) {
+                // CASO EDIT
                     mTL.setResume(mResume.getText().toString());
                     mTL.setBody(mLongText.getText().toString());
                     mTL.setLight(mLight.isChecked());
 
                     FBCaller.saveTimeLapse(mfbId, mTL);
-                } else if (mParentfbId != null) {
+                } else {
+                // CASO CREAR NUEVO
                     mTL = new TimeLapse();
                     mTL.setResume(mResume.getText().toString());
                     mTL.setBody(mLongText.getText().toString());
                     mTL.setLight(mLight.isChecked());
 
-                    FBCaller.createNewTimeLapse(mTL, mParentfbId, mInsertAbove);
+                    if (mIsNew) {
+                        FBCaller.createNewTimeLapse(mTL, mParentfbId);
+                    } else {
+                        FBCaller.createNewTimeLapse(mTL, mParentfbId, mInsertAbove);
+                    }
                 }
             }
         });
+
         if (mfbId != null){
             mTL = FBCaller.getGame(this, mfbId);
             mResume.setText(mTL.getResume());

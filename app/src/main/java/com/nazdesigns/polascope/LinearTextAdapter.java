@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.FBCaller;
+import com.nazdesigns.polascope.Utilities.Common;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 import static com.nazdesigns.polascope.Utilities.Common.*;
@@ -32,7 +34,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         void onClickListElement(String id);
     }
 
-    static class SwipeHandler extends ItemTouchHelper.Callback {
+    public static class SwipeHandler extends ItemTouchHelper.Callback {
 
         private LinearTextAdapter.TextViewHolder swipedViewHolder;
 
@@ -143,12 +145,20 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             switch (viewId) {
                 case R.id.button_add_up:
                     Log.i(TAG,"Boton Add Up presionado");
-                    startEditActivity(v.getContext(), mId, true);
+                    if (FBCaller.getType(mId) == TimeLapse.GAME_TYPE){
+                        Common.startCreateGameActivity(v.getContext());
+                    } else {
+                        Common.startCreateActivity(v.getContext(), mId, true);
+                    }
                     break;
 
                 case R.id.button_add_down:
                     Log.i(TAG,"Boton Add Down presionado");
-                    startEditActivity(v.getContext(), mId, false);
+                    if (FBCaller.getType(mId) == TimeLapse.GAME_TYPE){
+                        Common.startCreateGameActivity(v.getContext());
+                    } else {
+                        Common.startCreateActivity(v.getContext(), mId, false);
+                    }
                     break;
 
                 case R.id.long_text:

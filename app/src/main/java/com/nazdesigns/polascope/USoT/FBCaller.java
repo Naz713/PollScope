@@ -14,7 +14,9 @@ import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.R;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Random;
 
@@ -59,13 +61,16 @@ public abstract class FBCaller {
     Inicializa al nuevo jugador
     Crear estructuras necesarias dentro de la Base de Datos
      */
-    public static boolean setPlayer(String playerId, String name){
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+    public static boolean setPlayer(final String playerId, final String name){
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child("players").child(playerId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if ( dataSnapshot.getValue() == null) {
-                    //TODO: incializar las estructuras del jugador
+                    HashMap<String, String> player = new HashMap<>();
+                    player.put("playerId",playerId);
+                    player.put("Name",name);
+                    ref.child("players").child(playerId).setValue(player);
                 }
             }
 
@@ -82,7 +87,21 @@ public abstract class FBCaller {
         return true;
     }
 
+    /*
+     * Crea un nuevo juego junto al time lapse con Id parentfbId antes o despues acorde a isBefore
+     */
     public static boolean createNewTimeLapse(TimeLapse timeLapse, String parentfbId, boolean isBefore){
+        return true;
+    }
+
+    /*
+     * Crea un nuevo juego en una timeLapse vacia con Id parentfbId
+     */
+    public static boolean createNewTimeLapse(TimeLapse timeLapse, String parentfbId){
+        return true;
+    }
+
+    public static boolean createNewGame(TimeLapse timeLapse, String[] playersIds){
         return true;
     }
 
@@ -95,6 +114,10 @@ public abstract class FBCaller {
 
     public static boolean getLight(String gameId){
         return new Random().nextBoolean();
+    }
+
+    public static int getType(String gameId){
+        return new Random().nextInt(3);
     }
 
 }
