@@ -76,8 +76,7 @@ public abstract class FBCaller {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if ( dataSnapshot.getValue() == null) {
                     HashMap<String, String> player = new HashMap<>();
-                    player.put("playerId",playerId);
-                    player.put("Name",name);
+                    player.put("name",name);
                     ref.child("players").child(playerId).setValue(player);
                 }
             }
