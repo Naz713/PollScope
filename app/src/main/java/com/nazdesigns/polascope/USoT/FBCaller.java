@@ -2,6 +2,7 @@ package com.nazdesigns.polascope.USoT;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +29,15 @@ public abstract class FBCaller {
     public static String[][] getAllPlayers() {
         String[][] arr = {{"1","2","3"},{"Pepe","Lina","Aysa"}};
         return arr;
+    }
+
+    /*
+     * Regresa los Ids de los jugadores aosciados a un juego
+     * Regresa una lista vacia si el id es null
+     */
+    public static String[] playersInGame(@Nullable String gameId){
+        String[] ret = {};
+        return ret;
     }
 
     /*
@@ -66,8 +76,7 @@ public abstract class FBCaller {
 
     /*
     Pregunta si el jugador con Id dado ya tiene las estructuras minimas necesarias
-    Inicializa al nuevo jugador
-    Crear estructuras necesarias dentro de la Base de Datos
+    Inicializa al nuevo jugador si en necesario
      */
     public static boolean setPlayer(final String playerId, final String name){
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -116,8 +125,11 @@ public abstract class FBCaller {
         return "";
     }
 
-    public static void setGamePlayers(String fbId, String[] players){
-
+    /*
+     * Los jugaores no se sobreescriben, solo se añaden extras
+     */
+    public static void addGamePlayers(String fbId, String[] players){
+        
     }
 
     /*

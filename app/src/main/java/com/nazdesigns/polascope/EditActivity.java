@@ -152,7 +152,7 @@ public class EditActivity extends Activity {
                         getSelectedPlayers(new OnSelectedPlayers() {
                             @Override
                             public void callback(String[] selectedPlayers) {
-                                FBCaller.setGamePlayers(mfbId, selectedPlayers);
+                                FBCaller.addGamePlayers(mfbId, selectedPlayers);
                             }
                         });
                     }
