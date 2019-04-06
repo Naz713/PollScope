@@ -106,8 +106,12 @@ public abstract class FBCaller {
         return true;
     }
 
-    public static boolean createNewGame(TimeLapse timeLapse, String[] playersIds){
-        return true;
+    public static String createNewGame(TimeLapse timeLapse, String[] playersIds){
+        return "";
+    }
+
+    public static void setGamePlayers(String[] players){
+
     }
 
     /*
