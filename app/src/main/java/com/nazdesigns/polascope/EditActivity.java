@@ -13,11 +13,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.firebase.database.core.utilities.Utilities;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.FBCaller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class EditActivity extends Activity {
     private String mfbId;
@@ -37,45 +39,59 @@ public class EditActivity extends Activity {
     public static String insertAbove = "insertAbove";
     public static String isNew = "isNew";
 
+    private interface OnSelectedPlayers{
+        void callback(String[] selectedPlayers);
+    }
+
     /**
      * Crea un diálogo con una lista de checkboxes
      * de selección multiple
      *
      * @return Diálogo
      */
-    public String[] getSelectedPlayers() {
+    public void getSelectedPlayers(final OnSelectedPlayers callback) {
         final Context context = (Context) this;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        final ArrayList itemsSeleccionados = new ArrayList();
+        final ArrayList playersSelected = new ArrayList();
 
-        CharSequence[] items = new CharSequence[3];
+        final String[][] items = FBCaller.getAllPlayers();
 
-        //TODO: Llenar con jugadores y regresar los ids de los seleccionados
-
-        items[0] = "Desarrollo Android";
-        items[1] = "Diseño De Bases De Datos";
-        items[2] = "Pruebas Unitarias";
-
-        builder.setTitle("Intereses")
-                .setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        if (isChecked) {
-                            // Guardar indice seleccionado
-                            itemsSeleccionados.add(which);
-                            Toast.makeText(context, "Checks seleccionados:(" + itemsSeleccionados.size() + ")", Toast.LENGTH_SHORT).show();
-                        } else if (itemsSeleccionados.contains(which)) {
-                            // Remover indice sin selección
-                            itemsSeleccionados.remove(Integer.valueOf(which));
-                        }
-                    }
-                });
+        builder.setTitle("Elige a los Jugadores")
+        .setMultiChoiceItems(items[1], null,
+                new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                if (isChecked) {
+                    // Guardar indice seleccionado
+                    playersSelected.add(items[0][which]);
+                    Toast.makeText(context,
+                            "Jugadores seleccionados:(" + playersSelected.size() + ")",
+                            Toast.LENGTH_SHORT).show();
+                } else if (playersSelected.contains(items[0][which])) {
+                    // Remover indice sin selección
+                    playersSelected.remove(items[0][which]);
+                    Toast.makeText(context,
+                            "Jugadores seleccionados:(" + playersSelected.size() + ")",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).setPositiveButton(R.string.guarda_button_text, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String[] selectedPlayers = (String[]) playersSelected.toArray(new String[0]);
+                Log.i("Edit", selectedPlayers.toString());
+                callback.callback(selectedPlayers);
+            }
+        }).setNegativeButton(R.string.cancela_button_text, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("Edit","Canceled Pressed");
+            }
+        });
 
         AlertDialog dialog = builder.create();
         dialog.show();
-
-        return (String[]) itemsSeleccionados.toArray();
 
     }
 
@@ -119,7 +135,12 @@ public class EditActivity extends Activity {
                     mTL.setBody(mLongText.getText().toString());
                     mTL.setTimeType(TimeLapse.GAME_TYPE);
 
-                    mfbId = FBCaller.createNewGame(mTL, getSelectedPlayers());
+                    getSelectedPlayers(new OnSelectedPlayers() {
+                        @Override
+                        public void callback(String[] selectedPlayers) {
+                            mfbId = FBCaller.createNewGame(mTL, selectedPlayers);
+                        }
+                    });
                 } else if (mfbId != null && mTL != null) {
                 // CASO EDIT
                     Log.i("Edit","Edit TimeLapse");
@@ -128,7 +149,12 @@ public class EditActivity extends Activity {
                     mTL.setLight(mLight.isChecked());
 
                     if (mTL.getTimeType() == TimeLapse.GAME_TYPE) {
-                        FBCaller.setGamePlayers(getSelectedPlayers());
+                        getSelectedPlayers(new OnSelectedPlayers() {
+                            @Override
+                            public void callback(String[] selectedPlayers) {
+                                FBCaller.setGamePlayers(mfbId, selectedPlayers);
+                            }
+                        });
                     }
 
                     FBCaller.saveTimeLapse(mfbId, mTL);

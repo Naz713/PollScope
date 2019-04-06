@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getName();
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
-    private EditText mUserName;
+    private EditText mUserNameView;
     private View mProgressView;
     private View mLoginFormView;
     private FirebaseAuth mAuth;
@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     if (mAuth.getCurrentUser() != null) {
-                        FBCaller.setPlayer(mAuth.getCurrentUser().getUid(), mUserName.getText().toString());
+                        FBCaller.setPlayer(mAuth.getCurrentUser().getUid(), mUserNameView.getText().toString());
                         Intent intent = new Intent(context, GameActivity.class);
                         startActivity(intent);
                         finish();
@@ -73,8 +73,8 @@ public class LoginActivity extends AppCompatActivity {
 
         // Set up the login form.
         mEmailView = findViewById(R.id.email);
-
         mPasswordView = findViewById(R.id.password);
+        mUserNameView = findViewById(R.id.user_name);
 
         Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        String userName = mUserName.getText().toString();
+        String userName = mUserNameView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -180,11 +180,11 @@ public class LoginActivity extends AppCompatActivity {
             } else if (type == SIGN_UP) {
                 // Check for a valid UserName
                 if (TextUtils.isEmpty(userName)) {
-                    mUserName.setError(getString(R.string.error_field_required));
-                    mUserName.requestFocus();
+                    mUserNameView.setError(getString(R.string.error_field_required));
+                    mUserNameView.requestFocus();
                 } else if (!isUserNamelValid(userName)) {
-                    mUserName.setError(getString(R.string.error_user_name));
-                    mUserName.requestFocus();
+                    mUserNameView.setError(getString(R.string.error_user_name));
+                    mUserNameView.requestFocus();
                 }
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -217,7 +217,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() >= 3 && password.matches("[a-zA-Z0-9_]*");
+        return password.length() >= 6 && password.matches("[a-zA-Z0-9_]*");
     }
 
     /**

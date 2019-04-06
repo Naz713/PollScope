@@ -25,12 +25,18 @@ import java.util.TreeMap;
 public abstract class FBCaller {
     private static final String TAG = "FireBaseCaller";
 
+    public static String[][] getAllPlayers() {
+        String[][] arr = {{"1","2","3"},{"Pepe","Lina","Aysa"}};
+        return arr;
+    }
+
     /*
     Regresa una lista que contiene todos los juegos del jugador
     Desde aquí se consulta su ID
      */
     public static List<String> getPlayerGames(){
-        String [] l = {"AA","BB","CC","DD","EE","FF","GG","HH","II","JJ","KK","LL","MM","NN","OO","PP","QQ","RR","SS","TT","UU","VV","WW","XX","YY","ZZ"};
+        String [] l = {"AA","BB","CC","DD","EE","FF","GG","HH","II","JJ","KK","LL","MM","NN","OO",
+                "PP","QQ","RR","SS","TT","UU","VV","WW","XX","YY","ZZ"};
         return Arrays.asList(l);
     }
 
@@ -53,7 +59,8 @@ public abstract class FBCaller {
         boolean is = getLight(gameId);
         TimeLapse timeLapse = new TimeLapse(13,is,
                 getResume(gameId),
-                context.getResources().getString(R.string.large_text),0.0,getPlayerGames());
+                context.getResources().getString(R.string.large_text),
+                0.0,getPlayerGames());
         return timeLapse;
     }
 
@@ -110,7 +117,7 @@ public abstract class FBCaller {
         return "";
     }
 
-    public static void setGamePlayers(String[] players){
+    public static void setGamePlayers(String fbId, String[] players){
 
     }
 
