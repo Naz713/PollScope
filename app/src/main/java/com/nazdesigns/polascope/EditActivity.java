@@ -57,28 +57,23 @@ public class EditActivity extends Activity {
 
         final String[][] items = FBCaller.getAllPlayers();
 
-        builder.setTitle("Elige a los Jugadores")
+        builder.setTitle("Agrega a más/los Jugadores")
         .setMultiChoiceItems(items[1], null,
                 new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 if (isChecked) {
-                    // Guardar indice seleccionado
                     playersSelected.add(items[0][which]);
-                    Toast.makeText(context,
-                            "Jugadores seleccionados:(" + playersSelected.size() + ")",
-                            Toast.LENGTH_SHORT).show();
                 } else if (playersSelected.contains(items[0][which])) {
-                    // Remover indice sin selección
                     playersSelected.remove(items[0][which]);
-                    Toast.makeText(context,
-                            "Jugadores seleccionados:(" + playersSelected.size() + ")",
-                            Toast.LENGTH_SHORT).show();
                 }
             }
         }).setPositiveButton(R.string.guarda_button_text, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(context,
+                        "Jugadores seleccionados:(" + playersSelected.size() + ")",
+                        Toast.LENGTH_SHORT).show();
                 String[] selectedPlayers = (String[]) playersSelected.toArray(new String[0]);
                 Log.i("Edit", selectedPlayers.toString());
                 callback.callback(selectedPlayers);
