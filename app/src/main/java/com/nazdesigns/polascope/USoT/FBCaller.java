@@ -14,6 +14,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.R;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -84,8 +85,9 @@ public abstract class FBCaller {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if ( dataSnapshot.getValue() == null) {
-                    HashMap<String, String> player = new HashMap<>();
-                    player.put("name",name);
+                    HashMap<String, Object> player = new HashMap<>();
+                    player.put("name", name);
+                    player.put("games", new ArrayList<String>());
                     ref.child("players").child(playerId).setValue(player);
                 }
             }
@@ -122,13 +124,45 @@ public abstract class FBCaller {
     }
 
     public static String createNewGame(TimeLapse timeLapse, String[] playersIds){
-        return "";
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final String gameId = ref.child("games").push().getKey();
+
+        // Actualizamos los jugadores en el juego
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/timelapse", timeLapse);
+        childUpdates.put("/players", playersIds);
+
+        ref.child("games").child(gameId).updateChildren(childUpdates);
+
+        // Actualizamos el juego en los players
+        for (final String playerId : playersIds) {
+            ref.child("players").child(playerId).child("games")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() instanceof List) {
+                        List<String> games = (List<String>) dataSnapshot.getValue();
+                        if (!games.contains(gameId)){
+                            games.add(gameId);
+                            ref.child("players").child(playerId).child("games").setValue(games);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e(TAG,"Error actualizando los juegos de un jugador");
+                }
+            });
+        }
+        return gameId;
     }
 
     /*
      * Los jugaores no se sobreescriben, solo se añaden extras
      */
     public static void addGamePlayers(String fbId, String[] players){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         
     }
 
