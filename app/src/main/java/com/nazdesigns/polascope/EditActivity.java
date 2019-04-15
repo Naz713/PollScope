@@ -57,7 +57,7 @@ public class EditActivity extends Activity {
 
         final String[][] items = FBCaller.getAllPlayers();
 
-        builder.setTitle("Agrega a más/los Jugadores")
+        builder.setTitle("Agrega Jugadores")
         .setMultiChoiceItems(items[1], null,
                 new DialogInterface.OnMultiChoiceClickListener() {
             @Override
