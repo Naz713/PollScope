@@ -28,19 +28,9 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /**
-         * Checamos si tenenmos un Firebase user registrado, sino llamamos a Login para registrarlo
-         */
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (null == user){
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            mUserId = user.getUid();
-        }
-        /**
+        checkFBAuth();
+
+        /*
          * Inicalizamos el layout
          */
         setContentView(R.layout.activity_game);
@@ -57,6 +47,21 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
                 .add(R.id.fragment_container, recyclerFragment)
                 .commit();
 
+  }
+
+  public void checkFBAuth(){
+      /*
+       * Checamos si tenenmos un Firebase user registrado, sino llamamos a Login para registrarlo
+       */
+      mAuth = FirebaseAuth.getInstance();
+      FirebaseUser user = mAuth.getCurrentUser();
+      if (null == user){
+          Intent intent = new Intent(this, LoginActivity.class);
+          startActivity(intent);
+          finish();
+      } else {
+          mUserId = user.getUid();
+      }
   }
 
     @Override

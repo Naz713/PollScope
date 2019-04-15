@@ -87,7 +87,6 @@ public abstract class FBCaller {
                 if ( dataSnapshot.getValue() == null) {
                     HashMap<String, Object> player = new HashMap<>();
                     player.put("name", name);
-                    player.put("games", new ArrayList<String>());
                     ref.child("players").child(playerId).setValue(player);
                 }
             }

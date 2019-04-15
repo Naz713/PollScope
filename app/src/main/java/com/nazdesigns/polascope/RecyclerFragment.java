@@ -124,6 +124,8 @@ public class RecyclerFragment extends Fragment {
         int id = item.getItemId();
         if (id == R.id.log_out) {
             FirebaseAuth.getInstance().signOut();
+            GameActivity activity = (GameActivity) this.getActivity();
+            activity.checkFBAuth();
             return true;
         } else if (id == R.id.add_to_empty) {
             if (mFBId == null){
