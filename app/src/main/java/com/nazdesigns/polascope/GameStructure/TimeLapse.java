@@ -43,11 +43,11 @@ public class TimeLapse {
         this.timeType = timeType;
     }
 
-    public boolean isLight() {
+    public boolean getIsLight() {
         return isLight;
     }
 
-    public void setLight(boolean light) {
+    public void setIsLight(boolean light) {
         isLight = light;
     }
 

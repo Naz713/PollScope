@@ -122,7 +122,7 @@ public abstract class FBCaller {
         return true;
     }
 
-    public static String createNewGame(TimeLapse timeLapse, String[] playersIds){
+    public static String createNewGame(TimeLapse timeLapse, List<String> playersIds){
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         final String gameId = ref.child("games").push().getKey();
 
@@ -160,7 +160,7 @@ public abstract class FBCaller {
     /*
      * Los jugaores no se sobreescriben, solo se añaden extras
      */
-    public static void addGamePlayers(String fbId, String[] players){
+    public static void addGamePlayers(String fbId, List<String> players){
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         
     }

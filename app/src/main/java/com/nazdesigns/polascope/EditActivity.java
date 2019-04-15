@@ -40,7 +40,7 @@ public class EditActivity extends Activity {
     public static String isNew = "isNew";
 
     private interface OnSelectedPlayers{
-        void callback(String[] selectedPlayers);
+        void callback(List<String> selectedPlayers);
     }
 
     /**
@@ -74,9 +74,8 @@ public class EditActivity extends Activity {
                 Toast.makeText(context,
                         "Jugadores seleccionados:(" + playersSelected.size() + ")",
                         Toast.LENGTH_SHORT).show();
-                String[] selectedPlayers = (String[]) playersSelected.toArray(new String[0]);
-                Log.i("Edit", selectedPlayers.toString());
-                callback.callback(selectedPlayers);
+                Log.i("Edit", playersSelected.toString());
+                callback.callback(playersSelected);
             }
         }).setNegativeButton(R.string.cancela_button_text, new DialogInterface.OnClickListener() {
             @Override
@@ -112,7 +111,7 @@ public class EditActivity extends Activity {
                 if (mTL != null){
                     mResume.setText(mTL.getResume());
                     mLongText.setText(mTL.getBody());
-                    mLight.setChecked(mTL.isLight());
+                    mLight.setChecked(mTL.getIsLight());
                 }
             }
         });
@@ -132,7 +131,7 @@ public class EditActivity extends Activity {
 
                     getSelectedPlayers(new OnSelectedPlayers() {
                         @Override
-                        public void callback(String[] selectedPlayers) {
+                        public void callback(List<String> selectedPlayers) {
                             mfbId = FBCaller.createNewGame(mTL, selectedPlayers);
                         }
                     });
@@ -141,12 +140,12 @@ public class EditActivity extends Activity {
                     Log.i("Edit","Edit TimeLapse");
                     mTL.setResume(mResume.getText().toString());
                     mTL.setBody(mLongText.getText().toString());
-                    mTL.setLight(mLight.isChecked());
+                    mTL.setIsLight(mLight.isChecked());
 
                     if (mTL.getTimeType() == TimeLapse.GAME_TYPE) {
                         getSelectedPlayers(new OnSelectedPlayers() {
                             @Override
-                            public void callback(String[] selectedPlayers) {
+                            public void callback(List<String> selectedPlayers) {
                                 FBCaller.addGamePlayers(mfbId, selectedPlayers);
                             }
                         });
@@ -159,7 +158,7 @@ public class EditActivity extends Activity {
                     mTL = new TimeLapse();
                     mTL.setResume(mResume.getText().toString());
                     mTL.setBody(mLongText.getText().toString());
-                    mTL.setLight(mLight.isChecked());
+                    mTL.setIsLight(mLight.isChecked());
 
                     if (mIsNew) {
                         FBCaller.createNewTimeLapse(mTL, mParentfbId);
@@ -174,7 +173,7 @@ public class EditActivity extends Activity {
             mTL = FBCaller.getGame(this, mfbId);
             mResume.setText(mTL.getResume());
             mLongText.setText(mTL.getBody());
-            mLight.setChecked(mTL.isLight());
+            mLight.setChecked(mTL.getIsLight());
         }
         if (mfbId == null && mParentfbId == null) {
             mLight.setVisibility(View.GONE);

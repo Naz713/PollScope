@@ -227,7 +227,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         holder.setId(childFBId);
         TimeLapse childTimeLapse = FBCaller.getGame(holder.itemView.getContext(), childFBId);
 
-        if(childTimeLapse.isLight()){
+        if(childTimeLapse.getIsLight()){
             //holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
             holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundLight));
             holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundLight));
