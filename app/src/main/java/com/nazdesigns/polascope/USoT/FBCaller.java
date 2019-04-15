@@ -124,44 +124,57 @@ public abstract class FBCaller {
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         final String gameId = ref.child("games").push().getKey();
 
-        // Actualizamos los jugadores en el juego
+        /*
+        * Agregamos el Timelapse
+        * */
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/timelapse", timeLapse);
-        childUpdates.put("/players", playersIds);
-
         ref.child("games").child(gameId).updateChildren(childUpdates);
 
-        // Actualizamos el juego en los players
-        for (final String playerId : playersIds) {
-            ref.child("players").child(playerId).child("games")
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() instanceof List) {
-                        List<String> games = (List<String>) dataSnapshot.getValue();
-                        if (!games.contains(gameId)){
-                            games.add(gameId);
-                            ref.child("players").child(playerId).child("games").setValue(games);
-                        }
-                    }
-                }
+        /*
+        * Actualizamos los jugadores del juego y los juegos de los jugadores
+        * */
+        addGamePlayers(gameId, playersIds);
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.e(TAG,"Error actualizando los juegos de un jugador");
-                }
-            });
-        }
         return gameId;
     }
 
     /*
      * Los jugaores no se sobreescriben, solo se añaden extras
      */
-    public static void addGamePlayers(String fbId, List<String> players){
-        // TODO: Llenar con llamada verdadera a Firebase
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        
+    public static void addGamePlayers(final String gameId, List<String> playersIds){
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+        // Actualizamos los jugadores en el juego
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/players", playersIds);
+        ref.child("games").child(gameId).updateChildren(childUpdates);
+
+        // Actualizamos el juego en los players
+        for (final String playerId : playersIds) {
+            ref.child("players").child(playerId).child("games")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() == null) {
+                            List<String> games = new ArrayList<>();
+                            games.add(gameId);
+                            ref.child("players").child(playerId).child("games").setValue(games);
+                        } else if (dataSnapshot.getValue() instanceof List) {
+                            List<String> games = (List<String>) dataSnapshot.getValue();
+                            if (!games.contains(gameId)){
+                                games.add(gameId);
+                                ref.child("players").child(playerId).child("games").setValue(games);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e(TAG,"Error actualizando los juegos de un jugador");
+                    }
+                });
+        }
     }
 
     /*
