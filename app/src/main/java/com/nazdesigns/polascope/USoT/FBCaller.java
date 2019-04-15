@@ -26,50 +26,7 @@ import java.util.TreeMap;
 public abstract class FBCaller {
     private static final String TAG = "FireBaseCaller";
 
-    public static String[][] getAllPlayers() {
-        // TODO: Llenar con llamada verdadera a Firebase
-        String[][] arr = {{"1","2","3"},{"Pepe","Lina","Aysa"}};
-        return arr;
-    }
-
-    /*
-    Regresa una lista que contiene todos los juegos del jugador
-    Desde aquí se consulta su ID
-     */
-    public static List<String> getPlayerGames(){
-        // TODO: Llenar con llamada verdadera a Firebase
-        String [] l = {"AA","BB","CC","DD","EE","FF","GG","HH","II","JJ","KK","LL","MM","NN","OO",
-                "PP","QQ","RR","SS","TT","UU","VV","WW","XX","YY","ZZ"};
-        return Arrays.asList(l);
-    }
-
-    /*
-    Regresa una lista de los ids de los TimeLapse subordinados al TimeLapse en cuestion
-     */
-    public static List<String> getSubEpochs(String gameId){
-        // TODO: Llenar con llamada verdadera a Firebase
-        if ( gameId != null && gameId.equals("AA")){
-            String [] l = {};
-            return Arrays.asList(l);
-        } else {
-            return getPlayerGames();
-        }
-    }
-
-    /*
-    Regresa el jueoa apropiado al id pasado
-     */
-    public static TimeLapse getGame(Context context, String gameId){
-        // TODO: Llenar con llamada verdadera a Firebase
-        boolean is = getLight(gameId);
-        TimeLapse timeLapse = new TimeLapse(13,is,
-                getResume(gameId),
-                context.getResources().getString(R.string.large_text),
-                0.0,getPlayerGames());
-        return timeLapse;
-    }
-
-    /*
+    /**
     Pregunta si el jugador con Id dado ya tiene las estructuras minimas necesarias
     Inicializa al nuevo jugador si en necesario
      */
@@ -94,9 +51,20 @@ public abstract class FBCaller {
         return true;
     }
 
-    public static boolean saveTimeLapse(String fbId, TimeLapse timeLapse){
+    public static String[][] getAllPlayers() {
         // TODO: Llenar con llamada verdadera a Firebase
-        return true;
+        String[][] arr = {{"1","2","3"},{"Pepe","Lina","Aysa"}};
+        return arr;
+    }
+
+    /**
+    Regresa una lista que contiene todos los juegos del jugador
+     */
+    public static List<String> getPlayerGames(){
+        // TODO: Llenar con llamada verdadera a Firebase
+        String [] l = {"AA","BB","CC","DD","EE","FF","GG","HH","II","JJ","KK","LL","MM","NN","OO",
+                "PP","QQ","RR","SS","TT","UU","VV","WW","XX","YY","ZZ"};
+        return Arrays.asList(l);
     }
 
     public static boolean isUserNameInUse(String userName){
@@ -174,6 +142,37 @@ public abstract class FBCaller {
                         Log.e(TAG,"Error actualizando los juegos de un jugador");
                     }
                 });
+        }
+    }
+
+    public static boolean saveTimeLapse(String fbId, TimeLapse timeLapse){
+        // TODO: Llenar con llamada verdadera a Firebase
+        return true;
+    }
+
+    /*
+    Regresa el jueoa apropiado al id pasado
+     */
+    public static TimeLapse getGame(Context context, String gameId){
+        // TODO: Llenar con llamada verdadera a Firebase
+        boolean is = getLight(gameId);
+        TimeLapse timeLapse = new TimeLapse(13,is,
+                getResume(gameId),
+                context.getResources().getString(R.string.large_text),
+                0.0,getPlayerGames());
+        return timeLapse;
+    }
+
+    /*
+    Regresa una lista de los ids de los TimeLapse subordinados al TimeLapse en cuestion
+     */
+    public static List<String> getSubEpochs(String gameId){
+        // TODO: Llenar con llamada verdadera a Firebase
+        if ( gameId != null && gameId.equals("AA")){
+            String [] l = {};
+            return Arrays.asList(l);
+        } else {
+            return getPlayerGames();
         }
     }
 
