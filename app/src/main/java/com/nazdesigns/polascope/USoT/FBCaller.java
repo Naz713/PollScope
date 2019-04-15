@@ -23,20 +23,21 @@ import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.TreeMap;
 
-// TODO: Llenar con llamadas verdaderas a Firebase
 public abstract class FBCaller {
     private static final String TAG = "FireBaseCaller";
 
     public static String[][] getAllPlayers() {
+        // TODO: Llenar con llamada verdadera a Firebase
         String[][] arr = {{"1","2","3"},{"Pepe","Lina","Aysa"}};
         return arr;
     }
-    
+
     /*
     Regresa una lista que contiene todos los juegos del jugador
     Desde aquí se consulta su ID
      */
     public static List<String> getPlayerGames(){
+        // TODO: Llenar con llamada verdadera a Firebase
         String [] l = {"AA","BB","CC","DD","EE","FF","GG","HH","II","JJ","KK","LL","MM","NN","OO",
                 "PP","QQ","RR","SS","TT","UU","VV","WW","XX","YY","ZZ"};
         return Arrays.asList(l);
@@ -46,6 +47,7 @@ public abstract class FBCaller {
     Regresa una lista de los ids de los TimeLapse subordinados al TimeLapse en cuestion
      */
     public static List<String> getSubEpochs(String gameId){
+        // TODO: Llenar con llamada verdadera a Firebase
         if ( gameId != null && gameId.equals("AA")){
             String [] l = {};
             return Arrays.asList(l);
@@ -58,6 +60,7 @@ public abstract class FBCaller {
     Regresa el jueoa apropiado al id pasado
      */
     public static TimeLapse getGame(Context context, String gameId){
+        // TODO: Llenar con llamada verdadera a Firebase
         boolean is = getLight(gameId);
         TimeLapse timeLapse = new TimeLapse(13,is,
                 getResume(gameId),
@@ -92,10 +95,12 @@ public abstract class FBCaller {
     }
 
     public static boolean saveTimeLapse(String fbId, TimeLapse timeLapse){
+        // TODO: Llenar con llamada verdadera a Firebase
         return true;
     }
 
     public static boolean isUserNameInUse(String userName){
+        // TODO: Llenar con llamada verdadera a Firebase
         return true;
     }
 
@@ -103,6 +108,7 @@ public abstract class FBCaller {
      * Crea un nuevo juego junto al time lapse con Id parentfbId antes o despues acorde a isBefore
      */
     public static boolean createNewTimeLapse(TimeLapse timeLapse, String parentfbId, boolean isBefore){
+        // TODO: Llenar con llamada verdadera a Firebase
         return true;
     }
 
@@ -110,6 +116,7 @@ public abstract class FBCaller {
      * Crea un nuevo juego en una timeLapse vacia con Id parentfbId
      */
     public static boolean createNewTimeLapse(TimeLapse timeLapse, String parentfbId){
+        // TODO: Llenar con llamada verdadera a Firebase
         return true;
     }
 
@@ -152,6 +159,7 @@ public abstract class FBCaller {
      * Los jugaores no se sobreescriben, solo se añaden extras
      */
     public static void addGamePlayers(String fbId, List<String> players){
+        // TODO: Llenar con llamada verdadera a Firebase
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         
     }
@@ -160,14 +168,17 @@ public abstract class FBCaller {
     *
     */
     public static String getResume(String gameId){
+        // TODO: Llenar con llamada verdadera a Firebase
         return "Una aventura Épica y maravillosa. Que algún día escribiremos, nos sorprenderemos leyendola y felices.";
     }
 
     public static boolean getLight(String gameId){
+        // TODO: Llenar con llamada verdadera a Firebase
         return new Random().nextBoolean();
     }
 
     public static int getType(String gameId){
+        // TODO: Llenar con llamada verdadera a Firebase
         return new Random().nextInt(3);
     }
 
