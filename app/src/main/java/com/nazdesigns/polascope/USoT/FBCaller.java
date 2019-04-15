@@ -31,16 +31,7 @@ public abstract class FBCaller {
         String[][] arr = {{"1","2","3"},{"Pepe","Lina","Aysa"}};
         return arr;
     }
-
-    /*
-     * Regresa los Ids de los jugadores aosciados a un juego
-     * Regresa una lista vacia si el id es null
-     */
-    public static String[] playersInGame(@Nullable String gameId){
-        String[] ret = {};
-        return ret;
-    }
-
+    
     /*
     Regresa una lista que contiene todos los juegos del jugador
     Desde aquí se consulta su ID
