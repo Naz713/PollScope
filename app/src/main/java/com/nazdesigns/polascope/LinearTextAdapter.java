@@ -17,6 +17,7 @@ import com.nazdesigns.polascope.USoT.FBCaller;
 import com.nazdesigns.polascope.Utilities.Common;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 import static com.nazdesigns.polascope.Utilities.Common.*;
 
@@ -199,18 +200,21 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
     public LinearTextAdapter(String id, onListListener listener, LinearTextAdapter.SwipeHandler swipeHandler) {
         mFBId = id;
+        mDataset = new ArrayList<>();
+        this.listener = listener;
+        this.mSwipeHandler = swipeHandler;
+        final LinearTextAdapter textAdapter = this;
         if (mFBId == null){
             FBCaller.getPlayerGames(new FBCaller.onListCallback() {
                 @Override
                 public void onListReturned(List<String> result) {
                     mDataset = result;
+                    textAdapter.notifyDataSetChanged();
                 }
             });
         } else {
             mDataset = FBCaller.getSubEpochs(mFBId);
         }
-        this.listener = listener;
-        this.mSwipeHandler = swipeHandler;
     }
 
     public void detachListener(){

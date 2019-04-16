@@ -135,6 +135,7 @@ public class EditActivity extends Activity {
                             mfbId = FBCaller.createNewGame(mTL, selectedPlayers);
                         }
                     });
+
                 } else if (mfbId != null && mTL != null) {
                 // CASO EDIT
                     Log.i("Edit","Edit TimeLapse");
@@ -150,8 +151,8 @@ public class EditActivity extends Activity {
                             }
                         });
                     }
-
                     FBCaller.saveTimeLapse(mfbId, mTL);
+
                 } else {
                 // CASO CREAR NUEVO
                     Log.i("Edit","Crear TimeLapse");
