@@ -119,20 +119,53 @@ public abstract class FBCaller {
     /*
      * Crea un nuevo juego en una timeLapse vacia con Id parentfbId
      */
-    public static void createNewTimeLapse(TimeLapse timeLapse, String parentfbId){
-        // TODO: Llenar con llamada verdadera a Firebase
+    public static void createNewTimeLapse(TimeLapse timeLapse, final String parentfbId){
+        final String gameId = createTimelapse(timeLapse);
+
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("timelapses").child(parentfbId).child("timelapse")
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() == null) {
+                        Log.e(TAG, "Se intentó crear un sublebado a un TimeLapse null");
+                    } else if (dataSnapshot.getValue() instanceof TimeLapse) {
+                        TimeLapse tl = (TimeLapse) dataSnapshot.getValue();
+                        List<String> subEpochs = tl.getSubEpochsIds();
+                        if (!subEpochs.contains(gameId)) {
+                            subEpochs.add(gameId);
+                            tl.setSubEpochsIds(subEpochs);
+                            ref.child("timelapses").child(parentfbId).child("timelapse").setValue(tl);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e(TAG,"Error actualizando los juegos de un jugador");
+                }
+            });
+    }
+
+    private static String createTimelapse(TimeLapse timeLapse){
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final String gameId = ref.child("timelapses").push().getKey();
+
+        /*
+         * Agregamos el Timelapse
+         * */
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/timelapse", timeLapse);
+        ref.child("timelapses").child(gameId).updateChildren(childUpdates);
+
+        return gameId;
     }
 
     public static String createNewGame(TimeLapse timeLapse, List<String> playersIds){
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        final String gameId = ref.child("games").push().getKey();
-
         /*
-        * Agregamos el Timelapse
+        * Agregamos el Timelapse y nos devuelve su Id
         * */
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/timelapse", timeLapse);
-        ref.child("games").child(gameId).updateChildren(childUpdates);
+        String gameId = createTimelapse(timeLapse);
 
         /*
         * Actualizamos los jugadores del juego y los juegos de los jugadores
@@ -151,7 +184,7 @@ public abstract class FBCaller {
         // Actualizamos los jugadores en el juego
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/players", playersIds);
-        ref.child("games").child(gameId).updateChildren(childUpdates);
+        ref.child("timelapses").child(gameId).updateChildren(childUpdates);
 
         // Actualizamos el juego en los players
         for (final String playerId : playersIds) {
