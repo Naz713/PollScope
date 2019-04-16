@@ -200,7 +200,12 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
     public LinearTextAdapter(String id, onListListener listener, LinearTextAdapter.SwipeHandler swipeHandler) {
         mFBId = id;
         if (mFBId == null){
-            mDataset = FBCaller.getPlayerGames();
+            FBCaller.getPlayerGames(new FBCaller.onListCallback() {
+                @Override
+                public void onListReturned(List<String> result) {
+                    mDataset = result;
+                }
+            });
         } else {
             mDataset = FBCaller.getSubEpochs(mFBId);
         }
