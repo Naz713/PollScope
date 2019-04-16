@@ -70,6 +70,11 @@ public abstract class FBCaller {
         return arr;
     }
 
+    public static boolean isUserNameInUse(String userName){
+        // TODO: Llenar con llamada verdadera a Firebase
+        return true;
+    }
+
     /**
     Regresa una lista que contiene todos los juegos del jugador
      */
@@ -102,11 +107,6 @@ public abstract class FBCaller {
                 callbackResult.onListReturned(new ArrayList<String>());
             }
         });
-    }
-
-    public static boolean isUserNameInUse(String userName){
-        // TODO: Llenar con llamada verdadera a Firebase
-        return true;
     }
 
     /*
