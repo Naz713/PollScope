@@ -112,29 +112,60 @@ public abstract class FBCaller {
     /*
      * Crea un nuevo juego junto al time lapse con Id parentfbId antes o despues acorde a isBefore
      */
-    public static void createNewTimeLapse(final TimeLapse timeLapse, String brotherfbId, boolean isBefore){
+    public static void createNewTimeLapse(final TimeLapse timeLapse, final String brotherfbId, final boolean isBefore){
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child("timelapses").child(brotherfbId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    Log.e(TAG, "Se intentó crear un hermano a un TimeLapse null");
+                }
+
                 String parentfbId = null;
-                double brotherIndex;
+                String secondBrother = null;
+                double brotherIndex = 0.0;
                 for ( DataSnapshot obj : dataSnapshot.getChildren() ){
-                    if (obj.getKey().equals("index")){
-                        brotherIndex = (double) obj.getValue();
-                    } else if (obj.getKey().equals("raiz")){
-                        parentfbId = (String) obj.getValue();
+                    switch (obj.getKey()){
+                        case "index":
+                            brotherIndex = (double) obj.getValue();
+                            break;
+                        case "raiz":
+                            parentfbId = (String) obj.getValue();
+                            break;
+                        case "before_brother":
+                            if (isBefore) {
+                                secondBrother = (String) obj.getValue();
+                            }
+                            break;
+                        case "after_brother":
+                            if (!isBefore) {
+                                secondBrother = (String) obj.getValue();
+                            }
+                            break;
                     }
                 }
                 String gameId = createNewTimeLapse(timeLapse, parentfbId);
                 // TODO: Calcular el index del nuevo timelapse
                 double index = 0;
 
+                if () {
+
+                }
 
 
 
 
-                ref.child("timelapses").child(gameId).child("index").setValue(index);
+
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("/index", index);
+                if (isBefore){
+                    childUpdates.put("/before_brother", secondBrother);
+                    childUpdates.put("/after_brother", brotherfbId);
+                } else {
+                    childUpdates.put("/before_brother", brotherfbId);
+                    childUpdates.put("/after_brother", secondBrother);
+                }
+                ref.child("timelapses").child(gameId).updateChildren(childUpdates);
             }
 
             @Override
