@@ -2,6 +2,7 @@ package com.nazdesigns.polascope.USoT;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -9,6 +10,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.R;
@@ -250,7 +253,21 @@ public abstract class FBCaller {
 
     private static String createTimelapse(TimeLapse timeLapse){
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        final String gameId = ref.child("timelapses").push().getKey();
+        ref.child("timelapses").push().runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                final String gameId = mutableData.getKey();
+                return null;
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+
+            }
+        });
+
+        //.getKey();
 
         /*
          * Agregamos el Timelapse
