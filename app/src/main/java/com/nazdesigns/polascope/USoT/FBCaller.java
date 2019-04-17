@@ -121,6 +121,9 @@ public abstract class FBCaller {
                     Log.e(TAG, "Se intentó crear un hermano a un TimeLapse null");
                 }
 
+                /*
+                * Dentro del objeto iteramos en su contenido para encontrar la raiz index y hermanos
+                * */
                 String parentfbId = null;
                 String secondBrother = null;
                 double brotherIndex = 0.0;
@@ -144,7 +147,15 @@ public abstract class FBCaller {
                             break;
                     }
                 }
+                /*
+                 * Creamos el timeLapse con la raiz conocida
+                 */
                 final String gameId = createNewTimeLapse(timeLapse, parentfbId);
+                /*
+                * Calculamos el index
+                * si el hermano es null es porque estamos en un extremo
+                * si no es nulo sacamos el promedio para calcular el index
+                * */
                 double index = 0;
                 if (secondBrother == null) {
                     if (isBefore) {
