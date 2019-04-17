@@ -144,17 +144,41 @@ public abstract class FBCaller {
                             break;
                     }
                 }
-                String gameId = createNewTimeLapse(timeLapse, parentfbId);
-                // TODO: Calcular el index del nuevo timelapse
+                final String gameId = createNewTimeLapse(timeLapse, parentfbId);
                 double index = 0;
+                if (secondBrother == null) {
+                    if (isBefore) {
+                        index = brotherIndex - 100;
+                    } else {
+                        index = brotherIndex + 100;
+                    }
+                } else {
+                    final double finalBrotherIndex = brotherIndex;
+                    ref.child("timelapses").child(secondBrother).child("index")
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            double index;
+                            if (dataSnapshot.getValue() == null) {
+                                Log.e(TAG,"Segundo hermano sin index");
+                                if (isBefore) {
+                                    index = finalBrotherIndex - 0.1;
+                                } else {
+                                    index = finalBrotherIndex + 0.1;
+                                }
+                            } else {
+                                index = ( (double) dataSnapshot.getValue() + finalBrotherIndex)/2;
+                            }
+                            ref.child("timelapses").child(gameId).child("index").setValue(index);
+                        }
 
-                if () {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.e(TAG,"Cancelada petición al consultar el segundo hermano");
+                        }
+                    });
 
                 }
-
-
-
-
 
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("/index", index);
@@ -170,7 +194,7 @@ public abstract class FBCaller {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.e(TAG,"Cancelada petición al consultar el primer hermano");
             }
         });
     }
