@@ -204,11 +204,7 @@ public abstract class FBCaller {
      */
     public static String createNewTimeLapse(TimeLapse timeLapse, final String parentfbId) {
         final String gameId = createTimelapse(timeLapse);
-        updateRaiz(gameId, parentfbId);
-        return gameId;
-    }
 
-    private static void updateRaiz(final String gameId, final String parentfbId){
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
         ref.child("timelapses").child(parentfbId).child("timelapse")
@@ -238,6 +234,7 @@ public abstract class FBCaller {
                     Log.e(TAG,"Error actualizando los juegos de un jugador");
                 }
             });
+        return gameId;
     }
 
     private static String createTimelapse(TimeLapse timeLapse){
