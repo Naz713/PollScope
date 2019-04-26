@@ -109,6 +109,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public ImageButton mAdd_up;
         public ImageButton mAdd_down;
         public String mId;
+        public int mTimeType;
         public WeakReference<onListListener> listListener;
         public WeakReference<LinearTextAdapter.SwipeHandler> mSwipeHandler;
 
@@ -135,8 +136,9 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
         }
 
-        public void setId(String id){
+        public void setId(String id, int type){
             mId = id;
+            mTimeType = type;
         }
 
         @Override
@@ -146,7 +148,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             switch (viewId) {
                 case R.id.button_add_up:
                     Log.i(TAG,"Boton Add Up presionado");
-                    if (FBCaller.getType(mId) == TimeLapse.GAME_TYPE){
+                    if (mTimeType == TimeLapse.GAME_TYPE){
                         Common.startCreateGameActivity(v.getContext());
                     } else {
                         Common.startCreateActivity(v.getContext(), mId, true);
@@ -155,7 +157,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
                 case R.id.button_add_down:
                     Log.i(TAG,"Boton Add Down presionado");
-                    if (FBCaller.getType(mId) == TimeLapse.GAME_TYPE){
+                    if (mTimeType == TimeLapse.GAME_TYPE){
                         Common.startCreateGameActivity(v.getContext());
                     } else {
                         Common.startCreateActivity(v.getContext(), mId, false);
@@ -233,8 +235,10 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
     @Override
     public void onBindViewHolder(@NonNull TextViewHolder holder, int position) {
         String childFBId = mDataset.get(position);
-        holder.setId(childFBId);
-        TimeLapse childTimeLapse = FBCaller.getGame(holder.itemView.getContext(), childFBId);
+
+        TimeLapse childTimeLapse = FBCaller.getGame(childFBId);
+
+        holder.setId(childFBId, childTimeLapse.getTimeType());
 
         if(childTimeLapse.getIsLight()){
             //holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
@@ -248,7 +252,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
         }
 
-        if  (FBCaller.getSubEpochs(childFBId).isEmpty()) {
+        if  (childTimeLapse.getSubEpochsIds().isEmpty()) {
             holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0, R.mipmap.empty, 0);
         }
 

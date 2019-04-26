@@ -97,6 +97,7 @@ public class RecyclerFragment extends Fragment {
         if (mFBId == null) {
             text = getString(R.string.games_list_msg);
         } else {
+            //TODO: obtener el TL entero y obtener la info de ahí
             text = FBCaller.getResume(mFBId);
             boolean isLight = FBCaller.getLight(mFBId);
 
@@ -114,6 +115,7 @@ public class RecyclerFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        //TODO: obtener el TL entero y obtener la info de ahí
         if(FBCaller.getSubEpochs(mFBId).isEmpty()){
             menu.findItem(R.id.add_to_empty).setVisible(true);
         }

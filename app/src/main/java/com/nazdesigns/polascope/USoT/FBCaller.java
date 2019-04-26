@@ -433,9 +433,7 @@ public abstract class FBCaller {
             });
     }
 
-    /*
-    *
-    */
+    @Deprecated
     public static void getResume(final String gameId, final onStringCallback callback){
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child("timelapses").child(gameId).child("timelapse").child("resume")
@@ -460,6 +458,7 @@ public abstract class FBCaller {
             });
     }
 
+    @Deprecated
     public static void getLight(final String gameId, final onBoolCallback callback){
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child("timelapses").child(gameId).child("timelapse").child("isLight")
@@ -484,6 +483,7 @@ public abstract class FBCaller {
             });
     }
 
+    @Deprecated
     public static void getType(final String gameId, final onIntCallback callback){
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child("timelapses").child(gameId).child("timelapse").child("timeType")
