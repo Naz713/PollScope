@@ -35,10 +35,10 @@ public abstract class FBCaller {
         void onArrayReturned(String[][] result);
     }
     public interface onBoolCallback{
-        void onBooleanResult(boolean result);
+        void onBooleanResult(boolean result, boolean error);
     }
     public interface onIntCallback{
-        void onIntResult(int result);
+        void onIntResult(int result, boolean error);
     }
     public interface onTLCallback{
         void onTimeLapseResult(TimeLapse result);
@@ -382,48 +382,130 @@ public abstract class FBCaller {
     /*
     Regresa el jueoa apropiado al id pasado
      */
-    public static TimeLapse getGame(Context context, String gameId){
-        // TODO: Llenar con llamada verdadera a Firebase
-        boolean is = getLight(gameId);
-        String [] l = {"AA","BB","CC","DD","EE","FF","GG","HH","II","JJ","KK","LL","MM","NN","OO",
-                "PP","QQ","RR","SS","TT","UU","VV","WW","XX","YY","ZZ"};
-        TimeLapse timeLapse = new TimeLapse(13,is,
-                getResume(gameId),
-                context.getResources().getString(R.string.large_text),
-                0.0, Arrays.asList(l));
-        return timeLapse;
+    public static void getGame(final String gameId, final onTLCallback callback){
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("timelapses").child(gameId).child("timelapse")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Object tl = dataSnapshot.getValue();
+                if (tl instanceof TimeLapse){
+                    callback.onTimeLapseResult( (TimeLapse) tl);
+                }
+                else{
+                    Log.e(TAG, String.format("TimeLapse de %s es null o no es tipo TL", gameId));
+                    callback.onTimeLapseResult(null);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Cancelada Peticion a TimeLapse: "+gameId);
+                callback.onTimeLapseResult(null);
+            }
+        });
     }
 
     /*
     Regresa una lista de los ids de los TimeLapse subordinados al TimeLapse en cuestion
      */
-    public static List<String> getSubEpochs(String gameId){
-        // TODO: Llenar con llamada verdadera a Firebase
-        String [] l = {"AA","BB","CC","DD","EE","FF","GG","HH","II","JJ","KK","LL","MM","NN","OO",
-                "PP","QQ","RR","SS","TT","UU","VV","WW","XX","YY","ZZ"};
-        if ( gameId != null && gameId.equals("AA")){
-            return new ArrayList<>();
-        } else {
-            return Arrays.asList(l);
-        }
+    public static void getSubEpochs(final String gameId, final onListCallback callback){
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("timelapses").child(gameId).child("timelapse").child("subEpochsIds")
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Object subEpochs = dataSnapshot.getValue();
+                    if (subEpochs instanceof List){
+                        callback.onListReturned( (List<String>) subEpochs);
+                    }
+                    else{
+                        Log.e(TAG, String.format("SupEpochs de %s es null o no es tipo List", gameId));
+                        callback.onListReturned(null);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e(TAG, "Cancelada Peticion a TimeLapse: "+gameId);
+                    callback.onListReturned(null);
+                }
+            });
     }
 
     /*
     *
     */
-    public static String getResume(String gameId){
-        // TODO: Llenar con llamada verdadera a Firebase
-        return "Una aventura Épica y maravillosa. Que algún día escribiremos, nos sorprenderemos leyendola y felices.";
+    public static void getResume(final String gameId, final onStringCallback callback){
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("timelapses").child(gameId).child("timelapse").child("resume")
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Object resume = dataSnapshot.getValue();
+                    if (resume instanceof String){
+                        callback.onStringReturned( (String) resume);
+                    }
+                    else{
+                        Log.e(TAG, String.format("resume de %s es null o no es tipo String", gameId));
+                        callback.onStringReturned(null);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e(TAG, "Cancelada Peticion a TimeLapse: "+gameId);
+                    callback.onStringReturned(null);
+                }
+            });
     }
 
-    public static boolean getLight(String gameId){
-        // TODO: Llenar con llamada verdadera a Firebase
-        return new Random().nextBoolean();
+    public static void getLight(final String gameId, final onBoolCallback callback){
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("timelapses").child(gameId).child("timelapse").child("isLight")
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Object light = dataSnapshot.getValue();
+                    if (light instanceof Boolean){
+                        callback.onBooleanResult( (Boolean) light, false);
+                    }
+                    else{
+                        Log.e(TAG, String.format("light de %s es null o no es tipo Bool", gameId));
+                        callback.onBooleanResult(true, true);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e(TAG, "Cancelada Peticion a TimeLapse: "+gameId);
+                    callback.onBooleanResult(true, true);
+                }
+            });
     }
 
-    public static int getType(String gameId){
-        // TODO: Llenar con llamada verdadera a Firebase
-        return new Random().nextInt(3);
+    public static void getType(final String gameId, final onIntCallback callback){
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("timelapses").child(gameId).child("timelapse").child("timeType")
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Object type = dataSnapshot.getValue();
+                    if (type instanceof Integer) {
+                        callback.onIntResult( (Integer) type, false);
+                    }
+                    else{
+                        Log.e(TAG, String.format("timeType de %s es null o no es tipo Int", gameId));
+                        callback.onIntResult(0, true);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e(TAG, "Cancelada Peticion a TimeLapse: "+gameId);
+                    callback.onIntResult(0, true);
+                }
+            });
     }
 
 }
