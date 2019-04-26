@@ -116,7 +116,7 @@ public abstract class FBCaller {
      * Crea un nuevo juego junto al time lapse con Id parentfbId antes o despues acorde a isBefore
      */
     public static void createNewTimeLapse(final TimeLapse timeLapse, final String brotherfbId,
-                                          final boolean isBefore){
+                                          final boolean isBefore, final onStringCallback callback){
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child("timelapses").child(brotherfbId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -124,6 +124,8 @@ public abstract class FBCaller {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
                     Log.e(TAG, "Se intentó crear un hermano a un TimeLapse null");
+                    callback.onStringReturned(null);
+                    return;
                 }
 
                 /*
@@ -161,6 +163,11 @@ public abstract class FBCaller {
                 createNewTimeLapse(timeLapse, parentfbId, new onStringCallback() {
                     @Override
                     public void onStringReturned(final String gameId) {
+                        if (gameId == null) {
+                            Log.e(TAG, "Falla al intentar Crear nuevo TimeLapse");
+                            callback.onStringReturned(null);
+                            return;
+                        }
                         /*
                         * Calculamos el index
                         * si el hermano es null es porque estamos en un extremo
@@ -212,6 +219,8 @@ public abstract class FBCaller {
                             childUpdates.put("/after_brother", secondBrother);
                         }
                         ref.child("timelapses").child(gameId).updateChildren(childUpdates);
+
+                        callback.onStringReturned(gameId);
                     }
                 });
             }
@@ -219,6 +228,7 @@ public abstract class FBCaller {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e(TAG,"Cancelada petición al consultar el primer hermano");
+                callback.onStringReturned(null);
             }
         });
     }
@@ -364,7 +374,9 @@ public abstract class FBCaller {
     }
 
     public static void saveTimeLapse(String fbId, TimeLapse timeLapse){
-        // TODO: Llenar con llamada verdadera a Firebase
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+        ref.child("timelapses").child(fbId).child("timelapse").setValue(timeLapse);
     }
 
     /*
