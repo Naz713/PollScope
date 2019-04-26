@@ -115,9 +115,11 @@ public abstract class FBCaller {
     /*
      * Crea un nuevo juego junto al time lapse con Id parentfbId antes o despues acorde a isBefore
      */
-    public static void createNewTimeLapse(final TimeLapse timeLapse, final String brotherfbId, final boolean isBefore){
+    public static void createNewTimeLapse(final TimeLapse timeLapse, final String brotherfbId,
+                                          final boolean isBefore){
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.child("timelapses").child(brotherfbId).addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.child("timelapses").child(brotherfbId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
@@ -128,82 +130,90 @@ public abstract class FBCaller {
                 * Dentro del objeto iteramos en su contenido para encontrar la raiz index y hermanos
                 * */
                 String parentfbId = null;
-                String secondBrother = null;
-                double brotherIndex = 0.0;
+                String other = null;
+                double otherIndex = 0.0;
                 for ( DataSnapshot obj : dataSnapshot.getChildren() ){
                     switch (obj.getKey()){
                         case "index":
-                            brotherIndex = (double) obj.getValue();
+                            otherIndex = (double) obj.getValue();
                             break;
                         case "raiz":
                             parentfbId = (String) obj.getValue();
                             break;
                         case "before_brother":
                             if (isBefore) {
-                                secondBrother = (String) obj.getValue();
+                                other = (String) obj.getValue();
                             }
                             break;
                         case "after_brother":
                             if (!isBefore) {
-                                secondBrother = (String) obj.getValue();
+                                other = (String) obj.getValue();
                             }
                             break;
                     }
                 }
+
+                final String secondBrother = other;
+                final double brotherIndex = otherIndex;
                 /*
                  * Creamos el timeLapse con la raiz conocida
                  */
-                final String gameId = createNewTimeLapse(timeLapse, parentfbId);
-                /*
-                * Calculamos el index
-                * si el hermano es null es porque estamos en un extremo
-                * si no es nulo sacamos el promedio para calcular el index
-                * */
-                double index = 0;
-                if (secondBrother == null) {
-                    if (isBefore) {
-                        index = brotherIndex - 100;
-                    } else {
-                        index = brotherIndex + 100;
-                    }
-                } else {
-                    final double finalBrotherIndex = brotherIndex;
-                    ref.child("timelapses").child(secondBrother).child("index")
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            double index;
-                            if (dataSnapshot.getValue() == null) {
-                                Log.e(TAG,"Segundo hermano sin index");
-                                if (isBefore) {
-                                    index = finalBrotherIndex - 0.1;
-                                } else {
-                                    index = finalBrotherIndex + 0.1;
-                                }
+                createNewTimeLapse(timeLapse, parentfbId, new onStringCallback() {
+                    @Override
+                    public void onStringReturned(final String gameId) {
+                        /*
+                        * Calculamos el index
+                        * si el hermano es null es porque estamos en un extremo
+                        * si no es nulo sacamos el promedio para calcular el index
+                        * */
+                        double index = 0;
+                        if (secondBrother == null) {
+                            if (isBefore) {
+                                index = brotherIndex - 100;
                             } else {
-                                index = ( (double) dataSnapshot.getValue() + finalBrotherIndex)/2;
+                                index = brotherIndex + 100;
                             }
-                            ref.child("timelapses").child(gameId).child("index").setValue(index);
+                        } else {
+                            ref.child("timelapses").child(secondBrother).child("index")
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    double index;
+                                    if (dataSnapshot.getValue() == null) {
+                                        Log.e(TAG,"Segundo hermano sin index");
+                                        if (isBefore) {
+                                            index = brotherIndex - 0.1;
+                                        } else {
+                                            index = brotherIndex + 0.1;
+                                        }
+                                    } else {
+                                        index = ( (double) dataSnapshot.getValue() + brotherIndex)/2;
+                                    }
+                                    ref.child("timelapses").child(gameId).child("index").setValue(index);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Log.e(TAG,"Cancelada petición al consultar el segundo hermano");
+                                }
+                            });
+
                         }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Log.e(TAG,"Cancelada petición al consultar el segundo hermano");
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        if (secondBrother == null) {
+                            childUpdates.put("/index", index);
                         }
-                    });
-
-                }
-
-                Map<String, Object> childUpdates = new HashMap<>();
-                childUpdates.put("/index", index);
-                if (isBefore){
-                    childUpdates.put("/before_brother", secondBrother);
-                    childUpdates.put("/after_brother", brotherfbId);
-                } else {
-                    childUpdates.put("/before_brother", brotherfbId);
-                    childUpdates.put("/after_brother", secondBrother);
-                }
-                ref.child("timelapses").child(gameId).updateChildren(childUpdates);
+                        if (isBefore){
+                            childUpdates.put("/before_brother", secondBrother);
+                            childUpdates.put("/after_brother", brotherfbId);
+                        } else {
+                            childUpdates.put("/before_brother", brotherfbId);
+                            childUpdates.put("/after_brother", secondBrother);
+                        }
+                        ref.child("timelapses").child(gameId).updateChildren(childUpdates);
+                    }
+                });
             }
 
             @Override
@@ -216,82 +226,102 @@ public abstract class FBCaller {
     /*
      * Crea un nuevo juego en una timeLapse vacia con Id parentfbId
      */
-    public static String createNewTimeLapse(TimeLapse timeLapse, final String parentfbId) {
-        final String gameId = createTimelapse(timeLapse);
-
+    public static void createNewTimeLapse(final TimeLapse timeLapse, final String parentfbId,
+                                          final onStringCallback callback) {
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
         ref.child("timelapses").child(parentfbId).child("timelapse")
-            .addListenerForSingleValueEvent(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() == null) {
-                        Log.e(TAG, "Se intentó crear un sublebado a un TimeLapse null");
-                    } else if (dataSnapshot.getValue() instanceof TimeLapse) {
-                        TimeLapse tl = (TimeLapse) dataSnapshot.getValue();
-                        List<String> subEpochs = tl.getSubEpochsIds();
-                        if (!subEpochs.contains(gameId)) {
-                            subEpochs.add(gameId);
-                            tl.setSubEpochsIds(subEpochs);
-                            ref.child("timelapses").child(parentfbId).child("timelapse").setValue(tl);
+                public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                    if ( (dataSnapshot.getValue() == null) ||
+                            !(dataSnapshot.getValue() instanceof TimeLapse) ) {
+                        Log.e(TAG, "Se intentó crear un sublebado a un TimeLapse nulo");
+                        callback.onStringReturned(null);
+                    } else {
+                        createTimelapse(timeLapse, new onStringCallback() {
+                            @Override
+                            public void onStringReturned(String gameId) {
+                                if (gameId == null) {
+                                    callback.onStringReturned(null);
+                                    return;
+                                }
+                                TimeLapse tl = (TimeLapse) dataSnapshot.getValue();
+                                List<String> subEpochs = tl.getSubEpochsIds();
+                                if (!subEpochs.contains(gameId)) {
+                                    subEpochs.add(gameId);
+                                    tl.setSubEpochsIds(subEpochs);
+                                    ref.child("timelapses").child(parentfbId).child("timelapse").setValue(tl);
 
-                            // Actualizamos el Timelapse padre
-                            Map<String, Object> childUpdates = new HashMap<>();
-                            childUpdates.put("/raiz", parentfbId);
-                            ref.child("timelapses").child(gameId).updateChildren(childUpdates);
-                        }
+                                    // Actualizamos el Timelapse padre en el recien creado
+                                    Map<String, Object> childUpdates = new HashMap<>();
+                                    childUpdates.put("/raiz", parentfbId);
+                                    ref.child("timelapses").child(gameId).updateChildren(childUpdates);
+                                }
+
+                            }
+                        });
+
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                     Log.e(TAG,"Error actualizando los juegos de un jugador");
+                    callback.onStringReturned(null);
                 }
             });
-        return gameId;
     }
 
-    private static String createTimelapse(TimeLapse timeLapse){
+    private static void createTimelapse(final TimeLapse timeLapse, final onStringCallback callback){
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child("timelapses").push().runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                final String gameId = mutableData.getKey();
-                return null;
+                /*
+                 * Agregamos el Timelapse
+                 * */
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("/timelapse", timeLapse);
+                childUpdates.put("/index", 0.0);
+                mutableData.setValue(childUpdates);
+
+                return Transaction.success(mutableData);
             }
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-
+                if (databaseError != null && b && dataSnapshot != null) {
+                    Log.d(TAG, "postTransaction:onComplete:" + databaseError);
+                    callback.onStringReturned(dataSnapshot.getKey());
+                } else {
+                    Log.e(TAG, "postTransaction:onCompleteWithError:" + databaseError);
+                    callback.onStringReturned(null);
+                }
             }
         });
-
-        //.getKey();
-
-        /*
-         * Agregamos el Timelapse
-         * */
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/timelapse", timeLapse);
-        childUpdates.put("/index", 0.0);
-        ref.child("timelapses").child(gameId).updateChildren(childUpdates);
-
-        return gameId;
     }
 
-    public static String createNewGame(TimeLapse timeLapse, List<String> playersIds){
+    public static void createNewGame(TimeLapse timeLapse, final List<String> playersIds,
+                                     final onStringCallback callback){
         /*
         * Agregamos el Timelapse y nos devuelve su Id
         * */
-        String gameId = createTimelapse(timeLapse);
-
-        /*
-        * Actualizamos los jugadores del juego y los juegos de los jugadores
-        * */
-        addGamePlayers(gameId, playersIds);
-
-        return gameId;
+        createTimelapse(timeLapse, new onStringCallback() {
+            @Override
+            public void onStringReturned(String gameId) {
+                if (gameId == null){
+                    callback.onStringReturned(null);
+                    return;
+                }
+                /*
+                * Actualizamos los jugadores del juego y los juegos de los jugadores
+                * */
+                addGamePlayers(gameId, playersIds);
+                callback.onStringReturned(gameId);
+            }
+        });
     }
 
     /*
@@ -311,11 +341,12 @@ public abstract class FBCaller {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
+                        if ( (dataSnapshot.getValue() == null) ||
+                        !(dataSnapshot.getValue() instanceof List) ){
                             List<String> games = new ArrayList<>();
                             games.add(gameId);
                             ref.child("players").child(playerId).child("games").setValue(games);
-                        } else if (dataSnapshot.getValue() instanceof List) {
+                        } else {
                             List<String> games = (List<String>) dataSnapshot.getValue();
                             if (!games.contains(gameId)){
                                 games.add(gameId);
