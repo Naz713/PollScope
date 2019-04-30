@@ -136,7 +136,7 @@ public class EditActivity extends Activity {
                             FBCaller.createNewGame(mTL, selectedPlayers, new FBCaller.onStringCallback() {
                                 @Override
                                 public void onStringReturned(String result) {
-                                    //TODO:
+                                    //TODO: revisar
                                     mfbId = result;
                                 }
                             });
@@ -172,14 +172,16 @@ public class EditActivity extends Activity {
                         FBCaller.createNewTimeLapse(mTL, mParentfbId, new FBCaller.onStringCallback() {
                             @Override
                             public void onStringReturned(String result) {
-                                //TODO:
+                                //TODO: revisar
+                                mfbId = result;
                             }
                         });
                     } else {
                         FBCaller.createNewTimeLapse(mTL, mParentfbId, mInsertAbove, new FBCaller.onStringCallback() {
                             @Override
                             public void onStringReturned(String result) {
-                                //TODO:
+                                //TODO: revisar
+                                mfbId = result;
                             }
                         });
                     }
@@ -191,7 +193,7 @@ public class EditActivity extends Activity {
             FBCaller.getGame(mfbId, new FBCaller.onTLCallback() {
                 @Override
                 public void onTimeLapseResult(TimeLapse result) {
-                    //TODO:
+                    //TODO: revisar
                     mTL = result;
                 }
             });
