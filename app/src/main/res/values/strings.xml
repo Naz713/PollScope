@@ -108,7 +108,7 @@
     <string name="guarda_button_text">Guardar</string>
     <string name="cancela_button_text">Cancelar</string>
     <string name="error_invalid_email">Correo Electronico Invalido</string>
-    <string name="error_user_name">Nombre de Usuario Invalido</string>
+    <string name="error_user_name">Nombre de Usuario Invalido o en Uso</string>
     <string name="user_creation_failed">Error al crear el usuario</string>
     <string name="error_incorrect_password">Contraseña Incorrecta</string>
     <string name="error_field_required">Campo Requerido</string>

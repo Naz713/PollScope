@@ -2,6 +2,7 @@ package com.nazdesigns.polascope;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -117,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin(int type) {
+        final Activity context = this;
 
         if (mAuth.getCurrentUser() != null) {
             return;
@@ -127,9 +129,9 @@ public class LoginActivity extends AppCompatActivity {
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-        String userName = mUserNameView.getText().toString();
+        final String email = mEmailView.getText().toString();
+        final String password = mPasswordView.getText().toString();
+        final String userName = mUserNameView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -182,34 +184,48 @@ public class LoginActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(userName)) {
                     mUserNameView.setError(getString(R.string.error_field_required));
                     mUserNameView.requestFocus();
-                } else if (!isUserNamelValid(userName)) {
-                    mUserNameView.setError(getString(R.string.error_user_name));
-                    mUserNameView.requestFocus();
+                    showProgress(false);
+                    return;
                 }
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d(TAG, "createUserWithEmail:success");
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                    Toast.makeText(LoginActivity.this, "Creation failed.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                                showProgress(false);
-                            }
-                        });
+                FBCaller.isUserNameInUse(userName, new FBCaller.onBoolCallback() {
+                    @Override
+                    public void onBooleanResult(boolean inUse, boolean error) {
+                        if (error){
+                            Log.e(TAG, "Error al consultar nombres de Usuario");
+                            Toast.makeText(LoginActivity.this, "Error de Conexiones",
+                                    Toast.LENGTH_SHORT).show();
+                            showProgress(false);
+                            return;
+                        }
+
+                        if (inUse) {
+                            mUserNameView.setError(getString(R.string.error_user_name));
+                            mUserNameView.requestFocus();
+                            showProgress(false);
+                            return;
+                        }
+                        mAuth.createUserWithEmailAndPassword(email, password)
+                                .addOnCompleteListener(context, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            // Sign in success, update UI with the signed-in user's information
+                                            Log.d(TAG, "createUserWithEmail:success");
+                                        } else {
+                                            // If sign in fails, display a message to the user.
+                                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                            Toast.makeText(LoginActivity.this, "Creation failed.",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                        showProgress(false);
+                                    }
+                                });
+                    }
+                });
             } else {
                 Log.e(TAG,"Bad Call to attemptLogin");
             }
         }
-    }
-
-    private boolean isUserNamelValid(String userName){
-        return FBCaller.isUserNameInUse(userName);
     }
 
     private boolean isEmailValid(String email) {
