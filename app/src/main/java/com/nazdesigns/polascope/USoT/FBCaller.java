@@ -31,8 +31,8 @@ public abstract class FBCaller {
     public interface onStringCallback{
         void onStringReturned(String result);
     }
-    public interface onArrayCallback{
-        void onArrayReturned(String[][] result);
+    public interface onListListCallback{
+        void onArrayReturned(List<String> result, List<String> result2);
     }
     public interface onBoolCallback{
         void onBooleanResult(boolean result, boolean error);
@@ -67,15 +67,46 @@ public abstract class FBCaller {
         });
     }
 
-    public static String[][] getAllPlayers() {
-        // TODO: Llenar con llamada verdadera a Firebase
-        String[][] arr = {{"1","2","3"},{"Pepe","Lina","Aysa"}};
-        return arr;
+    /**
+     * Regresa una lista de arrays en el primero los ids de los jugadores, en el segundo sus nombres
+     */
+    public static void getAllPlayers(final onListListCallback callback) {
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("players").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> ids = new ArrayList<>();
+                List<String> names = new ArrayList<>();
+                for (DataSnapshot player: dataSnapshot.getChildren()){
+                    ids.add(player.getKey());
+                    names.add((String) player.child("name").getValue());
+                }
+                callback.onArrayReturned(ids, names);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG,"Cancelada petición a FB para Obtener Jugadores");
+                callback.onArrayReturned(null, null);
+            }
+        });
     }
 
-    public static boolean isUserNameInUse(String userName){
-        // TODO: Llenar con llamada verdadera a Firebase
-        return true;
+    public static void isUserNameInUse(final String userName, final onBoolCallback callback){
+        if (userName == null || userName.length()<3){
+            callback.onBooleanResult(true, false);
+        }
+
+        getAllPlayers(new onListListCallback() {
+            @Override
+            public void onArrayReturned(List<String> ids, List<String> names) {
+                if (names != null){
+                    callback.onBooleanResult(names.contains(userName), false);
+                } else {
+                    callback.onBooleanResult(true,true);
+                }
+            }
+        });
     }
 
     /**
