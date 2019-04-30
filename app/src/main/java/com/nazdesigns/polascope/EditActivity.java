@@ -12,13 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
-import com.google.firebase.database.core.utilities.Utilities;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.FBCaller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class EditActivity extends Activity {
@@ -51,41 +48,45 @@ public class EditActivity extends Activity {
      */
     public void getSelectedPlayers(final OnSelectedPlayers callback) {
         final Context context = (Context) this;
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        final ArrayList playersSelected = new ArrayList();
+        FBCaller.getAllPlayers(new FBCaller.onListListCallback() {
+            @Override
+            public void onArrayReturned(final List<String> ids, List<String> names) {
 
-        final String[][] items = FBCaller.getAllPlayers();
+                final List<String> playersSelected = new ArrayList<>();
 
-        builder.setTitle("Agrega Jugadores")
-        .setMultiChoiceItems(items[1], null,
-                new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                if (isChecked) {
-                    playersSelected.add(items[0][which]);
-                } else if (playersSelected.contains(items[0][which])) {
-                    playersSelected.remove(items[0][which]);
-                }
-            }
-        }).setPositiveButton(R.string.guarda_button_text, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context,
-                        "Jugadores seleccionados:(" + playersSelected.size() + ")",
-                        Toast.LENGTH_SHORT).show();
-                Log.i("Edit", playersSelected.toString());
-                callback.callback(playersSelected);
-            }
-        }).setNegativeButton(R.string.cancela_button_text, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.i("Edit","Canceled Pressed");
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Agrega Jugadores")
+                .setMultiChoiceItems((CharSequence[]) names.toArray(), null, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        if (isChecked) {
+                            playersSelected.add(ids.get(which));
+                        } else {
+                            playersSelected.remove(ids.get(which) );
+                        }
+                    }
+                }).setPositiveButton(R.string.guarda_button_text, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(context,
+                                "Jugadores seleccionados:(" + playersSelected.size() + ")",
+                                Toast.LENGTH_SHORT).show();
+                        Log.i("Edit", playersSelected.toString());
+                        callback.callback(playersSelected);
+                    }
+                }).setNegativeButton(R.string.cancela_button_text, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i("Edit","Canceled Pressed");
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
 
     }
 
@@ -132,7 +133,13 @@ public class EditActivity extends Activity {
                     getSelectedPlayers(new OnSelectedPlayers() {
                         @Override
                         public void callback(List<String> selectedPlayers) {
-                            mfbId = FBCaller.createNewGame(mTL, selectedPlayers);
+                            FBCaller.createNewGame(mTL, selectedPlayers, new FBCaller.onStringCallback() {
+                                @Override
+                                public void onStringReturned(String result) {
+                                    //TODO:
+                                    mfbId = result;
+                                }
+                            });
                         }
                     });
 
@@ -162,16 +169,32 @@ public class EditActivity extends Activity {
                     mTL.setIsLight(mLight.isChecked());
 
                     if (mIsNew) {
-                        FBCaller.createNewTimeLapse(mTL, mParentfbId);
+                        FBCaller.createNewTimeLapse(mTL, mParentfbId, new FBCaller.onStringCallback() {
+                            @Override
+                            public void onStringReturned(String result) {
+                                //TODO:
+                            }
+                        });
                     } else {
-                        FBCaller.createNewTimeLapse(mTL, mParentfbId, mInsertAbove);
+                        FBCaller.createNewTimeLapse(mTL, mParentfbId, mInsertAbove, new FBCaller.onStringCallback() {
+                            @Override
+                            public void onStringReturned(String result) {
+                                //TODO:
+                            }
+                        });
                     }
                 }
             }
         });
 
         if (mfbId != null){
-            mTL = FBCaller.getGame(this, mfbId);
+            FBCaller.getGame(mfbId, new FBCaller.onTLCallback() {
+                @Override
+                public void onTimeLapseResult(TimeLapse result) {
+                    //TODO:
+                    mTL = result;
+                }
+            });
             mResume.setText(mTL.getResume());
             mLongText.setText(mTL.getBody());
             mLight.setChecked(mTL.getIsLight());
