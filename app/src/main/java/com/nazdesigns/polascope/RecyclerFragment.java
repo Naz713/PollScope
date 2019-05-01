@@ -22,16 +22,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.FBCaller;
 import com.nazdesigns.polascope.Utilities.Common;
 
 public class RecyclerFragment extends Fragment {
-    private String TAG = "RecyclerFragment";
+    final static private String TAG = "RecyclerFragment";
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
     private LinearTextAdapter.SwipeHandler mSwipeHandler;
     private ItemTouchHelper mItemTouchHelper;
     private String mFBId;
+    private TimeLapse mTL;
 
     public static final String fbId = "fbId";
 
@@ -73,7 +75,7 @@ public class RecyclerFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         RecyclerView activityView = (RecyclerView) getView();
-        GameActivity gameActivity = (GameActivity) getActivity();
+        final GameActivity gameActivity = (GameActivity) getActivity();
         if( (activityView == null) || (gameActivity == null) ){
             Log.e(TAG,"onActivityCreated: activity or view null");
             return;
@@ -88,37 +90,55 @@ public class RecyclerFragment extends Fragment {
 
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                linearLayout.getOrientation());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                mRecyclerView.getContext(), linearLayout.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        AppCompatTextView upTitleTextView = gameActivity.findViewById(R.id.toolbar_text);
-        String text;
+        final AppCompatTextView upTitleTextView = gameActivity.findViewById(R.id.toolbar_text);
         if (mFBId == null) {
-            text = getString(R.string.games_list_msg);
+            upTitleTextView.setText(getString(R.string.games_list_msg));
         } else {
-            //TODO: obtener el TL entero y obtener la info de ahí
-            text = FBCaller.getResume(mFBId);
-            boolean isLight = FBCaller.getLight(mFBId);
+            if (mTL == null) {
+                FBCaller.getGame(mFBId, new FBCaller.onTLCallback() {
+                    @Override
+                    public void onTimeLapseResult(TimeLapse result) {
+                        mTL = result;
 
-            AppBarLayout appBarLayout = gameActivity.findViewById(R.id.app_bar);
-            Toolbar toolbar = appBarLayout.findViewById(R.id.toolbar);
-            if (isLight){
-                toolbar.setLogo(R.mipmap.ic_light);
+                        AppBarLayout appBarLayout = gameActivity.findViewById(R.id.app_bar);
+                        Toolbar toolbar = appBarLayout.findViewById(R.id.toolbar);
+                        if (mTL.getIsLight()) {
+                            toolbar.setLogo(R.mipmap.ic_light);
+                        } else {
+                            toolbar.setLogo(R.mipmap.ic_dark);
+                        }
+                        upTitleTextView.setText(mTL.getResume());
+                    }
+                });
             } else {
-                toolbar.setLogo(R.mipmap.ic_dark);
+                AppBarLayout appBarLayout = gameActivity.findViewById(R.id.app_bar);
+                Toolbar toolbar = appBarLayout.findViewById(R.id.toolbar);
+                if (mTL.getIsLight()) {
+                    toolbar.setLogo(R.mipmap.ic_light);
+                } else {
+                    toolbar.setLogo(R.mipmap.ic_dark);
+                }
+                upTitleTextView.setText(mTL.getResume());
             }
         }
-        upTitleTextView.setText(text);
-
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        //TODO: obtener el TL entero y obtener la info de ahí
-        if(FBCaller.getSubEpochs(mFBId).isEmpty()){
-            menu.findItem(R.id.add_to_empty).setVisible(true);
-        }
+    public void onCreateOptionsMenu(final Menu menu, MenuInflater menuInflater) {
+        FBCaller.getGame(mFBId, new FBCaller.onTLCallback() {
+            @Override
+            public void onTimeLapseResult(TimeLapse result) {
+                mTL = result;
+
+                if(mTL.getSubEpochsIds().isEmpty()){
+                    menu.findItem(R.id.add_to_empty).setVisible(true);
+                }
+            }
+        });
     }
 
     @Override
@@ -127,7 +147,9 @@ public class RecyclerFragment extends Fragment {
         if (id == R.id.log_out) {
             FirebaseAuth.getInstance().signOut();
             GameActivity activity = (GameActivity) this.getActivity();
-            activity.checkFBAuth();
+            if (activity != null){
+                activity.checkFBAuth();
+            }
             return true;
         } else if (id == R.id.add_to_empty) {
             if (mFBId == null){

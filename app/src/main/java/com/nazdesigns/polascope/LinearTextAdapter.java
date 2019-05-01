@@ -200,7 +200,8 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         }
     }
 
-    public LinearTextAdapter(String id, onListListener listener, LinearTextAdapter.SwipeHandler swipeHandler) {
+    public LinearTextAdapter(String id, onListListener listener,
+                             LinearTextAdapter.SwipeHandler swipeHandler) {
         mFBId = id;
         mDataset = new ArrayList<>();
         this.listener = listener;
@@ -215,7 +216,13 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                 }
             });
         } else {
-            mDataset = FBCaller.getSubEpochs(mFBId);
+            FBCaller.getSubEpochs(mFBId, new FBCaller.onListCallback() {
+                @Override
+                public void onListReturned(List<String> result) {
+                    mDataset = result;
+                    textAdapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 
@@ -233,31 +240,37 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TextViewHolder holder, int position) {
-        String childFBId = mDataset.get(position);
+    public void onBindViewHolder(@NonNull final TextViewHolder holder, int position) {
+        final String childFBId = mDataset.get(position);
 
-        TimeLapse childTimeLapse = FBCaller.getGame(childFBId);
+        FBCaller.getGame(childFBId, new FBCaller.onTLCallback() {
+            @Override
+            public void onTimeLapseResult(TimeLapse childTimeLapse) {
+                holder.setId(childFBId, childTimeLapse.getTimeType());
 
-        holder.setId(childFBId, childTimeLapse.getTimeType());
+                if(childTimeLapse.getIsLight()){
+                    holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources()
+                            .getColor(R.color.backgroundLight));
+                    holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources()
+                            .getColor(R.color.backgroundLight));
+                }
+                else {
+                    holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources()
+                            .getColor(R.color.backgroundDark));
+                    holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources()
+                            .getColor(R.color.backgroundDark));
 
-        if(childTimeLapse.getIsLight()){
-            //holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_light,0,0, 0);
-            holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundLight));
-            holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundLight));
-        }
-        else {
-            //holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.ic_dark,0,0, 0);
-            holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundDark));
-            holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.backgroundDark));
+                }
 
-        }
+                if  (childTimeLapse.getSubEpochsIds().isEmpty()) {
+                    holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,
+                            R.mipmap.empty, 0);
+                }
 
-        if  (childTimeLapse.getSubEpochsIds().isEmpty()) {
-            holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0, R.mipmap.empty, 0);
-        }
-
-        holder.mResume.setText(childTimeLapse.getResume());
-        holder.mLongText.setText(childTimeLapse.getBody());
+                holder.mResume.setText(childTimeLapse.getResume());
+                holder.mLongText.setText(childTimeLapse.getBody());
+            }
+        });
     }
 
     @Override
