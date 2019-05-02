@@ -96,6 +96,10 @@ public class RecyclerFragment extends Fragment {
                 mRecyclerView.getContext(), linearLayout.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
+        AppBarLayout appBarLayout = gameActivity.findViewById(R.id.app_bar);
+        Toolbar toolbar = appBarLayout.findViewById(R.id.toolbar);
+        toolbar.setLogo(R.mipmap.ic_launcher);
+
         final AppCompatTextView upTitleTextView = gameActivity.findViewById(R.id.toolbar_text);
         if (mFBId == null) {
             upTitleTextView.setText(getString(R.string.games_list_msg));
@@ -117,8 +121,6 @@ public class RecyclerFragment extends Fragment {
                     }
                 });
             } else {
-                AppBarLayout appBarLayout = gameActivity.findViewById(R.id.app_bar);
-                Toolbar toolbar = appBarLayout.findViewById(R.id.toolbar);
                 if (mTL.getIsLight()) {
                     toolbar.setLogo(R.mipmap.ic_light);
                 } else {
@@ -146,7 +148,8 @@ public class RecyclerFragment extends Fragment {
                 public void onTimeLapseResult(TimeLapse result) {
                     mTL = result;
 
-                    if(mTL.getSubEpochsIds().isEmpty()){
+                    if(mTL.getSubEpochsIds()==null ||
+                            mTL.getSubEpochsIds().isEmpty()){
                         menu.findItem(R.id.add_to_empty).setVisible(true);
                     }
                 }

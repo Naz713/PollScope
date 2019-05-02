@@ -208,20 +208,25 @@ public class EditActivity extends Activity {
             }
         });
 
+        if (mfbId == null && mParentfbId == null) {
+            mLight.setVisibility(View.GONE);
+        }
+
         if (mfbId != null){
             FBCaller.getGame(mfbId, new FBCaller.onTLCallback() {
                 @Override
                 public void onTimeLapseResult(TimeLapse result) {
                     //TODO: revisar
                     mTL = result;
+                    mResume.setText(mTL.getResume());
+                    mLongText.setText(mTL.getBody());
+                    mLight.setChecked(mTL.getIsLight());
+
+                    if (mTL.getTimeType() == TimeLapse.GAME_TYPE) {
+                        mLight.setVisibility(View.GONE);
+                    }
                 }
             });
-            mResume.setText(mTL.getResume());
-            mLongText.setText(mTL.getBody());
-            mLight.setChecked(mTL.getIsLight());
-        }
-        if (mfbId == null && mParentfbId == null) {
-            mLight.setVisibility(View.GONE);
         }
     }
  }

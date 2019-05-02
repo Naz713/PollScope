@@ -219,8 +219,10 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             FBCaller.getSubEpochs(mFBId, new FBCaller.onListCallback() {
                 @Override
                 public void onListReturned(List<String> result) {
-                    mDataset = result;
-                    textAdapter.notifyDataSetChanged();
+                    if (result != null){
+                        mDataset = result;
+                        textAdapter.notifyDataSetChanged();
+                    }
                 }
             });
         }
