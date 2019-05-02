@@ -26,6 +26,8 @@ import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.FBCaller;
 import com.nazdesigns.polascope.Utilities.Common;
 
+import java.util.List;
+
 public class RecyclerFragment extends Fragment {
     final static private String TAG = "RecyclerFragment";
     private RecyclerView mRecyclerView;
@@ -129,16 +131,27 @@ public class RecyclerFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater menuInflater) {
-        FBCaller.getGame(mFBId, new FBCaller.onTLCallback() {
-            @Override
-            public void onTimeLapseResult(TimeLapse result) {
-                mTL = result;
-
-                if(mTL.getSubEpochsIds().isEmpty()){
-                    menu.findItem(R.id.add_to_empty).setVisible(true);
+        if (mFBId == null){
+            FBCaller.getPlayerGames(new FBCaller.onListCallback() {
+                @Override
+                public void onListReturned(List<String> result) {
+                    if(result.isEmpty()){
+                        menu.findItem(R.id.add_to_empty).setVisible(true);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            FBCaller.getGame(mFBId, new FBCaller.onTLCallback() {
+                @Override
+                public void onTimeLapseResult(TimeLapse result) {
+                    mTL = result;
+
+                    if(mTL.getSubEpochsIds().isEmpty()){
+                        menu.findItem(R.id.add_to_empty).setVisible(true);
+                    }
+                }
+            });
+        }
     }
 
     @Override

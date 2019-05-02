@@ -76,7 +76,7 @@ public abstract class FBCaller {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<String> ids = new ArrayList<>();
-                List<String> names = new ArrayList<>();
+                List<String> names = new ArrayList<String>();
                 for (DataSnapshot player: dataSnapshot.getChildren()){
                     ids.add(player.getKey());
                     names.add((String) player.child("name").getValue());
@@ -324,8 +324,8 @@ public abstract class FBCaller {
                  * Agregamos el Timelapse
                  * */
                 Map<String, Object> childUpdates = new HashMap<>();
-                childUpdates.put("/timelapse", timeLapse);
-                childUpdates.put("/index", 0.0);
+                childUpdates.put("timelapse", timeLapse);
+                childUpdates.put("index", 0.0);
                 mutableData.setValue(childUpdates);
 
                 return Transaction.success(mutableData);
@@ -333,7 +333,8 @@ public abstract class FBCaller {
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-                if (databaseError != null && b && dataSnapshot != null) {
+                Log.i("FBC",String.format("Error: %s, bool: %s, snapShot: %s", databaseError, b, dataSnapshot));
+                if (databaseError == null && b && dataSnapshot != null) {
                     Log.d(TAG, "postTransaction:onComplete:" + databaseError);
                     callback.onStringReturned(dataSnapshot.getKey());
                 } else {
@@ -419,13 +420,11 @@ public abstract class FBCaller {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Object tl = dataSnapshot.getValue();
-                if (tl instanceof TimeLapse){
-                    callback.onTimeLapseResult( (TimeLapse) tl);
-                }
-                else{
-                    Log.e(TAG, String.format("TimeLapse de %s es null o no es tipo TL", gameId));
-                    callback.onTimeLapseResult(null);
+                Log.i(TAG, dataSnapshot.toString());
+                if (dataSnapshot.getValue() instanceof HashMap){
+                    HashMap dt = (HashMap) dataSnapshot.getValue();
+                    TimeLapse tl = new TimeLapse(dt);
+                    callback.onTimeLapseResult(tl);
                 }
             }
 

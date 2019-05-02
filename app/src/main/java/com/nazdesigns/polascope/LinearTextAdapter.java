@@ -243,9 +243,14 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
     public void onBindViewHolder(@NonNull final TextViewHolder holder, int position) {
         final String childFBId = mDataset.get(position);
 
+        Log.i("LTA", childFBId);
+
         FBCaller.getGame(childFBId, new FBCaller.onTLCallback() {
             @Override
             public void onTimeLapseResult(TimeLapse childTimeLapse) {
+
+
+
                 holder.setId(childFBId, childTimeLapse.getTimeType());
 
                 if(childTimeLapse.getIsLight()){
@@ -262,7 +267,8 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
                 }
 
-                if  (childTimeLapse.getSubEpochsIds().isEmpty()) {
+                if  (childTimeLapse.getSubEpochsIds() == null ||
+                        childTimeLapse.getSubEpochsIds().isEmpty()) {
                     holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,
                             R.mipmap.empty, 0);
                 }

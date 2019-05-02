@@ -1,5 +1,10 @@
 package com.nazdesigns.polascope.GameStructure;
 
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+
+import java.util.HashMap;
 import java.util.List;
 
 public class TimeLapse {
@@ -32,6 +37,33 @@ public class TimeLapse {
         this.body = body;
         this.orderIndex = orderIndex;
         this.subEpochsIds = subEpochsIds;
+    }
+
+    public TimeLapse(HashMap<String, Object> data){
+        for (String dt : data.keySet()){
+            switch (dt){
+                case "timeType":
+                    this.timeType = (int) (long) data.get(dt);
+                    break;
+                case "body":
+                    this.body = (String) data.get(dt);
+                    break;
+                case "isLight":
+                    this.isLight = (boolean) data.get(dt);
+                    break;
+                case "orderIndex":
+                    this.orderIndex = (double) (long) data.get(dt);
+                    break;
+                case "resume":
+                    this.resume = (String) data.get(dt);
+                    break;
+                case "subEpochsIds":
+                    if (data.get(dt) instanceof List){
+                        this.subEpochsIds = (List<String>) data.get(dt);
+                    }
+                    break;
+            }
+        }
     }
 
 

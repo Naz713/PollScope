@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.USoT.FBCaller;
 
@@ -52,12 +54,25 @@ public class EditActivity extends Activity {
         FBCaller.getAllPlayers(new FBCaller.onListListCallback() {
             @Override
             public void onArrayReturned(final List<String> ids, List<String> names) {
+                String userId = null;
+                try{
+                    userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
+
+                boolean[] checkdItems = new boolean[ids.size()];
+                if (userId != null && ids.contains(userId)){
+                    checkdItems[ids.indexOf(userId)] = true;
+                }
 
                 final List<String> playersSelected = new ArrayList<>();
+                final String Uid = userId;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Agrega Jugadores")
-                .setMultiChoiceItems((CharSequence[]) names.toArray(), null, new DialogInterface.OnMultiChoiceClickListener() {
+                .setMultiChoiceItems(names.toArray(new String[0]), checkdItems,
+                        new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                         if (isChecked) {
@@ -69,8 +84,12 @@ public class EditActivity extends Activity {
                 }).setPositiveButton(R.string.guarda_button_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        if (Uid != null && !playersSelected.contains(Uid)){
+                            playersSelected.add(Uid);
+                        }
+
                         Toast.makeText(context,
-                                "Jugadores seleccionados:(" + playersSelected.size() + ")",
+                                "Jugadores agregados:(" + playersSelected.size() + ")",
                                 Toast.LENGTH_SHORT).show();
                         Log.i("Edit", playersSelected.toString());
                         callback.callback(playersSelected);
