@@ -272,46 +272,48 @@ public abstract class FBCaller {
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
         ref.child("timelapses").child(parentfbId).child("timelapse")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
-                    if ( (dataSnapshot.getValue() == null) ||
-                            !(dataSnapshot.getValue() instanceof TimeLapse) ) {
-                        Log.e(TAG, "Se intentó crear un sublebado a un TimeLapse nulo");
-                        callback.onStringReturned(null);
-                    } else {
-                        createTimelapse(timeLapse, new onStringCallback() {
-                            @Override
-                            public void onStringReturned(String gameId) {
-                                if (gameId == null) {
-                                    callback.onStringReturned(null);
-                                    return;
-                                }
-                                TimeLapse tl = (TimeLapse) dataSnapshot.getValue();
-                                List<String> subEpochs = tl.getSubEpochsIds();
-                                if (!subEpochs.contains(gameId)) {
-                                    subEpochs.add(gameId);
-                                    tl.setSubEpochsIds(subEpochs);
-                                    ref.child("timelapses").child(parentfbId).child("timelapse").setValue(tl);
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                if ( (dataSnapshot.getValue() == null) ||
+                        !(dataSnapshot.getValue() instanceof HashMap) ) {
+                    Log.e(TAG, "Se intentó crear un sublebado a un TimeLapse nulo o dañado");
+                    callback.onStringReturned(null);
+                } else {
+                    createTimelapse(timeLapse, new onStringCallback() {
+                        @Override
+                        public void onStringReturned(String gameId) {
+                            if (gameId == null) {
+                                callback.onStringReturned(null);
+                                return;
+                            }
+                            HashMap dt = (HashMap) dataSnapshot.getValue();
+                            TimeLapse tl = new TimeLapse(dt);
+                            List<String> subEpochs = tl.getSubEpochsIds();
+                            if (!subEpochs.contains(gameId)) {
+                                subEpochs.add(gameId);
+                                tl.setSubEpochsIds(subEpochs);
+                                ref.child("timelapses").child(parentfbId).child("timelapse").setValue(tl);
 
-                                    // Actualizamos el Timelapse padre en el recien creado
-                                    Map<String, Object> childUpdates = new HashMap<>();
-                                    childUpdates.put("/raiz", parentfbId);
-                                    ref.child("timelapses").child(gameId).updateChildren(childUpdates);
-                                }
+                                // Actualizamos el Timelapse padre en el recien creado
+                                Map<String, Object> childUpdates = new HashMap<>();
+                                childUpdates.put("/raiz", parentfbId);
+                                ref.child("timelapses").child(gameId).updateChildren(childUpdates);
 
                             }
-                        });
+                                callback.onStringReturned(gameId);
+                        }
+                    });
 
-                    }
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.e(TAG,"Error actualizando los juegos de un jugador");
-                    callback.onStringReturned(null);
-                }
-            });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG,"Error actualizando los juegos de un jugador");
+                callback.onStringReturned(null);
+            }
+        });
     }
 
     private static void createTimelapse(final TimeLapse timeLapse, final onStringCallback callback){

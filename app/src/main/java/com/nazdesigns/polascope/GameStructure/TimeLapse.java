@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,7 +31,8 @@ public class TimeLapse {
         subEpochsIds = null;
     }
 
-    public TimeLapse(int timeType, boolean isLight, String resume, String body, double orderIndex, List<String> subEpochsIds){
+    public TimeLapse(int timeType, boolean isLight, String resume, String body, double orderIndex,
+                     List<String> subEpochsIds){
         this.timeType = timeType;
         this.isLight = isLight;
         this.resume = resume;
@@ -111,6 +113,9 @@ public class TimeLapse {
     }
 
     public List<String> getSubEpochsIds() {
+        if (subEpochsIds == null){
+            this.subEpochsIds = new ArrayList<>();
+        }
         return subEpochsIds;
     }
 
