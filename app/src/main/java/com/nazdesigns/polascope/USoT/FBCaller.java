@@ -298,6 +298,7 @@ public abstract class FBCaller {
                                 // Actualizamos el Timelapse padre en el recien creado
                                 Map<String, Object> childUpdates = new HashMap<>();
                                 childUpdates.put("/raiz", parentfbId);
+                                childUpdates.put("/timelapse/timeType", tl.getTimeType()+1);
                                 ref.child("timelapses").child(gameId).updateChildren(childUpdates);
 
                             }

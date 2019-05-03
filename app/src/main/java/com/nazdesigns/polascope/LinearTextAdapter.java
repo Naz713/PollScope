@@ -251,8 +251,6 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             @Override
             public void onTimeLapseResult(TimeLapse childTimeLapse) {
 
-
-
                 holder.setId(childFBId, childTimeLapse.getTimeType());
 
                 if(childTimeLapse.getIsLight()){

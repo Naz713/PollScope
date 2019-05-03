@@ -37,6 +37,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:divider="@drawable/divider"
+        android:showDividers="middle"
         >
 
         <TextView
@@ -48,10 +50,12 @@
             android:ems="20"
             android:background="@color/backgroundLight"
             />
+
         <TextView
             android:id="@+id/long_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="@dimen/holder_height"
             android:paddingStart="@dimen/default_margin"
             android:paddingEnd="@dimen/default_margin"
             android:ems="20"
