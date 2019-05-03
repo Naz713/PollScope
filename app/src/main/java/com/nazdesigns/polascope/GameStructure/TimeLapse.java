@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TimeLapse {
-    public static int resumeMaxLenght = 86;
-    public static int GAME_TYPE = 0;
-    public static int PERIOD_TYPE = 1;
-    public static int EVENT_TYPE = 2;
-    public static int SCENE_TYPE = 3;
+    public final static int resumeMaxLenght = 86;
+    public final static int GAME_TYPE = 0;
+    public final static int PERIOD_TYPE = 1;
+    public final static int EVENT_TYPE = 2;
+    public final static int SCENE_TYPE = 3;
 
     public int timeType;
     public boolean isLight;
@@ -65,7 +65,6 @@ public class TimeLapse {
             }
         }
     }
-
 
     public int getTimeType() {
         return timeType;

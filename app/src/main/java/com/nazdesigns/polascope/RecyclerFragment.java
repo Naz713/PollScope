@@ -112,6 +112,18 @@ public class RecyclerFragment extends Fragment {
 
                         AppBarLayout appBarLayout = gameActivity.findViewById(R.id.app_bar);
                         Toolbar toolbar = appBarLayout.findViewById(R.id.toolbar);
+
+                        switch(mTL.getTimeType()){
+                            case TimeLapse.GAME_TYPE:
+                                toolbar.setTitle("Periodos");
+                                break;
+                            case TimeLapse.PERIOD_TYPE:
+                                toolbar.setTitle("Eventos");
+                                break;
+                            case TimeLapse.EVENT_TYPE:
+                                toolbar.setTitle("Escenas");
+                                break;
+                        }
                         if (mTL.getIsLight()) {
                             toolbar.setLogo(R.mipmap.ic_light);
                         } else {

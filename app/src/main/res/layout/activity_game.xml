@@ -29,6 +29,7 @@
                 android:layout_height="@dimen/toolbar_height"
                 app:layout_collapseMode="pin"
                 app:logo="@mipmap/ic_launcher"
+                app:title="@string/app_name"
                 />
 
             <android.support.v7.widget.AppCompatTextView
