@@ -112,6 +112,7 @@ public class EditActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final Context context = (Context) this;
         mfbId = getIntent().getStringExtra(extraId);
         mTimeType = getIntent().getIntExtra(timeType, 0);
         mParentfbId = getIntent().getStringExtra(relativeExtraId);
@@ -205,6 +206,24 @@ public class EditActivity extends Activity {
                     }
                     FBCaller.saveTimeLapse(mfbId, mTL);
                 }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Agrega Jugadores")
+                        .setNegativeButton("Salir", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.i("Edit", "Saliendo de Activity");
+                                finish();
+                            }
+                        })
+                        .setPositiveButton("Continar Editando", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //NOTHING
+                            }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 //TODO: Llamar a un popUp para salir de la Activity
             }
         });
