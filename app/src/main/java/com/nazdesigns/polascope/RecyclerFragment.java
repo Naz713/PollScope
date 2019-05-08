@@ -191,9 +191,12 @@ public class RecyclerFragment extends Fragment {
             return true;
         } else if (id == R.id.add_to_empty) {
             if (mFBId == null){
-                Common.startCreateGameActivity(this.getContext());
+                // CREATE NEW GAME
+                Common.startCreateGameActivity(this.getContext(), TimeLapse.GAME_TYPE);
             } else {
-                Common.startCreateActivity(this.getContext(), mFBId);
+                // CREATE TL
+                //No podemos estar seguros de que mTl no es nulo, ponemos 1 para que no sea Game
+                Common.startCreateActivity(this.getContext(), mFBId, 1);
             }
             return true;
         }

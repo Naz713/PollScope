@@ -23,10 +23,10 @@ import java.util.List;
 public class EditActivity extends Activity {
     private String mfbId;
     private String mParentfbId;
-    private boolean mInsertAbove;
-    private boolean mIsNew;
+    private int mNewTLtype;
 
     private TimeLapse mTL;
+    private int mTimeType;
     private EditText mResume;
     private EditText mLongText;
     private ToggleButton mLight;
@@ -34,9 +34,9 @@ public class EditActivity extends Activity {
     private Button mGuarda;
 
     public static String extraId = "fbId";
-    public static String parentExtraId = "parentfbId";
-    public static String insertAbove = "insertAbove";
-    public static String isNew = "isNew";
+    public static String timeType = "timeType";
+    public static String relativeExtraId = "parentfbId";
+    public static String newTLtypeName = "newTLtype";
 
     private interface OnSelectedPlayers{
         void callback(List<String> selectedPlayers);
@@ -113,9 +113,9 @@ public class EditActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mfbId = getIntent().getStringExtra(extraId);
-        mParentfbId = getIntent().getStringExtra(parentExtraId);
-        mInsertAbove = getIntent().getBooleanExtra(insertAbove,true);
-        mIsNew = getIntent().getBooleanExtra(isNew,false);
+        mTimeType = getIntent().getIntExtra(timeType, 0);
+        mParentfbId = getIntent().getStringExtra(relativeExtraId);
+        mNewTLtype = getIntent().getIntExtra(newTLtypeName, 0);
 
         setContentView(R.layout.activity_edit);
 
@@ -141,29 +141,55 @@ public class EditActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.i("Edit","Click Guardar");
-                if (mfbId == null && mParentfbId == null) {
-                // CASO CREAR JUEGO
-                    Log.i("Edit","Crear Nuevo Juego");
+
+                if (mfbId == null){
+                    //CASO CREAR TL
+                    Log.i("Edit","Crear Nuevo");
+
                     mTL = new TimeLapse();
                     mTL.setResume(mResume.getText().toString());
                     mTL.setBody(mLongText.getText().toString());
-                    mTL.setTimeType(TimeLapse.GAME_TYPE);
 
-                    getSelectedPlayers(new OnSelectedPlayers() {
-                        @Override
-                        public void callback(List<String> selectedPlayers) {
-                            FBCaller.createNewGame(mTL, selectedPlayers, new FBCaller.onStringCallback() {
+                    if (mTimeType != TimeLapse.GAME_TYPE){
+                        //CASO CREAR TL NO GAME
+                        Log.i("Edit","NO Tipo Juego");
+                        mTL.setIsLight(mLight.isChecked());
+
+                        if (mNewTLtype == 0) {
+                            FBCaller.createNewTimeLapse(mTL, mParentfbId, new FBCaller.onStringCallback() {
                                 @Override
                                 public void onStringReturned(String result) {
-                                    //TODO: revisar
+                                    mfbId = result;
+                                }
+                            });
+                        } else {
+                            FBCaller.createNewTimeLapse(mTL, mParentfbId, mNewTLtype > 0, new FBCaller.onStringCallback() {
+                                @Override
+                                public void onStringReturned(String result) {
                                     mfbId = result;
                                 }
                             });
                         }
-                    });
+                    } else {
+                        //CASO CREAR GAME
+                        Log.i("Edit","Tipo Juego");
+                        mTL.setTimeType(TimeLapse.GAME_TYPE);
 
-                } else if (mfbId != null && mTL != null) {
-                // CASO EDIT
+                        getSelectedPlayers(new OnSelectedPlayers() {
+                            @Override
+                            public void callback(List<String> selectedPlayers) {
+                                FBCaller.createNewGame(mTL, selectedPlayers, new FBCaller.onStringCallback() {
+                                    @Override
+                                    public void onStringReturned(String result) {
+                                        mfbId = result;
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                } else {
+                    // CASO EDITAR
                     Log.i("Edit","Edit TimeLapse");
                     mTL.setResume(mResume.getText().toString());
                     mTL.setBody(mLongText.getText().toString());
@@ -178,37 +204,12 @@ public class EditActivity extends Activity {
                         });
                     }
                     FBCaller.saveTimeLapse(mfbId, mTL);
-
-                } else {
-                // CASO CREAR NUEVO
-                    Log.i("Edit","Crear TimeLapse");
-                    mTL = new TimeLapse();
-                    mTL.setResume(mResume.getText().toString());
-                    mTL.setBody(mLongText.getText().toString());
-                    mTL.setIsLight(mLight.isChecked());
-
-                    if (mIsNew) {
-                        FBCaller.createNewTimeLapse(mTL, mParentfbId, new FBCaller.onStringCallback() {
-                            @Override
-                            public void onStringReturned(String result) {
-                                //TODO: revisar
-                                mfbId = result;
-                            }
-                        });
-                    } else {
-                        FBCaller.createNewTimeLapse(mTL, mParentfbId, mInsertAbove, new FBCaller.onStringCallback() {
-                            @Override
-                            public void onStringReturned(String result) {
-                                //TODO: revisar
-                                mfbId = result;
-                            }
-                        });
-                    }
                 }
+                //TODO: Llamar a un popUp para salir de la Activity
             }
         });
 
-        if (mfbId == null && mParentfbId == null) {
+        if (mTimeType == TimeLapse.GAME_TYPE) {
             mLight.setVisibility(View.GONE);
         }
 
@@ -216,7 +217,6 @@ public class EditActivity extends Activity {
             FBCaller.getGame(mfbId, new FBCaller.onTLCallback() {
                 @Override
                 public void onTimeLapseResult(TimeLapse result) {
-                    //TODO: revisar
                     mTL = result;
                     mResume.setText(mTL.getResume());
                     mLongText.setText(mTL.getBody());

@@ -149,18 +149,18 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                 case R.id.button_add_up:
                     Log.i(TAG,"Boton Add Up presionado");
                     if (mTimeType == TimeLapse.GAME_TYPE){
-                        Common.startCreateGameActivity(v.getContext());
+                        Common.startCreateGameActivity(v.getContext(), mTimeType);
                     } else {
-                        Common.startCreateActivity(v.getContext(), mId, true);
+                        Common.startCreateActivity(v.getContext(), mId, 1);
                     }
                     break;
 
                 case R.id.button_add_down:
                     Log.i(TAG,"Boton Add Down presionado");
                     if (mTimeType == TimeLapse.GAME_TYPE){
-                        Common.startCreateGameActivity(v.getContext());
+                        Common.startCreateGameActivity(v.getContext(), mTimeType);
                     } else {
-                        Common.startCreateActivity(v.getContext(), mId, false);
+                        Common.startCreateActivity(v.getContext(), mId, -1);
                     }
                     break;
 
@@ -186,7 +186,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public boolean onLongClick(View v) {
             int long_visible = v.getVisibility();
             if (long_visible == View.VISIBLE) {
-                startEditActivity(v.getContext(), mId);
+                Common.startEditActivity(v.getContext(), mId, mTimeType);
                 return true;
             }
             return false;
