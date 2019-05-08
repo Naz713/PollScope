@@ -19,7 +19,6 @@ import com.nazdesigns.polascope.Utilities.Common;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import static com.nazdesigns.polascope.Utilities.Common.*;
 
 /*
 Responsable de llenar el recler view dado una lista de TimeLapse
@@ -151,7 +150,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                     if (mTimeType == TimeLapse.GAME_TYPE){
                         Common.startCreateGameActivity(v.getContext(), mTimeType);
                     } else {
-                        Common.startCreateActivity(v.getContext(), mId, 1);
+                        Common.startCreateActivity(v.getContext(), 1, mId, 1);
                     }
                     break;
 
@@ -160,7 +159,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                     if (mTimeType == TimeLapse.GAME_TYPE){
                         Common.startCreateGameActivity(v.getContext(), mTimeType);
                     } else {
-                        Common.startCreateActivity(v.getContext(), mId, -1);
+                        Common.startCreateActivity(v.getContext(),1, mId, -1);
                     }
                     break;
 

@@ -208,7 +208,7 @@ public class EditActivity extends Activity {
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Agrega Jugadores")
+                builder.setTitle("¿Continuar Editando?")
                         .setNegativeButton("Salir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -220,6 +220,7 @@ public class EditActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //NOTHING
+                                Log.i("Edit", "Nos quedamos en la Activity");
                             }
                 });
                 AlertDialog dialog = builder.create();

@@ -26,12 +26,13 @@ public class Common {
         context.startActivity(intent);
     }
 
-    public static void startCreateActivity(Context context, String mId, int newTLtype){
+    public static void startCreateActivity(Context context, int timeType, String mId, int newTLtype){
         /*
          * Start Edit Activity to create a new TimeLapse (no Game)
          * newTLtype indicates where to insert it or if is new
          */
         Intent intent = new Intent(context, EditActivity.class);
+        intent.putExtra(EditActivity.timeType, timeType);
         intent.putExtra(EditActivity.relativeExtraId, mId);
         intent.putExtra(EditActivity.newTLtypeName, newTLtype);
         context.startActivity(intent);

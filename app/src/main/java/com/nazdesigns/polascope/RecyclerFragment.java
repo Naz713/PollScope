@@ -113,10 +113,12 @@ public class RecyclerFragment extends Fragment {
                         AppBarLayout appBarLayout = gameActivity.findViewById(R.id.app_bar);
                         Toolbar toolbar = appBarLayout.findViewById(R.id.toolbar);
 
-                        if (mTL.getIsLight()) {
-                            toolbar.setLogo(R.mipmap.ic_light);
-                        } else {
-                            toolbar.setLogo(R.mipmap.ic_dark);
+                        if (mTL.getTimeType() != TimeLapse.GAME_TYPE){
+                            if (mTL.getIsLight()) {
+                                toolbar.setLogo(R.mipmap.ic_light);
+                            } else {
+                                toolbar.setLogo(R.mipmap.ic_dark);
+                            }
                         }
 
                         upTitleTextView.setText(mTL.getResume());
@@ -143,10 +145,12 @@ public class RecyclerFragment extends Fragment {
                     }
                 });
             } else {
-                if (mTL.getIsLight()) {
-                    toolbar.setLogo(R.mipmap.ic_light);
-                } else {
-                    toolbar.setLogo(R.mipmap.ic_dark);
+                if (mTL.getTimeType() != TimeLapse.GAME_TYPE) {
+                    if (mTL.getIsLight()) {
+                        toolbar.setLogo(R.mipmap.ic_light);
+                    } else {
+                        toolbar.setLogo(R.mipmap.ic_dark);
+                    }
                 }
                 upTitleTextView.setText(mTL.getResume());
             }
@@ -192,11 +196,13 @@ public class RecyclerFragment extends Fragment {
         } else if (id == R.id.add_to_empty) {
             if (mFBId == null){
                 // CREATE NEW GAME
+                Log.i(TAG, "NEW GAME");
                 Common.startCreateGameActivity(this.getContext(), TimeLapse.GAME_TYPE);
             } else {
                 // CREATE TL
+                Log.i(TAG, "NEW TL no GAME");
                 //No podemos estar seguros de que mTl no es nulo, ponemos 1 para que no sea Game
-                Common.startCreateActivity(this.getContext(), mFBId, 1);
+                Common.startCreateActivity(this.getContext(), 1, mFBId, 0);
             }
             return true;
         }
