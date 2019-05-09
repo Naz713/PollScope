@@ -51,6 +51,9 @@ public abstract class FBCaller {
         if (mDatabase == null) {
             mDatabase = FirebaseDatabase.getInstance();
             mDatabase.setPersistenceEnabled(true);
+            //TODO: Afinar esto para que no tengamos una copia del DB en cada telefono
+            // aunque no debe ser muy pesado
+            mDatabase.getReference().keepSynced(true);
         }
         return mDatabase;
     }
