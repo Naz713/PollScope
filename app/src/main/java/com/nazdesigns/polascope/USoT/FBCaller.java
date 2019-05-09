@@ -44,12 +44,23 @@ public abstract class FBCaller {
         void onTimeLapseResult(TimeLapse result);
     }
 
+
+    private static FirebaseDatabase mDatabase;
+
+    private static FirebaseDatabase getDatabase() {
+        if (mDatabase == null) {
+            mDatabase = FirebaseDatabase.getInstance();
+            mDatabase.setPersistenceEnabled(true);
+        }
+        return mDatabase;
+    }
+
     /**
     Pregunta si el jugador con Id dado ya tiene las estructuras minimas necesarias
     Inicializa al nuevo jugador si en necesario
      */
     public static void setPlayer(final String playerId, final String name){
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
         ref.child("players").child(playerId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -71,7 +82,7 @@ public abstract class FBCaller {
      * Regresa una lista de arrays en el primero los ids de los jugadores, en el segundo sus nombres
      */
     public static void getAllPlayers(final onListListCallback callback) {
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
         ref.child("players").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -122,7 +133,7 @@ public abstract class FBCaller {
             callbackResult.onListReturned(new ArrayList<String>());
             return;
         }
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
         ref.child("players").child(playerId).child("games")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -148,7 +159,7 @@ public abstract class FBCaller {
      */
     public static void createNewTimeLapse(final TimeLapse timeLapse, final String brotherfbId,
                                           final boolean isBefore, final onStringCallback callback){
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
         ref.child("timelapses").child(brotherfbId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -269,7 +280,7 @@ public abstract class FBCaller {
      */
     public static void createNewTimeLapse(final TimeLapse timeLapse, final String parentfbId,
                                           final onStringCallback callback) {
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
 
         ref.child("timelapses").child(parentfbId).child("timelapse")
             .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -318,7 +329,7 @@ public abstract class FBCaller {
     }
 
     private static void createTimelapse(final TimeLapse timeLapse, final onStringCallback callback){
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
         ref.child("timelapses").push().runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
@@ -373,7 +384,7 @@ public abstract class FBCaller {
      * Los jugaores no se sobreescriben, solo se añaden extras
      */
     public static void addGamePlayers(final String gameId, List<String> playersIds){
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
 
         // Actualizamos los jugadores en el juego
         Map<String, Object> childUpdates = new HashMap<>();
@@ -409,7 +420,7 @@ public abstract class FBCaller {
     }
 
     public static void saveTimeLapse(String fbId, TimeLapse timeLapse){
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
 
         ref.child("timelapses").child(fbId).child("timelapse").setValue(timeLapse);
     }
@@ -418,7 +429,7 @@ public abstract class FBCaller {
     Regresa el jueoa apropiado al id pasado
      */
     public static void getGame(final String gameId, final onTLCallback callback){
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
         ref.child("timelapses").child(gameId).child("timelapse")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -443,7 +454,7 @@ public abstract class FBCaller {
     Regresa una lista de los ids de los TimeLapse subordinados al TimeLapse en cuestion
      */
     public static void getSubEpochs(final String gameId, final onListCallback callback){
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
         ref.child("timelapses").child(gameId).child("timelapse").child("subEpochsIds")
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -468,7 +479,7 @@ public abstract class FBCaller {
 
     @Deprecated
     public static void getResume(final String gameId, final onStringCallback callback){
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
         ref.child("timelapses").child(gameId).child("timelapse").child("resume")
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -493,7 +504,7 @@ public abstract class FBCaller {
 
     @Deprecated
     public static void getLight(final String gameId, final onBoolCallback callback){
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
         ref.child("timelapses").child(gameId).child("timelapse").child("isLight")
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -518,7 +529,7 @@ public abstract class FBCaller {
 
     @Deprecated
     public static void getType(final String gameId, final onIntCallback callback){
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference ref = getDatabase().getReference();
         ref.child("timelapses").child(gameId).child("timelapse").child("timeType")
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
