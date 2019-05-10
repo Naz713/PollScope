@@ -160,7 +160,7 @@ public class RecyclerFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater menuInflater) {
         if (mFBId == null){
-            FBCaller.getPlayerGames(new FBCaller.onListCallback() {
+            FBCaller.getPlayerGamesIds(new FBCaller.onListCallback() {
                 @Override
                 public void onListReturned(List<String> result) {
                     if(result.isEmpty()){

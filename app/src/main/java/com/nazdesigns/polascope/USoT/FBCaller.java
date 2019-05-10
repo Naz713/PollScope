@@ -43,6 +43,9 @@ public abstract class FBCaller {
     public interface onTLCallback{
         void onTimeLapseResult(TimeLapse result);
     }
+    public interface onListTLCallback{
+        void onListTimeLapseResult(List<TimeLapse> result, List<String> ids);
+    }
 
 
     private static FirebaseDatabase mDatabase;
@@ -126,7 +129,7 @@ public abstract class FBCaller {
     /**
     Regresa una lista que contiene todos los juegos del jugador
      */
-    public static void getPlayerGames(final onListCallback callbackResult){
+    public static void getPlayerGamesIds(final onListCallback callbackResult){
         String playerId;
         try{
             playerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -426,6 +429,51 @@ public abstract class FBCaller {
         final DatabaseReference ref = getDatabase().getReference();
 
         ref.child("timelapses").child(fbId).child("timelapse").setValue(timeLapse);
+    }
+
+    public static void getPlayerGames(final onListTLCallback callback){
+        String playerId;
+        try{
+            playerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            Log.e(TAG,"User null al intentar obtener sus juegos");
+            callback.onListTimeLapseResult(null, null);
+            return;
+        }
+        getTLlist(null, new onListTLCallback() {
+            @Override
+            public void onListTimeLapseResult(List<TimeLapse> result, List<String> ids) {
+                List<TimeLapse> ret = new ArrayList<>();
+
+            }
+        });
+    }
+
+
+    public static void getTLlist(final String rootFbId, final onListTLCallback callback){
+        final DatabaseReference ref = getDatabase().getReference();
+        ref.child("timelapses").orderByChild("raiz").equalTo(rootFbId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<TimeLapse> ret = new ArrayList<>();
+                        List<String> ids = new ArrayList<>();
+                        for (DataSnapshot tlList : dataSnapshot.getChildren()) {
+                            if (tlList.getValue() instanceof HashMap) {
+                                ids.add(tlList.getKey());
+                                ret.add(new TimeLapse((HashMap) tlList.getValue()));
+                            }
+                        }
+                        callback.onListTimeLapseResult(ret, ids);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e(TAG, "Cancelada Peticion a ListTimeLapse: "+ rootFbId);
+                        callback.onListTimeLapseResult(null, null);
+                    }
+                });
     }
 
     /*

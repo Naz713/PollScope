@@ -25,7 +25,8 @@ Responsable de llenar el recler view dado una lista de TimeLapse
  */
 
 public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.TextViewHolder> {
-    private List<String> mDataset;
+    private List<TimeLapse> mDataset;
+    private List<String> mIds;
     private String mFBId;
     private onListListener listener;
     private LinearTextAdapter.SwipeHandler mSwipeHandler;
@@ -108,7 +109,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public ImageButton mAdd_up;
         public ImageButton mAdd_down;
         public String mId;
-        public int mTimeType;
+        public TimeLapse mTL;
         public WeakReference<onListListener> listListener;
         public WeakReference<LinearTextAdapter.SwipeHandler> mSwipeHandler;
 
@@ -135,9 +136,9 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
         }
 
-        public void setId(String id, int type){
+        public void setTLs(TimeLapse tl, String id){
+            mTL = tl;
             mId = id;
-            mTimeType = type;
         }
 
         @Override
@@ -147,8 +148,8 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
             switch (viewId) {
                 case R.id.button_add_up:
                     Log.i(TAG,"Boton Add Up presionado");
-                    if (mTimeType == TimeLapse.GAME_TYPE){
-                        Common.startCreateGameActivity(v.getContext(), mTimeType);
+                    if (mTL.getTimeType() == TimeLapse.GAME_TYPE){
+                        Common.startCreateGameActivity(v.getContext(), mTL.getTimeType());
                     } else {
                         Common.startCreateActivity(v.getContext(), 1, mId, 1);
                     }
@@ -156,8 +157,8 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
                 case R.id.button_add_down:
                     Log.i(TAG,"Boton Add Down presionado");
-                    if (mTimeType == TimeLapse.GAME_TYPE){
-                        Common.startCreateGameActivity(v.getContext(), mTimeType);
+                    if (mTL.getTimeType() == TimeLapse.GAME_TYPE){
+                        Common.startCreateGameActivity(v.getContext(), mTL.getTimeType());
                     } else {
                         Common.startCreateActivity(v.getContext(),1, mId, -1);
                     }
@@ -185,7 +186,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         public boolean onLongClick(View v) {
             int long_visible = v.getVisibility();
             if (long_visible == View.VISIBLE) {
-                Common.startEditActivity(v.getContext(), mId, mTimeType);
+                Common.startEditActivity(v.getContext(), mId, mTL.getTimeType());
                 return true;
             }
             return false;
@@ -203,23 +204,28 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                              LinearTextAdapter.SwipeHandler swipeHandler) {
         mFBId = id;
         mDataset = new ArrayList<>();
+        mIds = new ArrayList<>();
         this.listener = listener;
         this.mSwipeHandler = swipeHandler;
         final LinearTextAdapter textAdapter = this;
-        if (mFBId == null){
-            FBCaller.getPlayerGames(new FBCaller.onListCallback() {
+        if (mFBId != null) {
+            FBCaller.getTLlist(mFBId, new FBCaller.onListTLCallback() {
                 @Override
-                public void onListReturned(List<String> result) {
-                    mDataset = result;
-                    textAdapter.notifyDataSetChanged();
+                public void onListTimeLapseResult(List<TimeLapse> result, List<String> ids) {
+                    if (result != null) {
+                        mDataset = result;
+                        mIds = ids;
+                        textAdapter.notifyDataSetChanged();
+                    }
                 }
             });
         } else {
-            FBCaller.getSubEpochs(mFBId, new FBCaller.onListCallback() {
+            FBCaller.getTLlist(null, new FBCaller.onListTLCallback() {
                 @Override
-                public void onListReturned(List<String> result) {
-                    if (result != null){
+                public void onListTimeLapseResult(List<TimeLapse> result, List<String> ids) {
+                    if (result != null) {
                         mDataset = result;
+                        mIds = ids;
                         textAdapter.notifyDataSetChanged();
                     }
                 }
@@ -242,40 +248,33 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
 
     @Override
     public void onBindViewHolder(@NonNull final TextViewHolder holder, int position) {
-        final String childFBId = mDataset.get(position);
+        TimeLapse childTimeLapse = mDataset.get(position);
+        String childFBId = mIds.get(position);
 
-        Log.i("LTA", childFBId);
+        holder.setTLs(childTimeLapse, childFBId);
 
-        FBCaller.getGame(childFBId, new FBCaller.onTLCallback() {
-            @Override
-            public void onTimeLapseResult(TimeLapse childTimeLapse) {
+        if(childTimeLapse.getIsLight()){
+            holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources()
+                    .getColor(R.color.backgroundLight));
+            holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources()
+                    .getColor(R.color.backgroundLight));
+        }
+        else {
+            holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources()
+                    .getColor(R.color.backgroundDark));
+            holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources()
+                    .getColor(R.color.backgroundDark));
 
-                holder.setId(childFBId, childTimeLapse.getTimeType());
+        }
 
-                if(childTimeLapse.getIsLight()){
-                    holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources()
-                            .getColor(R.color.backgroundLight));
-                    holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources()
-                            .getColor(R.color.backgroundLight));
-                }
-                else {
-                    holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources()
-                            .getColor(R.color.backgroundDark));
-                    holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources()
-                            .getColor(R.color.backgroundDark));
+        if  (childTimeLapse.getSubEpochsIds() == null ||
+                childTimeLapse.getSubEpochsIds().isEmpty()) {
+            holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,
+                    R.mipmap.empty, 0);
+        }
 
-                }
-
-                if  (childTimeLapse.getSubEpochsIds() == null ||
-                        childTimeLapse.getSubEpochsIds().isEmpty()) {
-                    holder.mResume.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,
-                            R.mipmap.empty, 0);
-                }
-
-                holder.mResume.setText(childTimeLapse.getResume());
-                holder.mLongText.setText(childTimeLapse.getBody());
-            }
-        });
+        holder.mResume.setText(childTimeLapse.getResume());
+        holder.mLongText.setText(childTimeLapse.getBody());
     }
 
     @Override
