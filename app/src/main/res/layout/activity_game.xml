@@ -21,7 +21,8 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
+            app:toolbarId="@+id/toolbar"
+            app:title="@string/app_name">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -29,7 +30,6 @@
                 android:layout_height="@dimen/toolbar_height"
                 app:layout_collapseMode="pin"
                 app:logo="@mipmap/ic_launcher"
-                app:title="@string/app_name"
                 />
 
             <android.support.v7.widget.AppCompatTextView

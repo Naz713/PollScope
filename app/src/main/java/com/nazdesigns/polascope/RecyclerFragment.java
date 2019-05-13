@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatTextView;
@@ -123,6 +124,7 @@ public class RecyclerFragment extends Fragment {
         final AppCompatTextView upTitleTextView = gameActivity.findViewById(R.id.toolbar_text);
         if (mFBId == null) {
             upTitleTextView.setText(getString(R.string.games_list_msg));
+            gameActivity.changeToolbarTitle(getString(R.string.app_name));
         } else {
             if (mTL == null) {
                 FBCaller.getGame(mFBId, new FBCaller.onTLCallback() {
@@ -143,22 +145,20 @@ public class RecyclerFragment extends Fragment {
 
                         upTitleTextView.setText(mTL.getResume());
 
-                        if(gameActivity.getSupportActionBar() != null){
-                            Log.i(TAG, "Toolbar Found"+String.valueOf(mTL.getTimeType()));
-                            switch(mTL.getTimeType()){
-                                case TimeLapse.GAME_TYPE:
-                                    toolbar.setTitle("Periodos");
-                                    Log.i(TAG, "Periodos");
-                                    break;
-                                case TimeLapse.PERIOD_TYPE:
-                                    toolbar.setTitle("Eventos");
-                                    Log.i(TAG, "Eventos");
-                                    break;
-                                case TimeLapse.EVENT_TYPE:
-                                    toolbar.setTitle("Escenas");
-                                    Log.i(TAG, "Escenas");
-                                    break;
-                            }
+                        switch(mTL.getTimeType()){
+                            case TimeLapse.GAME_TYPE:
+                                gameActivity.changeToolbarTitle("Periodos");
+                                break;
+                            case TimeLapse.PERIOD_TYPE:
+                                gameActivity.changeToolbarTitle("Eventos");
+                                break;
+                            case TimeLapse.EVENT_TYPE:
+                                gameActivity.changeToolbarTitle("Escenas");
+                                break;
+                            default:
+                                gameActivity.changeToolbarTitle(getString(R.string.app_name));
+
+
                         }
 
                         gameActivity.setSupportActionBar(toolbar);
@@ -172,7 +172,22 @@ public class RecyclerFragment extends Fragment {
                         toolbar.setLogo(R.mipmap.ic_dark);
                     }
                 }
+
                 upTitleTextView.setText(mTL.getResume());
+
+                switch(mTL.getTimeType()){
+                    case TimeLapse.GAME_TYPE:
+                        gameActivity.changeToolbarTitle("Periodos");
+                        break;
+                    case TimeLapse.PERIOD_TYPE:
+                        gameActivity.changeToolbarTitle("Eventos");
+                        break;
+                    case TimeLapse.EVENT_TYPE:
+                        gameActivity.changeToolbarTitle("Escenas");
+                        break;
+                    default:
+                        gameActivity.changeToolbarTitle(getString(R.string.app_name));
+                }
             }
         }
     }

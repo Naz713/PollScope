@@ -3,6 +3,7 @@ package com.nazdesigns.polascope;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -82,5 +83,10 @@ public class GameActivity extends AppCompatActivity implements LinearTextAdapter
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_game, menu);
         return true;
+    }
+
+    public void changeToolbarTitle(String title){
+        CollapsingToolbarLayout toolbar = appBar.findViewById(R.id.toolbar_layout);
+        toolbar.setTitle(title);
     }
 }
