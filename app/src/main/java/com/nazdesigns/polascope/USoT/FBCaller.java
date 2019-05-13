@@ -431,6 +431,7 @@ public abstract class FBCaller {
         ref.child("timelapses").child(fbId).child("timelapse").setValue(timeLapse);
     }
 
+    @Deprecated
     public static void getPlayerGames(final onListTLCallback callback){
         String playerId;
         try{
@@ -444,7 +445,11 @@ public abstract class FBCaller {
         getTLlist(null, new onListTLCallback() {
             @Override
             public void onListTimeLapseResult(List<TimeLapse> result, List<String> ids) {
-                List<TimeLapse> ret = new ArrayList<>();
+                if(result != null && ids != null){
+                    callback.onListTimeLapseResult(result, ids);
+                } else {
+                    callback.onListTimeLapseResult(null, null);
+                }
 
             }
         });
@@ -462,7 +467,7 @@ public abstract class FBCaller {
                         for (DataSnapshot tlList : dataSnapshot.getChildren()) {
                             if (tlList.getValue() instanceof HashMap) {
                                 ids.add(tlList.getKey());
-                                ret.add(new TimeLapse((HashMap) tlList.getValue()));
+                                ret.add(new TimeLapse((HashMap) ((HashMap) tlList.getValue()).get("timelapse")));
                             }
                         }
                         callback.onListTimeLapseResult(ret, ids);

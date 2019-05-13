@@ -258,8 +258,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                     .getColor(R.color.backgroundLight));
             holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources()
                     .getColor(R.color.backgroundLight));
-        }
-        else {
+        } else {
             holder.mResume.setBackgroundColor(holder.itemView.getContext().getResources()
                     .getColor(R.color.backgroundDark));
             holder.mLongText.setBackgroundColor(holder.itemView.getContext().getResources()
