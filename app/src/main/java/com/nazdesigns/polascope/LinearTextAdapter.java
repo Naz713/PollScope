@@ -228,7 +228,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                 }
             });
         } else {
-            FBCaller.getTLlist(null, new FBCaller.onListTLCallback() {
+            FBCaller.getPlayerGames(new FBCaller.onListTLCallback() {
                 @Override
                 public void onListTimeLapseResult(List<TimeLapse> result, List<String> ids) {
                     if (result != null) {

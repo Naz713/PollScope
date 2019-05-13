@@ -431,9 +431,8 @@ public abstract class FBCaller {
         ref.child("timelapses").child(fbId).child("timelapse").setValue(timeLapse);
     }
 
-    @Deprecated
     public static void getPlayerGames(final onListTLCallback callback){
-        String playerId;
+        final String playerId;
         try{
             playerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }catch (NullPointerException e){
@@ -445,12 +444,17 @@ public abstract class FBCaller {
         getTLlist(null, new onListTLCallback() {
             @Override
             public void onListTimeLapseResult(List<TimeLapse> result, List<String> ids) {
-                if(result != null && ids != null){
-                    callback.onListTimeLapseResult(result, ids);
-                } else {
+                if(result == null || ids == null){
                     callback.onListTimeLapseResult(null, null);
                 }
 
+                for(int i=result.size()-1;i>=0;i--){
+                    if(!result.get(i).getSubEpochsIds().contains(playerId)){
+                        result.remove(i);
+                        ids.remove(i);
+                    }
+                }
+                callback.onListTimeLapseResult(result, ids);
             }
         });
     }
