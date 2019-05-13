@@ -207,6 +207,10 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         mIds = new ArrayList<>();
         this.listener = listener;
         this.mSwipeHandler = swipeHandler;
+        refreshList();
+    }
+
+    public void refreshList(){
         final LinearTextAdapter textAdapter = this;
         if (mFBId != null) {
             FBCaller.getTLlist(mFBId, new FBCaller.onListTLCallback() {
