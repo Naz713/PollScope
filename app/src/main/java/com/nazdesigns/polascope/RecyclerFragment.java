@@ -41,6 +41,10 @@ public class RecyclerFragment extends Fragment {
 
     public static final String fbId = "fbId";
 
+    public interface RefreshCallback{
+        void completed();
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -78,7 +82,7 @@ public class RecyclerFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        RecyclerView activityView = (RecyclerView) getView();
+        RecyclerView activityView = (RecyclerView) getView().findViewById(R.id.text_recycler_view);
         final GameActivity gameActivity = (GameActivity) getActivity();
         if( (activityView == null) || (gameActivity == null) ){
             Log.e(TAG,"onActivityCreated: activity or view null");
@@ -107,7 +111,12 @@ public class RecyclerFragment extends Fragment {
         mSwiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mAdapter.refreshList();
+                mAdapter.refreshList(new RefreshCallback() {
+                    @Override
+                    public void completed() {
+                        mSwiperefresh.setRefreshing(false);
+                    }
+                });
             }
         });
 

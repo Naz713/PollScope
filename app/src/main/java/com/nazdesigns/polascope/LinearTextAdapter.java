@@ -207,10 +207,13 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
         mIds = new ArrayList<>();
         this.listener = listener;
         this.mSwipeHandler = swipeHandler;
-        refreshList();
+        refreshList(new RecyclerFragment.RefreshCallback() {
+            @Override
+            public void completed() {}
+        });
     }
 
-    public void refreshList(){
+    public void refreshList(final RecyclerFragment.RefreshCallback callback){
         final LinearTextAdapter textAdapter = this;
         if (mFBId != null) {
             FBCaller.getTLlist(mFBId, new FBCaller.onListTLCallback() {
@@ -220,6 +223,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                         mDataset = result;
                         mIds = ids;
                         textAdapter.notifyDataSetChanged();
+                        callback.completed();
                     }
                 }
             });
@@ -231,6 +235,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                         mDataset = result;
                         mIds = ids;
                         textAdapter.notifyDataSetChanged();
+                        callback.completed();
                     }
                 }
             });
