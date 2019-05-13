@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,11 +34,16 @@ public class RecyclerFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private LinearTextAdapter mAdapter;
     private LinearTextAdapter.SwipeHandler mSwipeHandler;
+    private SwipeRefreshLayout mSwiperefresh;
     private ItemTouchHelper mItemTouchHelper;
     private String mFBId;
     private TimeLapse mTL;
 
     public static final String fbId = "fbId";
+
+    public interface RefreshCallback{
+        void completed();
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -76,7 +82,7 @@ public class RecyclerFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        RecyclerView activityView = (RecyclerView) getView();
+        RecyclerView activityView = (RecyclerView) getView().findViewById(R.id.text_recycler_view);
         final GameActivity gameActivity = (GameActivity) getActivity();
         if( (activityView == null) || (gameActivity == null) ){
             Log.e(TAG,"onActivityCreated: activity or view null");
@@ -99,6 +105,20 @@ public class RecyclerFragment extends Fragment {
         AppBarLayout appBarLayout = gameActivity.findViewById(R.id.app_bar);
         Toolbar toolbar = appBarLayout.findViewById(R.id.toolbar);
         toolbar.setLogo(R.mipmap.ic_launcher);
+
+        mSwiperefresh = (SwipeRefreshLayout) gameActivity.findViewById(R.id.swipe_refresh);
+
+        mSwiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mAdapter.refreshList(new RefreshCallback() {
+                    @Override
+                    public void completed() {
+                        mSwiperefresh.setRefreshing(false);
+                    }
+                });
+            }
+        });
 
         final AppCompatTextView upTitleTextView = gameActivity.findViewById(R.id.toolbar_text);
         if (mFBId == null) {
