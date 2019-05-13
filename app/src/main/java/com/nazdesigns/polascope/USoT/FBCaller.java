@@ -441,22 +441,34 @@ public abstract class FBCaller {
             callback.onListTimeLapseResult(null, null);
             return;
         }
-        getTLlist(null, new onListTLCallback() {
-            @Override
-            public void onListTimeLapseResult(List<TimeLapse> result, List<String> ids) {
-                if(result == null || ids == null){
-                    callback.onListTimeLapseResult(null, null);
+        final DatabaseReference ref = getDatabase().getReference();
+        ref.child("timelapses").orderByChild("raiz").equalTo(null)
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    List<TimeLapse> ret = new ArrayList<>();
+                    List<String> ids = new ArrayList<>();
+                    for (DataSnapshot tlList : dataSnapshot.getChildren()) {
+                        try {
+                            HashMap<String, Object> map = ((HashMap) tlList.getValue());
+
+                            if (((List) map.get("players")).contains(playerId)) {
+                                ids.add(tlList.getKey());
+                                ret.add(new TimeLapse((HashMap) map.get("timelapse")));
+                            }
+                        }catch (NullPointerException e){
+                            e.printStackTrace();
+                        }
+                    }
+                    callback.onListTimeLapseResult(ret, ids);
                 }
 
-                for(int i=result.size()-1;i>=0;i--){
-                    if(!result.get(i).getSubEpochsIds().contains(playerId)){
-                        result.remove(i);
-                        ids.remove(i);
-                    }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e(TAG, "Cancelada Peticion de Juegos de: "+ playerId);
+                    callback.onListTimeLapseResult(null, null);
                 }
-                callback.onListTimeLapseResult(result, ids);
-            }
-        });
+            });
     }
 
 
