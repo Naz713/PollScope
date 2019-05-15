@@ -185,7 +185,7 @@ public abstract class FBCaller {
                 for ( DataSnapshot obj : dataSnapshot.getChildren() ){
                     switch (obj.getKey()){
                         case "index":
-                            otherIndex = (double) obj.getValue();
+                            otherIndex = (Long) obj.getValue();
                             break;
                         case "raiz":
                             parentfbId = (String) obj.getValue();
