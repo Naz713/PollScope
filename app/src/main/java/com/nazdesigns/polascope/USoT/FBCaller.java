@@ -389,13 +389,31 @@ public abstract class FBCaller {
     /*
      * Los jugaores no se sobreescriben, solo se añaden extras
      */
-    public static void addGamePlayers(final String gameId, List<String> playersIds){
+    public static void addGamePlayers(final String gameId, final List<String> playersIds){
         final DatabaseReference ref = getDatabase().getReference();
 
         // Actualizamos los jugadores en el juego
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/players", playersIds);
-        ref.child("timelapses").child(gameId).updateChildren(childUpdates);
+        ref.child("timelapses").child(gameId).child("players")
+                .runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                if (mutableData.getValue() instanceof List) {
+                    List<String> oldPlayers = (List<String>) mutableData.getValue();
+                    for (String player : playersIds){
+                        if(!oldPlayers.contains(player)){
+                            oldPlayers.add(player);
+                        }
+                    }
+                    mutableData.setValue(oldPlayers);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b,
+                                   @Nullable DataSnapshot dataSnapshot) {}
+        });
 
         // Actualizamos el juego en los players
         for (final String playerId : playersIds) {
