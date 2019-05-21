@@ -47,6 +47,7 @@ public abstract class FBCaller {
         void onListTimeLapseResult(List<TimeLapse> result, List<String> ids);
     }
 
+    //TODO: no usar timelapse anidado, todo al mismo plano.
 
     private static FirebaseDatabase mDatabase;
 

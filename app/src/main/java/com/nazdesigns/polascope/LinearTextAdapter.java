@@ -151,7 +151,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                     if (mTL.getTimeType() == TimeLapse.GAME_TYPE){
                         Common.startCreateGameActivity(v.getContext(), mTL.getTimeType());
                     } else {
-                        Common.startCreateActivity(v.getContext(), 1, mId, 1);
+                        Common.startCreateActivity(v.getContext(), 1, mTL.getRaiz(), mId, 1);
                     }
                     break;
 
@@ -160,7 +160,7 @@ public class LinearTextAdapter extends RecyclerView.Adapter<LinearTextAdapter.Te
                     if (mTL.getTimeType() == TimeLapse.GAME_TYPE){
                         Common.startCreateGameActivity(v.getContext(), mTL.getTimeType());
                     } else {
-                        Common.startCreateActivity(v.getContext(),1, mId, -1);
+                        Common.startCreateActivity(v.getContext(),1, mTL.getRaiz(), mId, -1);
                     }
                     break;
 
