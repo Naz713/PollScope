@@ -23,6 +23,7 @@ import java.util.List;
 public class EditActivity extends Activity {
     private String mfbId;
     private String mParentfbId;
+    private String mBrotherfbId;
     private int mNewTLtype;
 
     private TimeLapse mTL;
@@ -35,7 +36,8 @@ public class EditActivity extends Activity {
 
     public static String extraId = "fbId";
     public static String timeType = "timeType";
-    public static String relativeExtraId = "parentfbId";
+    public static String parentExtraId = "parentfbId";
+    public static String brotherExtraId = "brotherfbId";
     public static String newTLtypeName = "newTLtype";
 
     private interface OnSelectedPlayers{
@@ -115,7 +117,8 @@ public class EditActivity extends Activity {
         final Context context = (Context) this;
         mfbId = getIntent().getStringExtra(extraId);
         mTimeType = getIntent().getIntExtra(timeType, 0);
-        mParentfbId = getIntent().getStringExtra(relativeExtraId);
+        mParentfbId = getIntent().getStringExtra(parentExtraId);
+        mBrotherfbId = getIntent().getStringExtra(brotherExtraId);
         mNewTLtype = getIntent().getIntExtra(newTLtypeName, 0);
 
         setContentView(R.layout.activity_edit);
@@ -164,7 +167,8 @@ public class EditActivity extends Activity {
                                 }
                             });
                         } else {
-                            FBCaller.createNewTimeLapse(mTL, mParentfbId, mNewTLtype > 0, new FBCaller.onStringCallback() {
+                            FBCaller.createNewTimeLapse(mTL, mParentfbId, mBrotherfbId,
+                                    mNewTLtype > 0, new FBCaller.onStringCallback() {
                                 @Override
                                 public void onStringReturned(String result) {
                                     mfbId = result;

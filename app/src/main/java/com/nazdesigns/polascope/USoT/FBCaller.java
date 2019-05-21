@@ -163,122 +163,55 @@ public abstract class FBCaller {
     /*
      * Crea un nuevo juego junto al time lapse con Id parentfbId antes o despues acorde a isBefore
      */
-    public static void createNewTimeLapse(final TimeLapse timeLapse, final String brotherfbId,
-                                          final boolean isBefore, final onStringCallback callback){
+    public static void createNewTimeLapse(final TimeLapse timeLapse, final String parentId,
+                                          final String brotherfbId, final boolean isBefore,
+                                          final onStringCallback callback){
         final DatabaseReference ref = getDatabase().getReference();
-        ref.child("timelapses").child(brotherfbId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null) {
-                    Log.e(TAG, "Se intentó crear un hermano a un TimeLapse null");
-                    callback.onStringReturned(null);
-                    return;
-                }
-
-                /*
-                * Dentro del objeto iteramos en su contenido para encontrar la raiz index y hermanos
-                * */
-                String parentfbId = null;
-                String other = null;
-                double otherIndex = 0.0;
-                for ( DataSnapshot obj : dataSnapshot.getChildren() ){
-                    switch (obj.getKey()){
-                        case "index":
-                            otherIndex = (Long) obj.getValue();
-                            break;
-                        case "raiz":
-                            parentfbId = (String) obj.getValue();
-                            break;
-                        case "before_brother":
-                            if (isBefore) {
-                                other = (String) obj.getValue();
+        ref.child("timelapses").orderByChild("raiz").equalTo(parentId)
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue() instanceof List){
+                        List<Map<String, Object>> list = (List) dataSnapshot.getValue();
+                        Double firstIndex = 0.0;
+                        int firstI = -2;
+                        for (int i=0; i<list.size(); i++){
+                            if (list.get(i).get("raiz") == brotherfbId){
+                                firstI = i;
+                                firstIndex = (double) list.get(i).get("index");
                             }
-                            break;
-                        case "after_brother":
-                            if (!isBefore) {
-                                other = (String) obj.getValue();
-                            }
-                            break;
-                    }
-                }
-
-                final String secondBrother = other;
-                final double brotherIndex = otherIndex;
-                /*
-                 * Creamos el timeLapse con la raiz conocida
-                 */
-                createNewTimeLapse(timeLapse, parentfbId, new onStringCallback() {
-                    @Override
-                    public void onStringReturned(final String gameId) {
-                        if (gameId == null) {
-                            Log.e(TAG, "Falla al intentar Crear nuevo TimeLapse");
+                        }
+                        if(firstI == -2){
+                            Log.e(TAG, "Se intentó crear un hermano a un TimeLapse null");
                             callback.onStringReturned(null);
                             return;
                         }
-                        /*
-                        * Calculamos el index
-                        * si el hermano es null es porque estamos en un extremo
-                        * si no es nulo sacamos el promedio para calcular el index
-                        * */
-                        double index = 0;
-                        if (secondBrother == null) {
-                            if (isBefore) {
-                                index = brotherIndex - 100;
-                            } else {
-                                index = brotherIndex + 100;
+
+                        int j = isBefore? firstI-1 : firstI +1;
+                        double index;
+                        if (j>=0 && j<list.size()){
+                            index = ( firstIndex + (double) list.get(j).get("index") )/2;
+                        } else {
+                            index = isBefore? firstIndex - 100 : firstIndex + 100;
+                        }
+
+                        final double newIndex = index;
+                        createNewTimeLapse(timeLapse, parentId, new onStringCallback() {
+                            @Override
+                            public void onStringReturned(String gameId) {
+                                ref.child("timelapses").child(gameId).child("index")
+                                        .setValue(newIndex);
                             }
-                        } else {
-                            ref.child("timelapses").child(secondBrother).child("index")
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    double index;
-                                    if (dataSnapshot.getValue() == null) {
-                                        Log.e(TAG,"Segundo hermano sin index");
-                                        if (isBefore) {
-                                            index = brotherIndex - 0.1;
-                                        } else {
-                                            index = brotherIndex + 0.1;
-                                        }
-                                    } else {
-                                        index = ( (double) dataSnapshot.getValue() + brotherIndex)/2;
-                                    }
-                                    ref.child("timelapses").child(gameId).child("index").setValue(index);
-                                }
+                        });
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Log.e(TAG,"Cancelada petición al consultar el segundo hermano");
-                                }
-                            });
-
-                        }
-
-                        Map<String, Object> childUpdates = new HashMap<>();
-                        if (secondBrother == null) {
-                            childUpdates.put("/index", index);
-                        }
-                        if (isBefore){
-                            childUpdates.put("/before_brother", secondBrother);
-                            childUpdates.put("/after_brother", brotherfbId);
-                        } else {
-                            childUpdates.put("/before_brother", brotherfbId);
-                            childUpdates.put("/after_brother", secondBrother);
-                        }
-                        ref.child("timelapses").child(gameId).updateChildren(childUpdates);
-
-                        callback.onStringReturned(gameId);
                     }
-                });
-            }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG,"Cancelada petición al consultar el primer hermano");
-                callback.onStringReturned(null);
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e(TAG,"Cancelada petición al crear TL con hermano");
+                }
+            });
     }
 
     /*
