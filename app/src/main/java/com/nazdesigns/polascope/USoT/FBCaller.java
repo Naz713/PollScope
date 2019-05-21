@@ -47,8 +47,6 @@ public abstract class FBCaller {
         void onListTimeLapseResult(List<TimeLapse> result, List<String> ids);
     }
 
-    //TODO: no usar timelapse anidado, todo al mismo plano.
-
     private static FirebaseDatabase mDatabase;
 
     private static FirebaseDatabase getDatabase() {
@@ -222,7 +220,7 @@ public abstract class FBCaller {
                                           final onStringCallback callback) {
         final DatabaseReference ref = getDatabase().getReference();
 
-        ref.child("timelapses").child(parentfbId).child("timelapse")
+        ref.child("timelapses").child(parentfbId)
             .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
@@ -244,12 +242,12 @@ public abstract class FBCaller {
                             if (!subEpochs.contains(gameId)) {
                                 subEpochs.add(gameId);
                                 tl.setSubEpochsIds(subEpochs);
-                                ref.child("timelapses").child(parentfbId).child("timelapse").setValue(tl);
+                                ref.child("timelapses").child(parentfbId).setValue(tl);
 
                                 // Actualizamos el Timelapse padre en el recien creado
                                 Map<String, Object> childUpdates = new HashMap<>();
                                 childUpdates.put("/raiz", parentfbId);
-                                childUpdates.put("/timelapse/timeType", tl.getTimeType()+1);
+                                childUpdates.put("/timeType", tl.getTimeType()+1);
                                 ref.child("timelapses").child(gameId).updateChildren(childUpdates);
 
                             }
@@ -277,10 +275,8 @@ public abstract class FBCaller {
                 /*
                  * Agregamos el Timelapse
                  * */
-                Map<String, Object> childUpdates = new HashMap<>();
-                childUpdates.put("timelapse", timeLapse);
-                childUpdates.put("index", 0.0);
-                mutableData.setValue(childUpdates);
+                timeLapse.setIndex(0.0);
+                mutableData.setValue(timeLapse);
 
                 return Transaction.success(mutableData);
             }
@@ -382,7 +378,7 @@ public abstract class FBCaller {
     public static void saveTimeLapse(String fbId, TimeLapse timeLapse){
         final DatabaseReference ref = getDatabase().getReference();
 
-        ref.child("timelapses").child(fbId).child("timelapse").setValue(timeLapse);
+        ref.child("timelapses").child(fbId).setValue(timeLapse);
     }
 
     public static void getPlayerGames(final onListTLCallback callback){
@@ -404,11 +400,11 @@ public abstract class FBCaller {
                     List<String> ids = new ArrayList<>();
                     for (DataSnapshot tlList : dataSnapshot.getChildren()) {
                         try {
-                            HashMap<String, Object> map = ((HashMap) tlList.getValue());
+                            HashMap<String, Object> tl = ((HashMap) tlList.getValue());
 
-                            if (((List) map.get("players")).contains(playerId)) {
+                            if (((List) tl.get("players")).contains(playerId)) {
                                 ids.add(tlList.getKey());
-                                ret.add(new TimeLapse((HashMap) map.get("timelapse")));
+                                ret.add(new TimeLapse(tl));
                             }
                         }catch (NullPointerException e){
                             e.printStackTrace();
@@ -437,7 +433,8 @@ public abstract class FBCaller {
                         for (DataSnapshot tlList : dataSnapshot.getChildren()) {
                             if (tlList.getValue() instanceof HashMap) {
                                 ids.add(tlList.getKey());
-                                ret.add(new TimeLapse((HashMap) ((HashMap) tlList.getValue()).get("timelapse")));
+                                HashMap<String, Object> tl = ((HashMap) tlList.getValue());
+                                ret.add(new TimeLapse(tl));
                             }
                         }
                         callback.onListTimeLapseResult(ret, ids);
@@ -456,7 +453,7 @@ public abstract class FBCaller {
      */
     public static void getGame(final String gameId, final onTLCallback callback){
         final DatabaseReference ref = getDatabase().getReference();
-        ref.child("timelapses").child(gameId).child("timelapse")
+        ref.child("timelapses").child(gameId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -481,7 +478,7 @@ public abstract class FBCaller {
      */
     public static void getSubEpochs(final String gameId, final onListCallback callback){
         final DatabaseReference ref = getDatabase().getReference();
-        ref.child("timelapses").child(gameId).child("timelapse").child("subEpochsIds")
+        ref.child("timelapses").child(gameId).child("subEpochsIds")
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -506,7 +503,7 @@ public abstract class FBCaller {
     @Deprecated
     public static void getResume(final String gameId, final onStringCallback callback){
         final DatabaseReference ref = getDatabase().getReference();
-        ref.child("timelapses").child(gameId).child("timelapse").child("resume")
+        ref.child("timelapses").child(gameId).child("resume")
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -531,7 +528,7 @@ public abstract class FBCaller {
     @Deprecated
     public static void getLight(final String gameId, final onBoolCallback callback){
         final DatabaseReference ref = getDatabase().getReference();
-        ref.child("timelapses").child(gameId).child("timelapse").child("isLight")
+        ref.child("timelapses").child(gameId).child("isLight")
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -556,7 +553,7 @@ public abstract class FBCaller {
     @Deprecated
     public static void getType(final String gameId, final onIntCallback callback){
         final DatabaseReference ref = getDatabase().getReference();
-        ref.child("timelapses").child(gameId).child("timelapse").child("timeType")
+        ref.child("timelapses").child(gameId).child("timeType")
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
