@@ -352,8 +352,10 @@ public abstract class FBCaller {
             }
 
             @Override
-            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-                Log.i("FBC",String.format("Error: %s, bool: %s, snapShot: %s", databaseError, b, dataSnapshot));
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b,
+                                   @Nullable DataSnapshot dataSnapshot) {
+                Log.i("FBC",String.format("Error: %s, bool: %s, snapShot: %s", databaseError,
+                        b, dataSnapshot));
                 if (databaseError == null && b && dataSnapshot != null) {
                     Log.d(TAG, "postTransaction:onComplete:" + databaseError);
                     callback.onStringReturned(dataSnapshot.getKey());
