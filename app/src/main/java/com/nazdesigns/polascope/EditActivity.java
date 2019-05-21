@@ -229,7 +229,6 @@ public class EditActivity extends Activity {
                 });
                 AlertDialog dialog = builder.create();
                 dialog.show();
-                //TODO: Llamar a un popUp para salir de la Activity
             }
         });
 
