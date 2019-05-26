@@ -119,7 +119,7 @@ public abstract class FBCaller {
                 if (names != null){
                     callback.onBooleanResult(names.contains(userName), false);
                 } else {
-                    callback.onBooleanResult(true,true);
+                    callback.onBooleanResult(false,true);
                 }
             }
         });

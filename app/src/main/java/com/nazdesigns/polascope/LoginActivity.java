@@ -190,13 +190,13 @@ public class LoginActivity extends AppCompatActivity {
                 FBCaller.isUserNameInUse(userName, new FBCaller.onBoolCallback() {
                     @Override
                     public void onBooleanResult(boolean inUse, boolean error) {
-                        if (error){
-                            Log.e(TAG, "Error al consultar nombres de Usuario");
-                            Toast.makeText(LoginActivity.this, "Error de Conexiones",
-                                    Toast.LENGTH_SHORT).show();
-                            showProgress(false);
-                            return;
-                        }
+//                        if (error){
+//                            Log.e(TAG, "Error al consultar nombres de Usuario");
+//                            Toast.makeText(LoginActivity.this, "Error de Conexiones",
+//                                    Toast.LENGTH_SHORT).show();
+//                            showProgress(false);
+//                            return;
+//                        }
 
                         if (inUse) {
                             mUserNameView.setError(getString(R.string.error_user_name));
