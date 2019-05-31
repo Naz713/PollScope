@@ -103,7 +103,7 @@ public abstract class FBCaller {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e(TAG,"Cancelada petición a FB para Obtener Jugadores");
-                callback.onArrayReturned(null, null);
+                callback.onArrayReturned(new ArrayList<String>(), new ArrayList<String>());
             }
         });
     }
@@ -284,13 +284,13 @@ public abstract class FBCaller {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b,
                                    @Nullable DataSnapshot dataSnapshot) {
-                Log.i("FBC",String.format("Error: %s, bool: %s, snapShot: %s", databaseError,
+                Log.i("FBC", String.format("Error: %s, bool: %s, snapShot: %s", databaseError,
                         b, dataSnapshot));
                 if (databaseError == null && b && dataSnapshot != null) {
-                    Log.d(TAG, "postTransaction:onComplete:" + databaseError);
+                    Log.d(TAG, "postTransaction:onComplete: " + databaseError);
                     callback.onStringReturned(dataSnapshot.getKey());
                 } else {
-                    Log.e(TAG, "postTransaction:onCompleteWithError:" + databaseError);
+                    Log.e(TAG, "postTransaction:onCompleteWithError: " + databaseError);
                     callback.onStringReturned(null);
                 }
             }
@@ -338,6 +338,8 @@ public abstract class FBCaller {
                         }
                     }
                     mutableData.setValue(oldPlayers);
+                } else {
+                    mutableData.setValue(playersIds);
                 }
                 return Transaction.success(mutableData);
             }
