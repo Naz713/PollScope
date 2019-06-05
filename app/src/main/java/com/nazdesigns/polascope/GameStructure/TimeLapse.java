@@ -1,9 +1,5 @@
 package com.nazdesigns.polascope.GameStructure;
 
-import android.util.Log;
-
-import com.google.firebase.database.DataSnapshot;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,30 +11,22 @@ public class TimeLapse {
     public final static int EVENT_TYPE = 2;
     public final static int SCENE_TYPE = 3;
 
-    public int timeType;
-    public boolean isLight;
-    public String resume;
-    public String body;
-    public double orderIndex;
-    public List<String> subEpochsIds;
+    private int timeType;
+    private boolean isLight;
+    private String resume;
+    private String body;
+    private double index;
+    private String raiz;
+    private List<String> players;
+    private List<String> subEpochsIds;
 
     public TimeLapse(){
         timeType = 0;
         isLight = true;
         resume = null;
         body = null;
-        orderIndex = 0.0;
+        index = 0.0;
         subEpochsIds = null;
-    }
-
-    public TimeLapse(int timeType, boolean isLight, String resume, String body, double orderIndex,
-                     List<String> subEpochsIds){
-        this.timeType = timeType;
-        this.isLight = isLight;
-        this.resume = resume;
-        this.body = body;
-        this.orderIndex = orderIndex;
-        this.subEpochsIds = subEpochsIds;
     }
 
     public TimeLapse(HashMap<String, Object> data){
@@ -53,11 +41,23 @@ public class TimeLapse {
                 case "isLight":
                     this.isLight = (boolean) data.get(dt);
                     break;
-                case "orderIndex":
-                    this.orderIndex = (double) (long) data.get(dt);
+                case "index":
+                    if (data.get(dt) instanceof Long){
+                        this.index = (double) (long) data.get(dt);
+                    } else {
+                        this.index = (double) data.get(dt);
+                    }
                     break;
                 case "resume":
                     this.resume = (String) data.get(dt);
+                    break;
+                case "raiz":
+                    this.raiz = (String) data.get(dt);
+                    break;
+                case "players":
+                    if (data.get(dt) instanceof List){
+                        this.players = (List<String>) data.get(dt);
+                    }
                     break;
                 case "subEpochsIds":
                     if (data.get(dt) instanceof List){
@@ -66,6 +66,22 @@ public class TimeLapse {
                     break;
             }
         }
+    }
+
+    public String getRaiz() {
+        return raiz;
+    }
+
+    public void setRaiz(String raiz) {
+        this.raiz = raiz;
+    }
+
+    public List<String> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<String> players) {
+        this.players = players;
     }
 
     public int getTimeType() {
@@ -104,12 +120,12 @@ public class TimeLapse {
         this.body = body;
     }
 
-    public double getOrderIndex() {
-        return orderIndex;
+    public double getIndex() {
+        return index;
     }
 
-    public void setOrderIndex(double orderIndex) {
-        this.orderIndex = orderIndex;
+    public void setIndex(double index) {
+        this.index = index;
     }
 
     public List<String> getSubEpochsIds() {

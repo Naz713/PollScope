@@ -237,7 +237,7 @@ public class RecyclerFragment extends Fragment {
                 // CREATE TL
                 Log.i(TAG, "NEW TL no GAME");
                 //No podemos estar seguros de que mTl no es nulo, ponemos 1 para que no sea Game
-                Common.startCreateActivity(this.getContext(), 1, mFBId, 0);
+                Common.startCreateActivity(this.getContext(), 1, mFBId, null, 0);
             }
             return true;
         }
