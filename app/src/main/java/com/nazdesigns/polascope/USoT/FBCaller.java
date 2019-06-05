@@ -13,14 +13,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.utilities.Utilities;
 import com.nazdesigns.polascope.GameStructure.TimeLapse;
 import com.nazdesigns.polascope.R;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TreeSet;
 
 public abstract class FBCaller {
     private static final String TAG = "FireBaseCaller";
@@ -170,14 +173,48 @@ public abstract class FBCaller {
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.getValue() instanceof List){
-                        List<Map<String, Object>> list = (List) dataSnapshot.getValue();
-                        Double firstIndex = 0.0;
+                    Log.i(TAG, "dataSnapshot: " + dataSnapshot.getValue().toString());
+                    if(dataSnapshot.getValue() instanceof HashMap){
+                        TreeSet<Map<String, Object>> tree = new TreeSet<>(new Comparator<Map<String, Object>>() {
+                            @Override
+                            public int compare(Map<String, Object> m1, Map<String, Object> m2) {
+                                double i1, i2;
+                                if (m1.get("index") instanceof Long){
+                                    i1 = Long.valueOf( (long) m1.get("index")).doubleValue();
+                                } else {
+                                    i1 = (double) m1.get("index");
+                                }
+                                if (m2.get("index") instanceof Long){
+                                    i2 = Long.valueOf( (long) m2.get("index")).doubleValue();
+                                } else {
+                                    i2 = (double) m2.get("index");
+                                }
+
+                                return Double.valueOf(i1 - i2).intValue();
+                            }
+                        });
+
+                        for (DataSnapshot ds : dataSnapshot.getChildren()){
+                            HashMap<String, Object> hm = (HashMap) ds.getValue();
+                            hm.put("key",ds.getKey());
+                            tree.add(hm);
+                        }
+
+                        //Log.i(TAG, list.toString());
+
+                        List<Map<String, Object>> list = new ArrayList<>(tree);
+
+                        double firstIndex = 0.0;
                         int firstI = -2;
                         for (int i=0; i<list.size(); i++){
-                            if (list.get(i).get("raiz") == brotherfbId){
+                            if (list.get(i).get("key").equals(brotherfbId)){
                                 firstI = i;
-                                firstIndex = (double) list.get(i).get("index");
+                                if (list.get(i).get("index").getClass().equals(java.lang.Long.class) ){
+                                    Long l = (long) list.get(i).get("index");
+                                    firstIndex = l.doubleValue();
+                                } else {
+                                    firstIndex = (double) list.get(i).get("index");
+                                }
                             }
                         }
                         if(firstI == -2){
@@ -189,7 +226,13 @@ public abstract class FBCaller {
                         int j = isBefore? firstI-1 : firstI +1;
                         double index;
                         if (j>=0 && j<list.size()){
-                            index = ( firstIndex + (double) list.get(j).get("index") )/2;
+                            if (list.get(j).get("index").getClass().equals(java.lang.Long.class) ){
+                                Long l = (long) list.get(j).get("index");
+                                index = l.doubleValue();
+                            } else {
+                                index = (double) list.get(j).get("index");
+                            }
+                            index = ( firstIndex + index )/2;
                         } else {
                             index = isBefore? firstIndex - 100 : firstIndex + 100;
                         }
@@ -427,27 +470,53 @@ public abstract class FBCaller {
     public static void getTLlist(final String rootFbId, final onListTLCallback callback){
         final DatabaseReference ref = getDatabase().getReference();
         ref.child("timelapses").orderByChild("raiz").equalTo(rootFbId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        List<TimeLapse> ret = new ArrayList<>();
-                        List<String> ids = new ArrayList<>();
-                        for (DataSnapshot tlList : dataSnapshot.getChildren()) {
-                            if (tlList.getValue() instanceof HashMap) {
-                                ids.add(tlList.getKey());
-                                HashMap<String, Object> tl = ((HashMap) tlList.getValue());
-                                ret.add(new TimeLapse(tl));
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                    List<TimeLapse> ret = new ArrayList<>();
+                    List<String> ids = new ArrayList<>();
+
+                    TreeSet<DataSnapshot> sorted = new TreeSet<>(new Comparator<DataSnapshot>() {
+                        @Override
+                        public int compare(DataSnapshot o1, DataSnapshot o2) {
+                            HashMap<String, Object> m1 = ((HashMap) o1.getValue());
+                            HashMap<String, Object> m2 = ((HashMap) o2.getValue());
+                            double i1, i2;
+                            if (m1.get("index") instanceof Long){
+                                i1 = Long.valueOf( (long) m1.get("index")).doubleValue();
+                            } else {
+                                i1 = (double) m1.get("index");
                             }
+                            if (m2.get("index") instanceof Long){
+                                i2 = Long.valueOf( (long) m2.get("index")).doubleValue();
+                            } else {
+                                i2 = (double) m2.get("index");
+                            }
+
+                            return Double.valueOf(i1 - i2).intValue();
                         }
-                        callback.onListTimeLapseResult(ret, ids);
+                    });
+
+                    for (DataSnapshot tlList : dataSnapshot.getChildren()) {
+                        sorted.add(tlList);
                     }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.e(TAG, "Cancelada Peticion a ListTimeLapse: "+ rootFbId);
-                        callback.onListTimeLapseResult(null, null);
+                    for (DataSnapshot tlList :  sorted){
+                        if (tlList.getValue() instanceof HashMap) {
+                            ids.add(tlList.getKey());
+                            HashMap<String, Object> tl = ((HashMap) tlList.getValue());
+                            ret.add(new TimeLapse(tl));
+                        }
                     }
-                });
+                    callback.onListTimeLapseResult(ret, ids);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e(TAG, "Cancelada Peticion a ListTimeLapse: "+ rootFbId);
+                    callback.onListTimeLapseResult(null, null);
+                }
+            });
     }
 
     /*

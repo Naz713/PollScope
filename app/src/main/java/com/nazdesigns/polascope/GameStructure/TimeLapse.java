@@ -42,7 +42,11 @@ public class TimeLapse {
                     this.isLight = (boolean) data.get(dt);
                     break;
                 case "index":
-                    this.index = (double) (long) data.get(dt);
+                    if (data.get(dt) instanceof Long){
+                        this.index = (double) (long) data.get(dt);
+                    } else {
+                        this.index = (double) data.get(dt);
+                    }
                     break;
                 case "resume":
                     this.resume = (String) data.get(dt);
